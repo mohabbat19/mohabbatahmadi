@@ -91,27 +91,20 @@
             transform: scale(1.05);
         }
 
-        /* Header */
+        /* Page Header */
         .page-header {
-            padding: 150px 50px 80px;
+            padding: 150px 50px 60px;
             text-align: center;
             background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+            position: relative;
+            overflow: hidden;
         }
 
         .page-title {
             font-size: 4rem;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
             color: #2c2c2c;
             animation: fadeInUp 0.8s ease;
-        }
-
-        .page-subtitle {
-            font-size: 1.3rem;
-            color: #666;
-            font-style: italic;
-            animation: fadeInUp 0.8s ease 0.2s;
-            opacity: 0;
-            animation-fill-mode: forwards;
         }
 
         @keyframes fadeInUp {
@@ -125,247 +118,181 @@
             }
         }
 
-        /* Gallery Section */
-        .gallery {
-            padding: 80px 50px;
+        .intro-text {
+            max-width: 900px;
+            margin: 0 auto;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #444;
+            font-style: italic;
+            animation: fadeInUp 0.8s ease 0.2s backwards;
+            padding: 0 20px;
+        }
+
+        /* Paintings Section */
+        .paintings-container {
             max-width: 1400px;
             margin: 0 auto;
-            position: relative;
+            padding: 80px 50px;
         }
 
-        .gallery::before {
-            content: '';
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(0,0,0,0.02) 0%, transparent 70%);
-            border-radius: 50%;
-            top: 10%;
-            right: 5%;
-            animation: floatShape 25s infinite ease-in-out;
-        }
-
-        .gallery::after {
-            content: '';
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            background: radial-gradient(circle, rgba(0,0,0,0.02) 0%, transparent 70%);
-            border-radius: 50%;
-            bottom: 15%;
-            left: 8%;
-            animation: floatShape 20s infinite ease-in-out 3s;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
-            margin-top: 40px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            cursor: pointer;
-            background: white;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        .painting-item {
+            margin-bottom: 120px;
             opacity: 0;
-            transform: translateY(50px) scale(0.9);
-            perspective: 1000px;
-            transform-style: preserve-3d;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
         }
 
-        .gallery-item.visible {
+        .painting-item.visible {
             opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-20px) scale(1.03);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
-        }
-
-        .gallery-item::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-            transform: translate(-50%, -50%);
-            transition: all 0.6s ease;
-            z-index: 10;
-            border-radius: 50%;
-        }
-
-        .gallery-item:hover::before {
-            width: 400px;
-            height: 400px;
-        }
-
-        .image-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 100%;
-            overflow: hidden;
-            background: #f0f0f0;
-        }
-
-        .gallery-item img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.15) rotate(3deg);
-        }
-
-        .image-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.8) 100%);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            display: flex;
-            align-items: flex-end;
-            padding: 30px;
-        }
-
-        .gallery-item:hover .image-overlay {
-            opacity: 1;
-        }
-
-        .image-title {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: bold;
-            transform: translateY(30px);
-            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.1s;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .gallery-item:hover .image-title {
             transform: translateY(0);
         }
 
-        /* Lightbox */
-        .lightbox {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 10001;
-            cursor: zoom-out;
-            animation: fadeIn 0.4s ease;
+        .painting-item:nth-child(even) .painting-content {
+            flex-direction: row-reverse;
         }
 
-        .lightbox.active {
+        .painting-content {
             display: flex;
+            gap: 60px;
             align-items: center;
-            justify-content: center;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .lightbox img {
-            max-width: 90%;
-            max-height: 90vh;
-            object-fit: contain;
-            box-shadow: 0 0 100px rgba(255, 255, 255, 0.1);
-            animation: zoomIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            border-radius: 5px;
-        }
-
-        @keyframes zoomIn {
-            from { 
-                transform: scale(0.7) rotate(-5deg); 
-                opacity: 0; 
-            }
-            to { 
-                transform: scale(1) rotate(0deg); 
-                opacity: 1; 
-            }
-        }
-
-        .lightbox-close {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            font-size: 3rem;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 10002;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            backdrop-filter: blur(10px);
-        }
-
-        .lightbox-close:hover {
-            transform: rotate(90deg) scale(1.1);
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .lightbox-title {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-size: 1.8rem;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px 40px;
+        .painting-image {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
             border-radius: 10px;
-            backdrop-filter: blur(20px);
-            animation: slideUp 0.5s ease 0.2s backwards;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        @keyframes slideUp {
-            from {
-                transform: translateX(-50%) translateY(20px);
-                opacity: 0;
+        .painting-image:hover {
+            transform: scale(1.03) translateY(-10px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+        }
+
+        .painting-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+
+        .painting-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .painting-info {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .painting-title {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #2c2c2c;
+            font-weight: bold;
+            position: relative;
+            display: inline-block;
+        }
+
+        .painting-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #2c2c2c;
+            transition: width 0.3s ease;
+        }
+
+        .painting-item:hover .painting-title::after {
+            width: 100px;
+        }
+
+        .painting-description {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .painting-specs {
+            font-size: 0.95rem;
+            color: #888;
+            font-style: italic;
+            margin-top: 20px;
+        }
+
+        /* Floating decorative elements */
+        .floating-shape {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 50%;
+            animation: floatShape 20s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        .shape-1 {
+            width: 150px;
+            height: 150px;
+            top: 10%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 5%;
+            animation-delay: 3s;
+        }
+
+        @keyframes floatShape {
+            0%, 100% {
+                transform: translateY(0) translateX(0) scale(1);
             }
-            to {
-                transform: translateX(-50%) translateY(0);
-                opacity: 1;
+            50% {
+                transform: translateY(-30px) translateX(20px) scale(1.1);
             }
         }
 
-        @media (max-width: 768px) {
+        /* Responsive */
+        @media (max-width: 968px) {
+            .painting-content,
+            .painting-item:nth-child(even) .painting-content {
+                flex-direction: column;
+            }
+
             .page-title {
                 font-size: 2.5rem;
             }
 
-            .gallery-grid {
-                grid-template-columns: 1fr;
+            .intro-text {
+                font-size: 1rem;
+            }
+
+            .paintings-container {
+                padding: 60px 20px;
+            }
+
+            .painting-content {
                 gap: 30px;
+            }
+
+            .painting-item {
+                margin-bottom: 80px;
+            }
+
+            .painting-title {
+                font-size: 1.8rem;
+            }
+
+            .painting-description {
+                font-size: 1rem;
             }
 
             nav {
@@ -376,29 +303,8 @@
                 height: 60px;
             }
 
-            .gallery {
-                padding: 60px 20px;
-            }
-
-            .lightbox-close {
-                width: 50px;
-                height: 50px;
-                font-size: 2rem;
-                top: 20px;
-                right: 20px;
-            }
-
-            .lightbox-title {
-                font-size: 1.3rem;
-                padding: 15px 25px;
-                bottom: 20px;
-            }
-
-            .page-header::before,
-            .page-header::after,
-            .gallery::before,
-            .gallery::after {
-                display: none;
+            .page-header {
+                padding: 120px 20px 40px;
             }
         }
     </style>
@@ -415,144 +321,146 @@
     </nav>
 
     <div class="page-header">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
         <h1 class="page-title">Paintings</h1>
-        <p class="page-subtitle">A collection of my artistic expressions</p>
+        <p class="intro-text">
+            I believe a good painting does not become boring, no matter how many times/years you look at it. In fact, as you grow your appreciation of it grows. Every time you glance at it, you discover new mysteries and as it nourishes your spirit, it soothes your mood and spurs your imagination. Before publishing any work, I sit and stare at it for hours and publish it only if it meets the standards described above. If not, I discard them.
+        </p>
     </div>
 
-    <section class="gallery">
-        <div class="gallery-grid">
-            <div class="gallery-item">
-                <div class="image-container">
-                    <img src="Adiel1.JPG" alt="Adiel">
-                    <div class="image-overlay">
-                        <h3 class="image-title">Adiel</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-item">
-                <div class="image-container">
-                    <img src="Autumn1.JPG" alt="Autumn">
-                    <div class="image-overlay">
-                        <h3 class="image-title">Autumn</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-item">
-                <div class="image-container">
-                    <img src="Beautiful Black1.JPG" alt="Beautiful Black">
-                    <div class="image-overlay">
-                        <h3 class="image-title">Beautiful Black</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-item">
-                <div class="image-container">
-                    <img src="Beauty in Chaos.jpg" alt="Beauty in Chaos">
-                    <div class="image-overlay">
-                        <h3 class="image-title">Beauty in Chaos</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-item">
-                <div class="image-container">
-                    <img src="Captivating Beauty.jpg" alt="Captivating Beauty">
-                    <div class="image-overlay">
-                        <h3 class="image-title">Captivating Beauty</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-item">
-                <div class="image-container">
-                    <img src="Chaplin1.jpg" alt="Chaplin">
-                    <div class="image-overlay">
-                        <h3 class="image-title">Chaplin</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-item">
-                <div class="image-container">
-                    <img src="Golden Standards.jpg" alt="Golden Standards">
-                    <div class="image-overlay">
-                        <h3 class="image-title">Golden Standards</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-item">
-                <div class="image-container">
-                    <img src="Hope.jpg" alt="Hope">
-                    <div class="image-overlay">
-                        <h3 class="image-title">Hope</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-item">
-                <div class="image-container">
-                    <img src="IMG_0553.JPG" alt="Untitled">
-                    <div class="image-overlay">
-                        <h3 class="image-title">Untitled</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-item">
-                <div class="image-container">
+    <div class="paintings-container">
+        <div class="painting-item">
+            <div class="painting-content">
+                <div class="painting-image">
                     <img src="Incomplete Circles.jpg" alt="Incomplete Circles">
-                    <div class="image-overlay">
-                        <h3 class="image-title">Incomplete Circles</h3>
-                    </div>
                 </div>
-            </div>
-
-            <div class="gallery-item">
-                <div class="image-container">
-                    <img src="Raw Ideas.jpg" alt="Raw Ideas">
-                    <div class="image-overlay">
-                        <h3 class="image-title">Raw Ideas</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-item">
-                <div class="image-container">
-                    <img src="Shattered Nest (2).jpg" alt="Shattered Nest">
-                    <div class="image-overlay">
-                        <h3 class="image-title">Shattered Nest</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-item">
-                <div class="image-container">
-                    <img src="The Dance of Life (2).jpg" alt="The Dance of Life">
-                    <div class="image-overlay">
-                        <h3 class="image-title">The Dance of Life</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-item">
-                <div class="image-container">
-                    <img src="Abstract Feelings.jpg" alt="Abstract Feelings">
-                    <div class="image-overlay">
-                        <h3 class="image-title">Abstract Feelings</h3>
-                    </div>
+                <div class="painting-info">
+                    <h2 class="painting-title">Incomplete Circles</h2>
+                    <p class="painting-description">
+                        This painting is a reflection of our lives. In our lifetime, we embark on many journeys (create many circles) but we don't finish all of them. The one we usually finish is the smallest one. Some of our initiatives are big and some small. Some we start from the wrong spot some at the wrong time. And yet, some are even bigger than the frame of our life. But the overall beauty persists with all the shades and colors we bring to our lives.
+                    </p>
+                    <p class="painting-specs">Acrylic on Canvas 30" x 48"</p>
                 </div>
             </div>
         </div>
-    </section>
 
-    <div class="lightbox" id="lightbox">
-        <span class="lightbox-close" onclick="closeLightbox()">×</span>
-        <img id="lightbox-img" src="" alt="">
-        <div class="lightbox-title" id="lightbox-title"></div>
+        <div class="painting-item">
+            <div class="painting-content">
+                <div class="painting-image">
+                    <img src="Abstract Feelings.jpg" alt="Abstract Reflection">
+                </div>
+                <div class="painting-info">
+                    <h2 class="painting-title">Abstract Reflection</h2>
+                    <p class="painting-description">
+                        Our lives are a reflection of our past actions. Every action has a consequence in the future, both positive and negative. Every input has an output. If you want to have a beautiful future, have a beautiful "NOW".
+                    </p>
+                    <p class="painting-specs">Acrylic on Canvas 30" x 48"</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="painting-item">
+            <div class="painting-content">
+                <div class="painting-image">
+                    <img src="Captivating Beauty.jpg" alt="Captivating Beauty">
+                </div>
+                <div class="painting-info">
+                    <h2 class="painting-title">Captivating Beauty</h2>
+                    <p class="painting-description">
+                        This painting is inspired by nature. In the background, there are different shades of green that resemble our true colors. On that level, we are all the same. We are all different shades of green. However, on a superficial level, we are different, which must not prevent us from attaining our true reality. There are black lines that resemble our share of sorrow in life, white lines resemble our share of good fortunes and happiness and the golden lines resemble our accomplishments, education, and so on. We have to understand that for it to look beautiful all of these colors have to come together in harmony.
+                    </p>
+                    <p class="painting-specs">Acrylic on Canvas - 48"x48"</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="painting-item">
+            <div class="painting-content">
+                <div class="painting-image">
+                    <img src="Beauty in Chaos.jpg" alt="Beauty in Chaos">
+                </div>
+                <div class="painting-info">
+                    <h2 class="painting-title">Beauty in Chaos</h2>
+                    <p class="painting-description">
+                        It is beautiful to see how our lives seem like chaos contained in a frame, yet, if we take a step back we can see and appreciate the overall beauty of it.
+                    </p>
+                    <p class="painting-specs">Acrylic on Canvas - 48"x 84"</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="painting-item">
+            <div class="painting-content">
+                <div class="painting-image">
+                    <img src="Adiel1.JPG" alt="Adiel">
+                </div>
+                <div class="painting-info">
+                    <h2 class="painting-title">Adiel</h2>
+                    <p class="painting-description">
+                        This was commissioned work and I wanted to create this painting with the favorite colors of a five-year-old. I really enjoyed working on this piece.
+                    </p>
+                    <p class="painting-specs">Acrylic on Canvas 36"x48"</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="painting-item">
+            <div class="painting-content">
+                <div class="painting-image">
+                    <img src="Chaplin1.jpg" alt="Mr. Chaplin">
+                </div>
+                <div class="painting-info">
+                    <h2 class="painting-title">Mr. Chaplin</h2>
+                    <p class="painting-specs">Acrylic on Canvas 48"x60"</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="painting-item">
+            <div class="painting-content">
+                <div class="painting-image">
+                    <img src="IMG_0553.JPG" alt="Self-Portrait">
+                </div>
+                <div class="painting-info">
+                    <h2 class="painting-title">Self-Portrait</h2>
+                    <p class="painting-description">
+                        I made this painting on our second wedding anniversary. This is a picture of me and my wife captured during our first road trip to West Virginia in 2016.
+                    </p>
+                    <p class="painting-specs">Acrylic on canvas 36"x48"</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="painting-item">
+            <div class="painting-content">
+                <div class="painting-image">
+                    <img src="Beautiful Black1.JPG" alt="Glamour">
+                </div>
+                <div class="painting-info">
+                    <h2 class="painting-title">Glamour</h2>
+                    <p class="painting-description">
+                        This is a blend of pencil, charcoal, acrylic and pigment paint. It portrays glamour.
+                    </p>
+                    <p class="painting-specs">Acrylic on canvas 36"x48"</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="painting-item">
+            <div class="painting-content">
+                <div class="painting-image">
+                    <img src="Autumn1.JPG" alt="Autumn Leaf">
+                </div>
+                <div class="painting-info">
+                    <h2 class="painting-title">Autumn Leaf</h2>
+                    <p class="painting-description">
+                        Autumn (fall season) has always been a source of fascination for me. Autumn is the season of death or transformation for so many leaves. At their graceful departure, these leaves, create a magnificent beauty and wants us to remember a great image so that we impatiently await their return with great anticipation in the next spring. There is so much that we can learn from the falling leaves.
+                    </p>
+                    <p class="painting-specs">Acrylic on canvas 48"x48"</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -580,7 +488,7 @@
         }
         animateFollower();
 
-        document.querySelectorAll('a, .gallery-item').forEach(el => {
+        document.querySelectorAll('a, .painting-image').forEach(el => {
             el.addEventListener('mouseenter', () => {
                 cursor.style.transform = 'scale(1.5)';
                 cursorFollower.style.transform = 'scale(1.5)';
@@ -599,70 +507,31 @@
             scrollProgress.style.width = scrolled + '%';
         });
 
-        // Parallax effect for floating shapes
-        window.addEventListener('scroll', () => {
-            const scrolled = window.scrollY;
-            const header = document.querySelector('.page-header');
-            const gallery = document.querySelector('.gallery');
-            
-            // Parallax on header shapes
-            if (header) {
-                const headerBefore = window.getComputedStyle(header, '::before');
-                const headerAfter = window.getComputedStyle(header, '::after');
-                header.style.setProperty('--scroll', scrolled * 0.3 + 'px');
-            }
-        });
-
         // Scroll animations
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
+            entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, index * 100);
+                    entry.target.classList.add('visible');
                 }
             });
-        }, { threshold: 0.1 });
+        }, { threshold: 0.2 });
 
-        document.querySelectorAll('.gallery-item').forEach(el => {
+        document.querySelectorAll('.painting-item').forEach(el => {
             observer.observe(el);
         });
 
-        // Lightbox
-        document.querySelectorAll('.gallery-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const img = item.querySelector('img');
-                const title = item.querySelector('.image-title');
-                document.getElementById('lightbox-img').src = img.src;
-                document.getElementById('lightbox-title').textContent = title.textContent;
-                document.getElementById('lightbox').classList.add('active');
-            });
-
-            // 3D tilt effect on mouse move
-            item.addEventListener('mousemove', (e) => {
+        // Parallax effect on images
+        window.addEventListener('scroll', () => {
+            const items = document.querySelectorAll('.painting-item.visible');
+            items.forEach(item => {
                 const rect = item.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                const rotateX = (y - centerY) / 15;
-                const rotateY = (centerX - x) / 15;
-                
-                item.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-20px) scale(1.03)`;
-            });
-            
-            item.addEventListener('mouseleave', () => {
-                item.style.transform = '';
+                const scrollPercent = (window.innerHeight - rect.top) / window.innerHeight;
+                const img = item.querySelector('.painting-image img');
+                if (img && scrollPercent > 0 && scrollPercent < 1) {
+                    img.style.transform = `scale(${1 + scrollPercent * 0.05})`;
+                }
             });
         });
-
-        function closeLightbox() {
-            document.getElementById('lightbox').classList.remove('active');
-        }
-
-        document.getElementById('lightbox').addEventListener('click', closeLightbox);
     </script>
 </body>
 </html>
