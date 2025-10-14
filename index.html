@@ -77,43 +77,22 @@
         }
 
         .logo {
-            background: white;
-            padding: 10px 20px;
-            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
             position: relative;
-            overflow: hidden;
-        }
-
-        .logo::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.8), transparent);
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         .logo img {
-            height: 60px;
+            height: 80px;
             width: auto;
             display: block;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.1));
         }
 
         nav.scrolled .logo img {
-            height: 50px;
+            height: 60px;
         }
 
         .nav-links {
@@ -439,6 +418,12 @@
             gap: 30px;
             max-width: 1200px;
             margin: 0 auto;
+        }
+
+        .portfolio-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
 
         .portfolio-item {
@@ -839,7 +824,7 @@
         animateFollower();
 
         // Cursor hover effects
-        document.querySelectorAll('a, button, .portfolio-item').forEach(el => {
+        document.querySelectorAll('a, button, .portfolio-item, .portfolio-link').forEach(el => {
             el.addEventListener('mouseenter', () => {
                 cursor.style.transform = 'scale(1.5)';
                 cursorFollower.style.transform = 'scale(1.5)';
