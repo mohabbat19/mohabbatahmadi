@@ -16,6 +16,43 @@
             background: #fafafa;
             color: #2c2c2c;
             overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #2c2c2c;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-follower {
+            width: 8px;
+            height: 8px;
+            background: #2c2c2c;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.15s ease;
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #2c2c2c, #666, #2c2c2c);
+            z-index: 10000;
+            transition: width 0.1s ease;
         }
 
         /* Navigation */
@@ -48,6 +85,25 @@
             justify-content: center;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.8), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         .logo img {
@@ -130,6 +186,7 @@
             background: rgba(0, 0, 0, 0.03);
             border-radius: 50%;
             animation: float 20s infinite;
+            filter: blur(2px);
         }
 
         .shape:nth-child(1) {
@@ -137,6 +194,7 @@
             height: 80px;
             left: 10%;
             animation-delay: 0s;
+            animation-duration: 25s;
         }
 
         .shape:nth-child(2) {
@@ -144,6 +202,7 @@
             height: 120px;
             right: 15%;
             animation-delay: 2s;
+            animation-duration: 20s;
         }
 
         .shape:nth-child(3) {
@@ -151,16 +210,43 @@
             height: 60px;
             left: 60%;
             animation-delay: 4s;
+            animation-duration: 30s;
+        }
+
+        .shape:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            left: 30%;
+            bottom: 20%;
+            animation-delay: 1s;
+            animation-duration: 22s;
+        }
+
+        .shape:nth-child(5) {
+            width: 70px;
+            height: 70px;
+            right: 40%;
+            top: 30%;
+            animation-delay: 3s;
+            animation-duration: 28s;
         }
 
         @keyframes float {
             0%, 100% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0.5;
+                transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translateY(-80px) translateX(30px) rotate(90deg) scale(1.1);
+                opacity: 0.6;
             }
             50% {
-                transform: translateY(-100px) rotate(180deg);
+                transform: translateY(-40px) translateX(-20px) rotate(180deg) scale(0.9);
                 opacity: 0.8;
+            }
+            75% {
+                transform: translateY(-100px) translateX(40px) rotate(270deg) scale(1.2);
+                opacity: 0.5;
             }
         }
 
@@ -179,6 +265,28 @@
             animation: fadeInUp 1s ease forwards;
             letter-spacing: 3px;
             color: #2c2c2c;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .hero-title::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, transparent, rgba(0,0,0,0.03), transparent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
         }
 
         .hero-subtitle {
@@ -205,30 +313,51 @@
             color: #2c2c2c;
             text-decoration: none;
             font-size: 1rem;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            z-index: 1;
         }
 
         .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 100%;
+            height: 100%;
+            background: #2c2c2c;
+            transition: transform 0.5s ease;
+            z-index: -1;
+            border-radius: 50%;
+        }
+
+        .btn:hover::before {
+            transform: translate(-50%, -50%) scale(2);
+            border-radius: 0;
+        }
+
+        .btn::after {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: #2c2c2c;
-            transition: left 0.3s ease;
-            z-index: -1;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
         }
 
-        .btn:hover::before {
-            left: 0;
+        .btn:hover::after {
+            left: 100%;
         }
 
         .btn:hover {
             color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
 
         @keyframes fadeInUp {
@@ -248,12 +377,42 @@
             position: relative;
         }
 
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
+        }
+
         .section-title {
             font-size: 3rem;
             text-align: center;
             margin-bottom: 60px;
             color: #2c2c2c;
             position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0,0,0,0.03) 0%, transparent 70%);
+            z-index: -1;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.6; }
         }
 
         .section-title::after {
@@ -264,7 +423,13 @@
             transform: translateX(-50%);
             width: 100px;
             height: 3px;
-            background: linear-gradient(90deg, #f0f0f0, #d0d0d0, #f0f0f0);
+            background: linear-gradient(90deg, transparent, #d0d0d0, transparent);
+            animation: expand 2s ease-in-out infinite;
+        }
+
+        @keyframes expand {
+            0%, 100% { width: 100px; }
+            50% { width: 150px; }
         }
 
         /* Portfolio Grid */
@@ -285,11 +450,18 @@
             transform: translateY(50px);
             opacity: 0;
             transition: all 0.5s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            perspective: 1000px;
         }
 
         .portfolio-item.visible {
             transform: translateY(0);
             opacity: 1;
+        }
+
+        .portfolio-item:hover {
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            transform: translateY(-10px) rotateX(2deg);
         }
 
         .portfolio-item::before {
@@ -301,8 +473,27 @@
             height: 100%;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 240, 240, 0.95));
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease;
             z-index: 1;
+        }
+
+        .portfolio-item::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.05);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+            z-index: 0;
+        }
+
+        .portfolio-item:hover::after {
+            width: 500px;
+            height: 500px;
         }
 
         .portfolio-item:hover::before {
@@ -314,11 +505,29 @@
             height: 100%;
             background-size: cover;
             background-position: center;
-            transition: transform 0.5s ease;
+            transition: transform 0.8s ease;
+            position: relative;
+        }
+
+        .portfolio-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            filter: blur(20px);
+            opacity: 0;
+            transition: opacity 0.8s ease;
         }
 
         .portfolio-item:hover .portfolio-bg {
-            transform: scale(1.1);
+            transform: scale(1.15) rotate(2deg);
+        }
+
+        .portfolio-item:hover .portfolio-bg::before {
+            opacity: 0.3;
         }
 
         .portfolio-info {
@@ -328,7 +537,7 @@
             right: 0;
             padding: 30px;
             transform: translateY(100%);
-            transition: transform 0.3s ease;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             z-index: 2;
         }
 
@@ -340,12 +549,27 @@
             font-size: 1.8rem;
             margin-bottom: 10px;
             color: #2c2c2c;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s ease 0.1s;
+        }
+
+        .portfolio-item:hover .portfolio-info h3 {
+            transform: translateY(0);
+            opacity: 1;
         }
 
         .portfolio-info p {
             font-size: 1rem;
-            opacity: 0.9;
+            opacity: 0;
             color: #666;
+            transform: translateY(20px);
+            transition: all 0.5s ease 0.2s;
+        }
+
+        .portfolio-item:hover .portfolio-info p {
+            transform: translateY(0);
+            opacity: 0.9;
         }
 
         /* About Section */
@@ -357,6 +581,16 @@
             font-size: 1.2rem;
         }
 
+        .about-content p {
+            margin-bottom: 20px;
+            transition: all 0.6s ease;
+        }
+
+        .about-content p:hover {
+            transform: translateX(10px);
+            color: #1a1a1a;
+        }
+
         /* Contact Section */
         .contact-form {
             max-width: 600px;
@@ -365,6 +599,23 @@
 
         .form-group {
             margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #d0d0d0, #2c2c2c, #d0d0d0);
+            transition: all 0.4s ease;
+            transform: translateX(-50%);
+        }
+
+        .form-group:focus-within::after {
+            width: 100%;
         }
 
         .form-group input,
@@ -376,6 +627,7 @@
             color: #2c2c2c;
             font-size: 1rem;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .form-group input:focus,
@@ -383,7 +635,8 @@
             outline: none;
             border-color: #c0c0c0;
             background: #fafafa;
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
         }
 
         .form-group textarea {
@@ -399,13 +652,38 @@
             color: #ffffff;
             font-size: 1.1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .submit-btn:hover::before {
+            width: 400px;
+            height: 400px;
         }
 
         .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             background: #1a1a1a;
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         /* Scroll Animation */
@@ -445,6 +723,10 @@
     </style>
 </head>
 <body>
+    <div class="scroll-progress"></div>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
     <nav id="navbar">
         <div class="logo">
             <img src="Logo PNG.png" alt="Mohabbat Ahmadi Logo">
@@ -454,6 +736,8 @@
     <section class="hero" id="home">
         <div class="hero-background"></div>
         <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
             <div class="shape"></div>
             <div class="shape"></div>
             <div class="shape"></div>
@@ -498,7 +782,7 @@
     <section id="about">
         <h2 class="section-title fade-in">About Me</h2>
         <div class="about-content fade-in">
-            <h3 style="font-size: 1.5rem; margin-bottom: 20px; color: #d4af37;">My Journey</h3>
+            <h3 style="font-size: 1.5rem; margin-bottom: 20px; color: #666;">My Journey</h3>
             <p style="font-style: italic; margin-bottom: 15px;">June 1988 - Kabul, Afghanistan</p>
             
             <p>I'm not sure if I found art, or if art found me. Perhaps neither. There's no memory of a beginning--art has always been there, inseparable from life, undifferentiated from identity. Art then, is an expression of my heart, inspired by the world-embracing teachings of the Baha'i Faith. It seeks transcendence and strives to create meaning. Where some might see a chaotic mix of colors on a canvas, others will see that every drop of paint and stroke of the brush are purposefully placed, like letters of a word, to open a doorway to the soul.</p>
@@ -530,6 +814,47 @@
     </section>
 
     <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+
+        let mouseX = 0, mouseY = 0;
+        let followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+        });
+
+        function animateFollower() {
+            const distX = mouseX - followerX;
+            const distY = mouseY - followerY;
+            
+            followerX += distX * 0.1;
+            followerY += distY * 0.1;
+            
+            cursorFollower.style.left = followerX + 'px';
+            cursorFollower.style.top = followerY + 'px';
+            
+            requestAnimationFrame(animateFollower);
+        }
+        animateFollower();
+
+        // Cursor hover effects
+        document.querySelectorAll('a, button, .portfolio-item').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(1.5)';
+                cursorFollower.style.transform = 'scale(1.5)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursorFollower.style.transform = 'scale(1)';
+            });
+        });
+
         // Navbar scroll effect
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
@@ -538,6 +863,22 @@
             } else {
                 navbar.classList.remove('scrolled');
             }
+
+            // Update scroll progress bar
+            const scrollProgress = document.querySelector('.scroll-progress');
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (window.scrollY / windowHeight) * 100;
+            scrollProgress.style.width = scrolled + '%';
+        });
+
+        // Parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const shapes = document.querySelectorAll('.shape');
+            shapes.forEach((shape, index) => {
+                const speed = (index + 1) * 0.1;
+                shape.style.transform = `translateY(${scrolled * speed}px)`;
+            });
         });
 
         // Scroll animations
@@ -572,11 +913,58 @@
             });
         });
 
-        // Form submission
+        // Portfolio item tilt effect
+        document.querySelectorAll('.portfolio-item').forEach(item => {
+            item.addEventListener('mousemove', (e) => {
+                const rect = item.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                item.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = '';
+            });
+        });
+
+        // Form submission with animation
         document.querySelector('.contact-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            alert('Thank you for your message! I will get back to you soon.');
-            e.target.reset();
+            const btn = e.target.querySelector('.submit-btn');
+            btn.textContent = 'Sending...';
+            btn.style.background = '#4CAF50';
+            
+            setTimeout(() => {
+                btn.textContent = 'Message Sent!';
+                setTimeout(() => {
+                    btn.textContent = 'Send Message';
+                    btn.style.background = '#2c2c2c';
+                    e.target.reset();
+                }, 2000);
+            }, 1500);
+        });
+
+        // Section title animation on scroll
+        const titleObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'none';
+                    setTimeout(() => {
+                        entry.target.style.animation = '';
+                    }, 10);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.section-title').forEach(title => {
+            titleObserver.observe(title);
         });
     </script>
 </body>
