@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paintings | Mohabbat Ahmadi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: #fafafa;
+            color: #2c2c2c;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #2c2c2c;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-follower {
+            width: 8px;
+            height: 8px;
+            background: #2c2c2c;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.15s ease;
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #2c2c2c, #666, #2c2c2c);
+            z-index: 10000;
+            transition: width 0.1s ease;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            background: rgba(250, 250, 250, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+            display: block;
+        }
+
+        .back-btn {
+            padding: 10px 25px;
+            background: #2c2c2c;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .back-btn:hover {
+            background: #1a1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Header */
+        .page-header {
+            padding: 150px 50px 80px;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+        }
+
+        .page-title {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #2c2c2c;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .page-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-style: italic;
+            animation: fadeInUp 0.8s ease 0.2s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Gallery Section */
+        .gallery {
+            padding: 80px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            cursor: pointer;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.5s ease;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .gallery-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        .gallery-item img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1) rotate(2deg);
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: flex-end;
+            padding: 30px;
+        }
+
+        .gallery-item:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .image-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transform: translateY(20px);
+            transition: transform 0.4s ease 0.1s;
+        }
+
+        .gallery-item:hover .image-title {
+            transform: translateY(0);
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10001;
+            cursor: zoom-out;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 3rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10002;
+        }
+
+        .lightbox-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .lightbox-title {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1.5rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 30px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            nav {
+                padding: 15px 20px;
+            }
+
+            .gallery {
+                padding: 60px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-progress"></div>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <nav>
+        <div class="logo">
+            <img src="Logo PNG.png" alt="Mohabbat Ahmadi Logo">
+        </div>
+        <a href="index.html" class="back-btn">← Back to Home</a>
+    </nav>
+
+    <div class="page-header">
+        <h1 class="page-title">Paintings</h1>
+        <p class="page-subtitle">A collection of my artistic expressions</p>
+    </div>
+
+    <section class="gallery">
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="Adiel1.JPG" alt="Adiel">
+                    <div class="image-overlay">
+                        <h3 class="image-title">Adiel</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="Autumn1.JPG" alt="Autumn">
+                    <div class="image-overlay">
+                        <h3 class="image-title">Autumn</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="Beautiful Black1.JPG" alt="Beautiful Black">
+                    <div class="image-overlay">
+                        <h3 class="image-title">Beautiful Black</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="Beauty in Chaos.jpg" alt="Beauty in Chaos">
+                    <div class="image-overlay">
+                        <h3 class="image-title">Beauty in Chaos</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="Captivating Beauty.jpg" alt="Captivating Beauty">
+                    <div class="image-overlay">
+                        <h3 class="image-title">Captivating Beauty</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="Chaplin1.jpg" alt="Chaplin">
+                    <div class="image-overlay">
+                        <h3 class="image-title">Chaplin</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="Golden Standards.jpg" alt="Golden Standards">
+                    <div class="image-overlay">
+                        <h3 class="image-title">Golden Standards</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="Hope.jpg" alt="Hope">
+                    <div class="image-overlay">
+                        <h3 class="image-title">Hope</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="IMG_0553.JPG" alt="Untitled">
+                    <div class="image-overlay">
+                        <h3 class="image-title">Untitled</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="Incomplete Circles.jpg" alt="Incomplete Circles">
+                    <div class="image-overlay">
+                        <h3 class="image-title">Incomplete Circles</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="Raw Ideas.jpg" alt="Raw Ideas">
+                    <div class="image-overlay">
+                        <h3 class="image-title">Raw Ideas</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="Shattered Nest (2).jpg" alt="Shattered Nest">
+                    <div class="image-overlay">
+                        <h3 class="image-title">Shattered Nest</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="The Dance of Life (2).jpg" alt="The Dance of Life">
+                    <div class="image-overlay">
+                        <h3 class="image-title">The Dance of Life</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="Abstract Feelings.jpg" alt="Abstract Feelings">
+                    <div class="image-overlay">
+                        <h3 class="image-title">Abstract Feelings</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">×</span>
+        <img id="lightbox-img" src="" alt="">
+        <div class="lightbox-title" id="lightbox-title"></div>
+    </div>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+        let mouseX = 0, mouseY = 0;
+        let followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+        });
+
+        function animateFollower() {
+            const distX = mouseX - followerX;
+            const distY = mouseY - followerY;
+            followerX += distX * 0.1;
+            followerY += distY * 0.1;
+            cursorFollower.style.left = followerX + 'px';
+            cursorFollower.style.top = followerY + 'px';
+            requestAnimationFrame(animateFollower);
+        }
+        animateFollower();
+
+        document.querySelectorAll('a, .gallery-item').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(1.5)';
+                cursorFollower.style.transform = 'scale(1.5)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursorFollower.style.transform = 'scale(1)';
+            });
+        });
+
+        // Scroll Progress
+        window.addEventListener('scroll', () => {
+            const scrollProgress = document.querySelector('.scroll-progress');
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (window.scrollY / windowHeight) * 100;
+            scrollProgress.style.width = scrolled + '%';
+        });
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.gallery-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Lightbox
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const img = item.querySelector('img');
+                const title = item.querySelector('.image-title');
+                document.getElementById('lightbox-img').src = img.src;
+                document.getElementById('lightbox-title').textContent = title.textContent;
+                document.getElementById('lightbox').classList.add('active');
+            });
+        });
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        document.getElementById('lightbox').addEventListener('click', closeLightbox);
+    </script>
+</body>
+</html>
