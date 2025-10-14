@@ -23,9 +23,9 @@
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 20px 50px;
+            padding: 15px 50px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             z-index: 1000;
             transition: all 0.3s ease;
@@ -35,18 +35,29 @@
         nav.scrolled {
             background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(10px);
-            padding: 15px 50px;
+            padding: 10px 50px;
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .logo img {
+            height: 60px;
+            width: auto;
+            display: block;
+        }
+
+        nav.scrolled .logo img {
+            height: 50px;
         }
 
         .nav-links {
@@ -420,13 +431,9 @@
 </head>
 <body>
     <nav id="navbar">
-        <div class="logo">MOHABBAT</div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#portfolio">Portfolio</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+        <div class="logo">
+            <img src="Logo PNG.png" alt="Mohabbat Ahmadi Logo">
+        </div>
     </nav>
 
     <section class="hero" id="home">
