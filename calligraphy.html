@@ -172,15 +172,71 @@
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
         }
 
-        .calligraphy-image img {
+        /* Image Gallery */
+        .image-gallery {
+            position: relative;
+            width: 100%;
+        }
+
+        .main-image-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .main-image {
             width: 100%;
             height: auto;
             display: block;
             transition: transform 0.6s ease;
         }
 
-        .calligraphy-image:hover img {
+        .calligraphy-image:hover .main-image {
             transform: scale(1.05);
+        }
+
+        .image-thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+
+        .thumbnail:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .thumbnail.active {
+            border-color: #2c2c2c;
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        /* Image counter badge */
+        .image-counter {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            z-index: 2;
         }
 
         .calligraphy-info {
@@ -333,7 +389,16 @@
         <div class="calligraphy-item">
             <div class="calligraphy-content">
                 <div class="calligraphy-image">
-                    <img src="Ya Baha'ul Abha.jpg" alt="Yá Bahá'u'l-Abhá">
+                    <div class="image-gallery">
+                        <div class="main-image-container">
+                            <div class="image-counter">1 / 2</div>
+                            <img class="main-image" src="Ya Baha'ul Abha.jpg" alt="Yá Bahá'u'l-Abhá" data-index="0">
+                        </div>
+                        <div class="image-thumbnails">
+                            <img class="thumbnail active" src="Ya Baha'ul Abha.jpg" alt="View 1" onclick="changeImage(this, 0)">
+                            <img class="thumbnail" src="Ya Baha'ul Abha_1.jpg" alt="View 2" onclick="changeImage(this, 0)">
+                        </div>
+                    </div>
                 </div>
                 <div class="calligraphy-info">
                     <h2 class="calligraphy-title">"Yá Bahá'u'l-Abhá"</h2>
@@ -348,7 +413,16 @@
         <div class="calligraphy-item">
             <div class="calligraphy-content">
                 <div class="calligraphy-image">
-                    <img src="The Greatest Name Symbol.jpg" alt="The Greatest Name Symbol">
+                    <div class="image-gallery">
+                        <div class="main-image-container">
+                            <div class="image-counter">1 / 2</div>
+                            <img class="main-image" src="The Greatest Name Symbol.jpg" alt="The Greatest Name Symbol" data-index="1">
+                        </div>
+                        <div class="image-thumbnails">
+                            <img class="thumbnail active" src="The Greatest Name Symbol.jpg" alt="View 1" onclick="changeImage(this, 1)">
+                            <img class="thumbnail" src="The Greatest Name.jpg" alt="View 2" onclick="changeImage(this, 1)">
+                        </div>
+                    </div>
                 </div>
                 <div class="calligraphy-info">
                     <h2 class="calligraphy-title">The Greatest Name Symbol</h2>
@@ -363,7 +437,16 @@
         <div class="calligraphy-item">
             <div class="calligraphy-content">
                 <div class="calligraphy-image">
-                    <img src="The Healler of All Thine Ills Is Rememberance of Me.jpg" alt="The Healer of All Ills">
+                    <div class="image-gallery">
+                        <div class="main-image-container">
+                            <div class="image-counter">1 / 2</div>
+                            <img class="main-image" src="The Healler of All Thine Ills Is Rememberance of Me.jpg" alt="The Healer of All Ills" data-index="2">
+                        </div>
+                        <div class="image-thumbnails">
+                            <img class="thumbnail active" src="The Healler of All Thine Ills Is Rememberance of Me.jpg" alt="View 1" onclick="changeImage(this, 2)">
+                            <img class="thumbnail" src="The Healler of All Thine Ills Is Rememberance of Me1.jpg" alt="View 2" onclick="changeImage(this, 2)">
+                        </div>
+                    </div>
                 </div>
                 <div class="calligraphy-info">
                     <h2 class="calligraphy-title">The Healer of All Ills</h2>
@@ -380,7 +463,18 @@
         <div class="calligraphy-item">
             <div class="calligraphy-content">
                 <div class="calligraphy-image">
-                    <img src="Prayer by Abdul Baha 2.jpg" alt="Persian Prayer">
+                    <div class="image-gallery">
+                        <div class="main-image-container">
+                            <div class="image-counter">1 / 4</div>
+                            <img class="main-image" src="Prayer by Abdul Baha 2.jpg" alt="Persian Prayer" data-index="3">
+                        </div>
+                        <div class="image-thumbnails">
+                            <img class="thumbnail active" src="Prayer by Abdul Baha 2.jpg" alt="View 1" onclick="changeImage(this, 3)">
+                            <img class="thumbnail" src="Prayer by Abdul Baha.jpg" alt="View 2" onclick="changeImage(this, 3)">
+                            <img class="thumbnail" src="Persian Prayer.jpg" alt="View 3" onclick="changeImage(this, 3)">
+                            <img class="thumbnail" src="Persian Prayer (2).jpg" alt="View 4" onclick="changeImage(this, 3)">
+                        </div>
+                    </div>
                 </div>
                 <div class="calligraphy-info">
                     <h2 class="calligraphy-title">Persian Prayer</h2>
@@ -395,7 +489,16 @@
         <div class="calligraphy-item">
             <div class="calligraphy-content">
                 <div class="calligraphy-image">
-                    <img src="My calamity is My providence.jpg" alt="My calamity is My providence">
+                    <div class="image-gallery">
+                        <div class="main-image-container">
+                            <div class="image-counter">1 / 2</div>
+                            <img class="main-image" src="My calamity is My providence.jpg" alt="My calamity is My providence" data-index="4">
+                        </div>
+                        <div class="image-thumbnails">
+                            <img class="thumbnail active" src="My calamity is My providence.jpg" alt="View 1" onclick="changeImage(this, 4)">
+                            <img class="thumbnail" src="My calamity is My providence1.jpg" alt="View 2" onclick="changeImage(this, 4)">
+                        </div>
+                    </div>
                 </div>
                 <div class="calligraphy-info">
                     <h2 class="calligraphy-title">My calamity is My providence</h2>
