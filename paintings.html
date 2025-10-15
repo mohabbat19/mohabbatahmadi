@@ -316,6 +316,7 @@
             font-size: 2.2rem;
             margin-bottom: 30px;
             color: #2c2c2c;
+            font-weight: bold;
         }
 
         .exhibitions-list {
@@ -388,6 +389,19 @@
             }
 
             .section-header p {
+                font-size: 1rem;
+            }
+
+            .exhibitions-section {
+                margin: 60px 20px 80px;
+                padding: 40px 30px;
+            }
+
+            .exhibitions-section h2 {
+                font-size: 1.8rem;
+            }
+
+            .exhibitions-list {
                 font-size: 1rem;
             }
         }
@@ -591,6 +605,7 @@
         </div>
     </div>
 
+    <!-- Exhibitions Section -->
     <div class="exhibitions-section">
         <h2>Exhibitions</h2>
         <div class="exhibitions-list">
@@ -650,9 +665,9 @@
                     entry.target.classList.add('visible');
                 }
             });
-        }, { threshold: 0.2 });
+        }, { threshold: 0.1 });
 
-        document.querySelectorAll('.painting-item, .section-header').forEach(el => {
+        document.querySelectorAll('.painting-item, .section-header, .exhibitions-section').forEach(el => {
             observer.observe(el);
         });
 
