@@ -293,6 +293,44 @@
             margin: 0 auto;
         }
 
+        /* Exhibitions Section */
+        .exhibitions-section {
+            max-width: 1400px;
+            margin: 80px auto 100px;
+            padding: 50px;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .exhibitions-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .exhibitions-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: #2c2c2c;
+        }
+
+        .exhibitions-list {
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 2;
+            color: #555;
+        }
+
+        .exhibitions-list p {
+            margin-bottom: 15px;
+        }
+
         /* Responsive */
         @media (max-width: 968px) {
             .painting-content,
@@ -550,6 +588,14 @@
                     <h2 class="painting-title">Abstract Feelings</h2>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="exhibitions-section">
+        <h2>Exhibitions</h2>
+        <div class="exhibitions-list">
+            <p>• 2020 - Hosted by the City of Walnut Creek at the Boundary Oaks Golf Course</p>
+            <p>• 2022 - "My Journey" Hosted by the University of California, Merced at the UCM Art Gallery</p>
         </div>
     </div>
 
