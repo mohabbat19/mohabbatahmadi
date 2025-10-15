@@ -260,6 +260,39 @@
             }
         }
 
+        /* Section Header */
+        .section-header {
+            max-width: 1400px;
+            margin: 100px auto 80px;
+            padding: 60px 50px;
+            text-align: center;
+            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .section-header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            color: #2c2c2c;
+        }
+
+        .section-header p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #555;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
         /* Responsive */
         @media (max-width: 968px) {
             .painting-content,
@@ -305,6 +338,19 @@
 
             .page-header {
                 padding: 120px 20px 40px;
+            }
+
+            .section-header {
+                margin: 60px 20px 40px;
+                padding: 40px 30px;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .section-header p {
+                font-size: 1rem;
             }
         }
     </style>
@@ -405,17 +451,24 @@
         <div class="painting-item">
             <div class="painting-content">
                 <div class="painting-image">
-                    <img src="Raw Ideas.jpg" alt="Abstract-Realism">
+                    <img src="Raw Ideas.jpg" alt="Raw Ideas">
                 </div>
                 <div class="painting-info">
-                    <h2 class="painting-title">Abstract-Realism</h2>
-                    <p class="painting-description">
-                        I used to draw realistic portraits but then I became interested in photography and ever since I lost all interest in recreating the beauty that already exists in nature. I believe I can capture that beauty in a photograph in a much better way. Now, when I think about painting a portrait, I think about different ways of bringing that painting into life without attempting to replicate the existing beauty. In a way, I create an unfamiliar beauty.
-                    </p>
+                    <h2 class="painting-title">Raw Ideas</h2>
+                    <p class="painting-specs">12" x 12" x 3</p>
                 </div>
             </div>
         </div>
+    </div>
 
+    <div class="section-header">
+        <h2>Abstract-Realism</h2>
+        <p>
+            I used to draw realistic portraits but then I became interested in photography and ever since I lost all interest in recreating the beauty that already exists in nature. I believe I can capture that beauty in a photograph in a much better way. Now, when I think about painting a portrait, I think about different ways of bringing that painting into life without attempting to replicate the existing beauty. In a way, I create an unfamiliar beauty.
+        </p>
+    </div>
+
+    <div class="paintings-container">
         <div class="painting-item">
             <div class="painting-content">
                 <div class="painting-image">
@@ -461,7 +514,7 @@
         <div class="painting-item">
             <div class="painting-content">
                 <div class="painting-image">
-                    <img src="Glamour.jpg" alt="Glamour">
+                    <img src="Glamour.JPG" alt="Glamour">
                 </div>
                 <div class="painting-info">
                     <h2 class="painting-title">Glamour</h2>
@@ -542,7 +595,7 @@
             });
         }, { threshold: 0.2 });
 
-        document.querySelectorAll('.painting-item').forEach(el => {
+        document.querySelectorAll('.painting-item, .section-header').forEach(el => {
             observer.observe(el);
         });
 
