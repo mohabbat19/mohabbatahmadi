@@ -288,6 +288,7 @@
         .side-menu.active .menu-items li:nth-child(3) { transition-delay: 0.2s; }
         .side-menu.active .menu-items li:nth-child(4) { transition-delay: 0.25s; }
         .side-menu.active .menu-items li:nth-child(5) { transition-delay: 0.3s; }
+        .side-menu.active .menu-items li:nth-child(6) { transition-delay: 0.35s; }
 
         .menu-items a {
             font-size: 2rem;
@@ -1091,6 +1092,8 @@
         <ul class="menu-items">
             <li><a href="#home">Home</a></li>
             <li><a href="paintings.html">Paintings</a></li>
+            <li><a href="calligraphy.html">Calligraphy</a></li>
+            <li><a href="photography.html">Photography</a></li>
             <li><a href="#portfolio">Portfolio</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
@@ -1138,14 +1141,16 @@
                     </article>
                 </a>
 
-                <article class="portfolio-item">
-                    <div class="portfolio-bg" style="background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%);" role="img" aria-label="Photography section coming soon"></div>
-                    <div class="portfolio-info">
-                        <h3>Photography</h3>
-                        <p>Captured moments through my lens</p>
-                        <button class="explore-btn" aria-label="Photography coming soon">Coming Soon</button>
-                    </div>
-                </article>
+                <a href="photography.html" class="portfolio-link" aria-label="View photography collection">
+                    <article class="portfolio-item">
+                        <div class="portfolio-bg" style="background-image: url('photography-sample.jpg'); background-size: cover; background-position: center;" role="img" aria-label="Sample photography work"></div>
+                        <div class="portfolio-info">
+                            <h3>Photography</h3>
+                            <p>Captured moments through my lens</p>
+                            <button class="explore-btn" aria-label="Explore photography gallery">View Gallery</button>
+                        </div>
+                    </article>
+                </a>
             </div>
         </section>
 
