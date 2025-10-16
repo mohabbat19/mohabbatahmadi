@@ -343,6 +343,10 @@
         .gallery-filters {
             text-align: center;
             margin-bottom: 60px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
         }
 
         .filter-btn {
@@ -350,7 +354,6 @@
             border: 2px solid #2c2c2c;
             color: #2c2c2c;
             padding: 12px 30px;
-            margin: 0 10px;
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -633,7 +636,6 @@
             }
 
             .filter-btn {
-                margin: 5px;
                 padding: 10px 20px;
                 font-size: 0.9rem;
             }
@@ -744,7 +746,7 @@
             <div class="hero-background"></div>
             <div class="hero-content">
                 <h1 class="hero-title">PHOTOGRAPHY</h1>
-                <p class="hero-subtitle">For me, photography is more than capturing an image — it's about capturing a feeling. Each frame is a way of slowing down time, of finding joy in the small details and beauty in the everyday. When the world feels uncertain, I turn to my camera to add a little light — a sparkle of laughter, a hint of wonder, and a reminder that life is still full of magic.</p>
+                <p class="hero-subtitle">For me, photography is more than capturing an image, it's about capturing a feeling. Each frame is a way of slowing down time, of finding joy in the small details and beauty in the everyday. When the world feels uncertain, I turn to my camera to add a little light, a sparkle of laughter, a hint of wonder, and a reminder that life is still full of magic.</p>
             </div>
         </section>
 
@@ -754,6 +756,7 @@
                 <button class="filter-btn" data-filter="blackwhite">Black and White</button>
                 <button class="filter-btn" data-filter="street">Street</button>
                 <button class="filter-btn" data-filter="events">Events</button>
+                <button class="filter-btn" data-filter="portrait">Portrait</button>
                 <button class="filter-btn" data-filter="family">Family</button>
             </div>
 
@@ -780,6 +783,17 @@
                     </div>
                 </div>
 
+                <!-- Featured Black and White Photo - BW (1).JPG -->
+                <div class="gallery-item featured-item" data-category="blackwhite">
+                    <img src="BW (1).JPG" alt="Featured black and white photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Timeless</h3>
+                            <p>Featured monochrome</p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Street Photo 1 - SP (1).jpg -->
                 <div class="gallery-item" data-category="street">
                     <img src="SP (1).jpg" alt="Street photography">
@@ -802,13 +816,24 @@
                     </div>
                 </div>
 
-                <!-- Street Photo 2 - SP (2).jpg -->
-                <div class="gallery-item" data-category="street">
-                    <img src="SP (2).jpg" alt="Street photography">
+                <!-- Black and White Photo 3 - BW (3).JPG -->
+                <div class="gallery-item" data-category="blackwhite">
+                    <img src="BW (3).JPG" alt="Black and white photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Urban Scene</h3>
-                            <p>Life in motion</p>
+                            <h3>Essence</h3>
+                            <p>Pure form</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Portrait Photo - SP (2).jpg -->
+                <div class="gallery-item" data-category="portrait">
+                    <img src="SP (2).jpg" alt="Portrait photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Portrait</h3>
+                            <p>Captured expression</p>
                         </div>
                     </div>
                 </div>
@@ -820,6 +845,17 @@
                         <div class="gallery-info">
                             <h3>Gathering</h3>
                             <p>Shared joy</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Black and White Photo 3 - BW (3).JPG -->
+                <div class="gallery-item" data-category="blackwhite">
+                    <img src="BW (3).JPG" alt="Black and white photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Essence</h3>
+                            <p>Pure form</p>
                         </div>
                     </div>
                 </div>
@@ -846,6 +882,17 @@
                     </div>
                 </div>
 
+                <!-- Black and White Photo 4 - BW (4).JPG -->
+                <div class="gallery-item" data-category="blackwhite">
+                    <img src="BW (4).JPG" alt="Black and white photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Serenity</h3>
+                            <p>Quiet beauty</p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Street Photo 5 - SP (5).jpg -->
                 <div class="gallery-item" data-category="street">
                     <img src="SP (5).jpg" alt="Street photography">
@@ -853,6 +900,17 @@
                         <div class="gallery-info">
                             <h3>Passerby</h3>
                             <p>Urban rhythm</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Black and White Photo 5 - BW (5).JPG -->
+                <div class="gallery-item" data-category="blackwhite">
+                    <img src="BW (5).JPG" alt="Black and white photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Stillness</h3>
+                            <p>Moment frozen</p>
                         </div>
                     </div>
                 </div>
@@ -868,13 +926,13 @@
                     </div>
                 </div>
 
-                <!-- Street Photo 6 - SP (6).jpg -->
-                <div class="gallery-item" data-category="street">
-                    <img src="SP (6).jpg" alt="Street photography">
+                <!-- Black and White Photo 7 - BW (7).JPG -->
+                <div class="gallery-item" data-category="blackwhite">
+                    <img src="BW (7).JPG" alt="Black and white photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>City Lights</h3>
-                            <p>Urban landscape</p>
+                            <h3>Elegance</h3>
+                            <p>Classic style</p>
                         </div>
                     </div>
                 </div>
@@ -890,6 +948,17 @@
                     </div>
                 </div>
 
+                <!-- Black and White Photo 7 - BW (7).JPG -->
+                <div class="gallery-item" data-category="blackwhite">
+                    <img src="BW (7).JPG" alt="Black and white photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Elegance</h3>
+                            <p>Classic style</p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Events Photo 6 - EP (6).jpg -->
                 <div class="gallery-item" data-category="events">
                     <img src="EP (6).jpg" alt="Event photography">
@@ -897,6 +966,17 @@
                         <div class="gallery-info">
                             <h3>Joyful Times</h3>
                             <p>Captured happiness</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Black and White Photo 8 - BW (8).jpg -->
+                <div class="gallery-item" data-category="blackwhite">
+                    <img src="BW (8).jpg" alt="Black and white photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Texture</h3>
+                            <p>Details revealed</p>
                         </div>
                     </div>
                 </div>
@@ -912,17 +992,29 @@
                     </div>
                 </div>
 
-                <!-- Placeholder for other categories -->
+                <!-- Black and White Photo 9 - BW (9).jpg -->
                 <div class="gallery-item" data-category="blackwhite">
-                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800" alt="Black and white photography">
+                    <img src="BW (9).jpg" alt="Black and white photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Mountain Serenity</h3>
-                            <p>Monochrome elegance</p>
+                            <h3>Reflection</h3>
+                            <p>Mirror of life</p>
                         </div>
                     </div>
                 </div>
 
+                <!-- Black and White Photo 10 - BW (10).jpg -->
+                <div class="gallery-item" data-category="blackwhite">
+                    <img src="BW (10).jpg" alt="Black and white photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Composition</h3>
+                            <p>Visual harmony</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Placeholder for Family category -->
                 <div class="gallery-item" data-category="family">
                     <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800" alt="Family photography">
                     <div class="gallery-overlay">
