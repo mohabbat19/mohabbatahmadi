@@ -425,6 +425,34 @@
             filter: grayscale(0%) brightness(1);
         }
 
+        /* Featured Item Highlight */
+        .gallery-item.featured-item {
+            position: relative;
+            border: 3px solid #5a5a5a;
+            box-shadow: 0 15px 50px rgba(90, 90, 90, 0.3);
+        }
+
+        .gallery-item.featured-item::before {
+            content: 'FEATURED';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #5a5a5a, #7a7a7a);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            z-index: 3;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .gallery-item.featured-item:hover {
+            box-shadow: 0 25px 70px rgba(90, 90, 90, 0.4);
+            border-color: #4a4a4a;
+        }
+
         .gallery-overlay {
             position: absolute;
             top: 0;
@@ -701,6 +729,7 @@
 
             .hero-subtitle {
                 font-size: 1rem;
+                letter-spacing: 0px;
             }
 
             .menu-items a {
@@ -765,8 +794,8 @@
                     <img src="SP (4).jpg" alt="Featured street photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Urban Moment</h3>
-                            <p>Featured street capture</p>
+                            <h3>Street Photography</h3>
+                            <p>Urban life captured</p>
                         </div>
                     </div>
                 </div>
@@ -776,8 +805,8 @@
                     <img src="EP (7).jpg" alt="Featured event photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Special Moment</h3>
-                            <p>Featured event capture</p>
+                            <h3>Events & Celebrations</h3>
+                            <p>Special moments preserved</p>
                         </div>
                     </div>
                 </div>
@@ -787,8 +816,8 @@
                     <img src="BW (1).JPG" alt="Featured black and white photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Timeless</h3>
-                            <p>Featured monochrome</p>
+                            <h3>Black and White</h3>
+                            <p>Timeless monochrome</p>
                         </div>
                     </div>
                 </div>
@@ -798,8 +827,8 @@
                     <img src="SP (1).jpg" alt="Street photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>City Life</h3>
-                            <p>Streets tell stories</p>
+                            <h3>Street Photography</h3>
+                            <p>Urban life captured</p>
                         </div>
                     </div>
                 </div>
@@ -809,8 +838,8 @@
                     <img src="EP (1).jpg" alt="Event photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Celebration</h3>
-                            <p>Moments that matter</p>
+                            <h3>Events & Celebrations</h3>
+                            <p>Special moments preserved</p>
                         </div>
                     </div>
                 </div>
@@ -820,8 +849,19 @@
                     <img src="BW (3).JPG" alt="Black and white photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Essence</h3>
-                            <p>Pure form</p>
+                            <h3>Black and White</h3>
+                            <p>Timeless monochrome</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Family Photo 1 - Family (1).jpg -->
+                <div class="gallery-item" data-category="family">
+                    <img src="Family (1).jpg" alt="Family photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Family</h3>
+                            <p>Precious memories together</p>
                         </div>
                     </div>
                 </div>
@@ -831,8 +871,8 @@
                     <img src="SP (2).jpg" alt="Street photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Urban Scene</h3>
-                            <p>Life in motion</p>
+                            <h3>Street Photography</h3>
+                            <p>Urban life captured</p>
                         </div>
                     </div>
                 </div>
@@ -842,41 +882,8 @@
                     <img src="EP (2).jpg" alt="Event photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Gathering</h3>
-                            <p>Shared joy</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Black and White Photo 3 - BW (3).JPG -->
-                <div class="gallery-item" data-category="blackwhite">
-                    <img src="BW (3).JPG" alt="Black and white photography">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>Essence</h3>
-                            <p>Pure form</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Street Photo 3 - SP (3).jpg -->
-                <div class="gallery-item" data-category="street">
-                    <img src="SP (3).jpg" alt="Street photography">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>Street Corner</h3>
-                            <p>Everyday moments</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Events Photo 3 - EP (3).jpg -->
-                <div class="gallery-item" data-category="events">
-                    <img src="EP (3).jpg" alt="Event photography">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>Together</h3>
-                            <p>Special occasion</p>
+                            <h3>Events & Celebrations</h3>
+                            <p>Special moments preserved</p>
                         </div>
                     </div>
                 </div>
@@ -886,19 +893,41 @@
                     <img src="BW (4).JPG" alt="Black and white photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Serenity</h3>
-                            <p>Quiet beauty</p>
+                            <h3>Black and White</h3>
+                            <p>Timeless monochrome</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Street Photo 5 - SP (5).jpg -->
-                <div class="gallery-item" data-category="street">
-                    <img src="SP (5).jpg" alt="Street photography">
+                <!-- Family Photo 2 - Family (2).jpg -->
+                <div class="gallery-item" data-category="family">
+                    <img src="Family (2).jpg" alt="Family photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Passerby</h3>
-                            <p>Urban rhythm</p>
+                            <h3>Family</h3>
+                            <p>Precious memories together</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Street Photo 3 - SP (3).jpg -->
+                <div class="gallery-item" data-category="street">
+                    <img src="SP (3).jpg" alt="Street photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Street Photography</h3>
+                            <p>Urban life captured</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Events Photo 3 - EP (3).jpg -->
+                <div class="gallery-item" data-category="events">
+                    <img src="EP (3).jpg" alt="Event photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Events & Celebrations</h3>
+                            <p>Special moments preserved</p>
                         </div>
                     </div>
                 </div>
@@ -908,8 +937,30 @@
                     <img src="BW (5).JPG" alt="Black and white photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Stillness</h3>
-                            <p>Moment frozen</p>
+                            <h3>Black and White</h3>
+                            <p>Timeless monochrome</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Family Photo 3 - Family (3).JPG -->
+                <div class="gallery-item" data-category="family">
+                    <img src="Family (3).JPG" alt="Family photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Family</h3>
+                            <p>Precious memories together</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Street Photo 5 - SP (5).jpg -->
+                <div class="gallery-item" data-category="street">
+                    <img src="SP (5).jpg" alt="Street photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Street Photography</h3>
+                            <p>Urban life captured</p>
                         </div>
                     </div>
                 </div>
@@ -919,8 +970,8 @@
                     <img src="EP (4).jpg" alt="Event photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Festivities</h3>
-                            <p>Life celebrated</p>
+                            <h3>Events & Celebrations</h3>
+                            <p>Special moments preserved</p>
                         </div>
                     </div>
                 </div>
@@ -930,8 +981,19 @@
                     <img src="BW (7).JPG" alt="Black and white photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Elegance</h3>
-                            <p>Classic style</p>
+                            <h3>Black and White</h3>
+                            <p>Timeless monochrome</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Family Photo 4 - Family (4).jpg -->
+                <div class="gallery-item" data-category="family">
+                    <img src="Family (4).jpg" alt="Family photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Family</h3>
+                            <p>Precious memories together</p>
                         </div>
                     </div>
                 </div>
@@ -941,19 +1003,19 @@
                     <img src="EP (5).jpg" alt="Event photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Connection</h3>
-                            <p>Memories made</p>
+                            <h3>Events & Celebrations</h3>
+                            <p>Special moments preserved</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Black and White Photo 7 - BW (7).JPG -->
-                <div class="gallery-item" data-category="blackwhite">
-                    <img src="BW (7).JPG" alt="Black and white photography">
+                <!-- Family Photo 5 - Family (5).jpg -->
+                <div class="gallery-item" data-category="family">
+                    <img src="Family (5).jpg" alt="Family photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Elegance</h3>
-                            <p>Classic style</p>
+                            <h3>Family</h3>
+                            <p>Precious memories together</p>
                         </div>
                     </div>
                 </div>
@@ -963,19 +1025,19 @@
                     <img src="EP (6).jpg" alt="Event photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Joyful Times</h3>
-                            <p>Captured happiness</p>
+                            <h3>Events & Celebrations</h3>
+                            <p>Special moments preserved</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Black and White Photo 8 - BW (8).jpg -->
-                <div class="gallery-item" data-category="blackwhite">
-                    <img src="BW (8).jpg" alt="Black and white photography">
+                <!-- Family Photo 6 - Family (6).jpg -->
+                <div class="gallery-item" data-category="family">
+                    <img src="Family (6).jpg" alt="Family photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Texture</h3>
-                            <p>Details revealed</p>
+                            <h3>Family</h3>
+                            <p>Precious memories together</p>
                         </div>
                     </div>
                 </div>
@@ -985,41 +1047,41 @@
                     <img src="EP (8).jpg" alt="Event photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Unity</h3>
-                            <p>Hearts together</p>
+                            <h3>Events & Celebrations</h3>
+                            <p>Special moments preserved</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Black and White Photo 9 - BW (9).jpg -->
-                <div class="gallery-item" data-category="blackwhite">
-                    <img src="BW (9).jpg" alt="Black and white photography">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>Reflection</h3>
-                            <p>Mirror of life</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Black and White Photo 10 - BW (10).jpg -->
-                <div class="gallery-item" data-category="blackwhite">
-                    <img src="BW (10).jpg" alt="Black and white photography">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>Composition</h3>
-                            <p>Visual harmony</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Placeholder for Family category -->
+                <!-- Family Photo 7 - Family (7).jpg -->
                 <div class="gallery-item" data-category="family">
-                    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800" alt="Family photography">
+                    <img src="Family (7).jpg" alt="Family photography">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <h3>Together</h3>
-                            <p>Bonds that last</p>
+                            <h3>Family</h3>
+                            <p>Precious memories together</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Family Photo 8 - Family (8).jpg -->
+                <div class="gallery-item" data-category="family">
+                    <img src="Family (8).jpg" alt="Family photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Family</h3>
+                            <p>Precious memories together</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Family Photo 9 - Family (9).png -->
+                <div class="gallery-item" data-category="family">
+                    <img src="Family (9).png" alt="Family photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Family</h3>
+                            <p>Precious memories together</p>
                         </div>
                     </div>
                 </div>
