@@ -72,13 +72,121 @@
             width: 100%;
             padding: 15px 50px;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             z-index: 1000;
             transition: all 0.3s ease;
             background: rgba(250, 250, 250, 0.98);
             backdrop-filter: blur(10px);
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Menu Icon */
+        .menu-icon {
+            width: 30px;
+            height: 25px;
+            position: relative;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menu-icon span {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: #2c2c2c;
+            border-radius: 3px;
+            opacity: 1;
+            left: 0;
+            transform: rotate(0deg);
+            transition: 0.25s ease-in-out;
+        }
+
+        .menu-icon span:nth-child(1) {
+            top: 0px;
+        }
+
+        .menu-icon span:nth-child(2) {
+            top: 10px;
+        }
+
+        .menu-icon span:nth-child(3) {
+            top: 20px;
+        }
+
+        .menu-icon.active span:nth-child(1) {
+            top: 10px;
+            transform: rotate(135deg);
+        }
+
+        .menu-icon.active span:nth-child(2) {
+            opacity: 0;
+            left: -60px;
+        }
+
+        .menu-icon.active span:nth-child(3) {
+            top: 10px;
+            transform: rotate(-135deg);
+        }
+
+        /* Side Menu */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 300px;
+            height: 100vh;
+            background: #ffffff;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            transition: left 0.4s ease;
+            padding: 100px 40px 40px;
+        }
+
+        .side-menu.active {
+            left: 0;
+        }
+
+        .side-menu ul {
+            list-style: none;
+        }
+
+        .side-menu ul li {
+            margin-bottom: 30px;
+        }
+
+        .side-menu ul li a {
+            font-size: 1.8rem;
+            color: #2c2c2c;
+            text-decoration: none;
+            font-family: 'Georgia', serif;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .side-menu ul li a:hover {
+            color: #666;
+            transform: translateX(10px);
+        }
+
+        /* Overlay */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
 
         .logo {
@@ -398,6 +506,41 @@
                 padding: 15px 20px;
             }
 
+            .menu-icon {
+                width: 25px;
+                height: 20px;
+            }
+
+            .menu-icon span {
+                height: 2px;
+            }
+
+            .menu-icon span:nth-child(2) {
+                top: 8px;
+            }
+
+            .menu-icon span:nth-child(3) {
+                top: 16px;
+            }
+
+            .menu-icon.active span:nth-child(1),
+            .menu-icon.active span:nth-child(3) {
+                top: 8px;
+            }
+
+            .side-menu {
+                width: 250px;
+                padding: 80px 30px 30px;
+            }
+
+            .side-menu ul li {
+                margin-bottom: 25px;
+            }
+
+            .side-menu ul li a {
+                font-size: 1.5rem;
+            }
+
             .logo img {
                 height: 60px;
             }
@@ -445,6 +588,15 @@
             .page-title {
                 font-size: 2rem;
             }
+
+            .side-menu {
+                width: 80%;
+                max-width: 250px;
+            }
+
+            .side-menu ul li a {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
@@ -453,10 +605,27 @@
     <div class="cursor"></div>
     <div class="cursor-follower"></div>
 
+    <div class="menu-overlay"></div>
+    
+    <div class="side-menu">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="paintings.html">Paintings</a></li>
+            <li><a href="calligraphy.html">Calligraphy</a></li>
+            <li><a href="photography.html">Photography</a></li>
+        </ul>
+    </div>
+
     <nav>
+        <div class="menu-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
         <a href="index.html" class="logo">
             <img src="Logo PNG.png" alt="Mohabbat Ahmadi Logo">
         </a>
+        <div style="width: 30px;"></div>
     </nav>
 
     <div class="page-header">
@@ -621,6 +790,23 @@
     </div>
 
     <script>
+        // Menu Toggle
+        const menuIcon = document.querySelector('.menu-icon');
+        const sideMenu = document.querySelector('.side-menu');
+        const menuOverlay = document.querySelector('.menu-overlay');
+
+        menuIcon.addEventListener('click', function() {
+            menuIcon.classList.toggle('active');
+            sideMenu.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+        });
+
+        menuOverlay.addEventListener('click', function() {
+            menuIcon.classList.remove('active');
+            sideMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+        });
+
         // Wait for page to fully load
         window.addEventListener('load', function() {
             // Image Gallery Function
