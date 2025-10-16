@@ -430,27 +430,13 @@
             position: relative;
             border: 3px solid #5a5a5a;
             box-shadow: 0 15px 50px rgba(90, 90, 90, 0.3);
-        }
-
-        .gallery-item.featured-item::before {
-            content: 'FEATURED';
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #5a5a5a, #7a7a7a);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            z-index: 3;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
         }
 
         .gallery-item.featured-item:hover {
             box-shadow: 0 25px 70px rgba(90, 90, 90, 0.4);
             border-color: #4a4a4a;
+            transform: translateY(-15px) scale(1.02);
         }
 
         .gallery-overlay {
@@ -656,13 +642,6 @@
                 margin-bottom: 20px;
             }
 
-            .gallery-item.featured-item::before {
-                top: 15px;
-                right: 15px;
-                padding: 6px 15px;
-                font-size: 0.75rem;
-            }
-
             .filter-btn {
                 padding: 10px 20px;
                 font-size: 0.9rem;
@@ -781,10 +760,9 @@
 
         <section class="gallery-section">
             <div class="gallery-filters">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="blackwhite">Black and White</button>
                 <button class="filter-btn" data-filter="street">Street</button>
                 <button class="filter-btn" data-filter="events">Events</button>
+                <button class="filter-btn" data-filter="blackwhite">Black and White</button>
                 <button class="filter-btn" data-filter="family">Family</button>
             </div>
 
@@ -818,6 +796,17 @@
                         <div class="gallery-info">
                             <h3>Black and White</h3>
                             <p>Timeless monochrome</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Family Photo - Family (6).jpg -->
+                <div class="gallery-item featured-item" data-category="family">
+                    <img src="Family (6).jpg" alt="Featured family photography">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h3>Family</h3>
+                            <p>Precious memories together</p>
                         </div>
                     </div>
                 </div>
@@ -1031,17 +1020,6 @@
                     </div>
                 </div>
 
-                <!-- Family Photo 6 - Family (6).jpg -->
-                <div class="gallery-item" data-category="family">
-                    <img src="Family (6).jpg" alt="Family photography">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>Family</h3>
-                            <p>Precious memories together</p>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Events Photo 8 - EP (8).jpg -->
                 <div class="gallery-item" data-category="events">
                     <img src="EP (8).jpg" alt="Event photography">
@@ -1237,7 +1215,7 @@
         }
         animateFollower();
 
-        document.querySelectorAll('a, button, .gallery-item, .menu-toggle').forEach(el => {
+        document.querySelectorAll('a, button, .gallery-item:not(.featured-item), .menu-toggle').forEach(el => {
             el.addEventListener('mouseenter', () => {
                 cursor.classList.add('active');
                 cursorFollower.style.transform = 'scale(2)';
@@ -1245,6 +1223,20 @@
             el.addEventListener('mouseleave', () => {
                 cursor.classList.remove('active');
                 cursorFollower.style.transform = 'scale(1)';
+            });
+        });
+
+        // Special cursor for featured items
+        document.querySelectorAll('.featured-item').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('active');
+                cursorFollower.style.transform = 'scale(3)';
+                cursorFollower.style.background = '#5a5a5a';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('active');
+                cursorFollower.style.transform = 'scale(1)';
+                cursorFollower.style.background = '#2c2c2c';
             });
         });
 
@@ -1260,30 +1252,61 @@
         const filterBtns = document.querySelectorAll('.filter-btn');
         const galleryItems = document.querySelectorAll('.gallery-item');
 
+        // Hide all non-featured items on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            galleryItems.forEach(item => {
+                if (!item.classList.contains('featured-item')) {
+                    item.style.display = 'none';
+                    item.style.opacity = '0';
+                }
+            });
+        });
+
+        // Make featured items clickable to filter by category
+        document.querySelectorAll('.featured-item').forEach(featuredItem => {
+            featuredItem.style.cursor = 'pointer';
+            featuredItem.addEventListener('click', (e) => {
+                // Don't open lightbox when clicking featured item
+                e.stopPropagation();
+                
+                const category = featuredItem.getAttribute('data-category');
+                filterByCategory(category);
+                
+                // Update active button
+                filterBtns.forEach(b => b.classList.remove('active'));
+                const matchingBtn = document.querySelector(`[data-filter="${category}"]`);
+                if (matchingBtn) matchingBtn.classList.add('active');
+            });
+        });
+
+        // Filter button functionality
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
 
                 const filter = btn.getAttribute('data-filter');
-
-                galleryItems.forEach(item => {
-                    if (filter === 'all' || item.getAttribute('data-category') === filter) {
-                        item.style.display = 'block';
-                        setTimeout(() => {
-                            item.style.opacity = '1';
-                            item.style.transform = 'translateY(0)';
-                        }, 10);
-                    } else {
-                        item.style.opacity = '0';
-                        item.style.transform = 'translateY(50px)';
-                        setTimeout(() => {
-                            item.style.display = 'none';
-                        }, 400);
-                    }
-                });
+                filterByCategory(filter);
             });
         });
+
+        function filterByCategory(filter) {
+            galleryItems.forEach(item => {
+                if (item.getAttribute('data-category') === filter) {
+                    item.style.display = 'block';
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(50px)';
+                    setTimeout(() => {
+                        item.style.display = 'none';
+                    }, 400);
+                }
+            });
+        }
 
         // ========== LIGHTBOX ==========
         const lightbox = document.getElementById('lightbox');
@@ -1297,12 +1320,15 @@
         let currentImageIndex = 0;
         const visibleItems = () => Array.from(galleryItems).filter(item => item.style.display !== 'none');
 
+        // Only non-featured items open lightbox
         galleryItems.forEach((item, index) => {
-            item.addEventListener('click', () => {
-                const visible = visibleItems();
-                currentImageIndex = visible.indexOf(item);
-                openLightbox(item);
-            });
+            if (!item.classList.contains('featured-item')) {
+                item.addEventListener('click', () => {
+                    const visible = visibleItems();
+                    currentImageIndex = visible.indexOf(item);
+                    openLightbox(item);
+                });
+            }
         });
 
         function openLightbox(item) {
