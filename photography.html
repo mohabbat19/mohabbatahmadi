@@ -349,6 +349,22 @@
             gap: 15px;
         }
 
+        .back-btn {
+            display: none;
+            background: #2c2c2c !important;
+            color: #ffffff !important;
+            border-color: #2c2c2c !important;
+        }
+
+        .back-btn.visible {
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: #1a1a1a !important;
+            border-color: #1a1a1a !important;
+        }
+
         .filter-btn {
             background: transparent;
             border: 2px solid #2c2c2c;
@@ -370,17 +386,110 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
-        /* Masonry Gallery Grid */
+        /* Collage Gallery Grid */
         .gallery-grid {
-            column-count: 3;
-            column-gap: 25px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
             max-width: 1600px;
             margin: 0 auto;
         }
 
+        /* Featured Collage Layout (4 images) */
+        .gallery-grid.featured-layout {
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 350px);
+        }
+
+        .gallery-grid.featured-layout .gallery-item:nth-child(1) {
+            grid-column: 1 / 3;
+            grid-row: 1 / 3;
+        }
+
+        .gallery-grid.featured-layout .gallery-item:nth-child(2) {
+            grid-column: 3 / 5;
+            grid-row: 1 / 2;
+        }
+
+        .gallery-grid.featured-layout .gallery-item:nth-child(3) {
+            grid-column: 3 / 4;
+            grid-row: 2 / 3;
+        }
+
+        .gallery-grid.featured-layout .gallery-item:nth-child(4) {
+            grid-column: 4 / 5;
+            grid-row: 2 / 3;
+        }
+
+        /* Filtered Collage Layouts */
+        .gallery-grid.filtered-layout {
+            grid-template-columns: repeat(6, 1fr);
+            grid-auto-rows: 250px;
+        }
+
+        /* Dynamic sizing for filtered items */
+        .gallery-grid.filtered-layout .gallery-item:nth-child(1) {
+            grid-column: span 3;
+            grid-row: span 2;
+        }
+
+        .gallery-grid.filtered-layout .gallery-item:nth-child(2) {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        .gallery-grid.filtered-layout .gallery-item:nth-child(3) {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+
+        .gallery-grid.filtered-layout .gallery-item:nth-child(4) {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        .gallery-grid.filtered-layout .gallery-item:nth-child(5) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .gallery-grid.filtered-layout .gallery-item:nth-child(6) {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        .gallery-grid.filtered-layout .gallery-item:nth-child(7) {
+            grid-column: span 3;
+            grid-row: span 1;
+        }
+
+        .gallery-grid.filtered-layout .gallery-item:nth-child(8) {
+            grid-column: span 3;
+            grid-row: span 2;
+        }
+
+        .gallery-grid.filtered-layout .gallery-item:nth-child(9) {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        .gallery-grid.filtered-layout .gallery-item:nth-child(10) {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+
+        /* Repeat pattern for more items */
+        .gallery-grid.filtered-layout .gallery-item:nth-child(n+11) {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        .gallery-grid.filtered-layout .gallery-item:nth-child(3n+11) {
+            grid-column: span 3;
+            grid-row: span 2;
+        }
+
         .gallery-item {
-            break-inside: avoid;
-            margin-bottom: 25px;
             position: relative;
             overflow: hidden;
             border-radius: 15px;
@@ -389,6 +498,8 @@
             transform: translateY(50px);
             animation: fadeInItem 0.8s ease forwards;
             transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            height: 100%;
+            width: 100%;
         }
 
         @keyframes fadeInItem {
@@ -410,6 +521,8 @@
 
         .gallery-item img {
             width: 100%;
+            height: 100%;
+            object-fit: cover;
             display: block;
             transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             filter: grayscale(0%) brightness(0.95);
@@ -604,8 +717,9 @@
 
         /* Responsive Design */
         @media (max-width: 1200px) {
-            .gallery-grid {
-                column-count: 2;
+            .gallery-grid.filtered-layout {
+                grid-template-columns: repeat(4, 1fr);
+                grid-auto-rows: 200px;
             }
         }
 
@@ -760,6 +874,7 @@
 
         <section class="gallery-section">
             <div class="gallery-filters">
+                <button class="filter-btn back-btn" data-filter="featured">← Back to Gallery</button>
                 <button class="filter-btn" data-filter="street">Street</button>
                 <button class="filter-btn" data-filter="events">Events</button>
                 <button class="filter-btn" data-filter="blackwhite">Black and White</button>
@@ -1251,9 +1366,14 @@
         // ========== GALLERY FILTERING ==========
         const filterBtns = document.querySelectorAll('.filter-btn');
         const galleryItems = document.querySelectorAll('.gallery-item');
+        const galleryGrid = document.getElementById('galleryGrid');
+        const backBtn = document.querySelector('.back-btn');
 
-        // Hide all non-featured items on page load
+        // Set featured layout on page load
         window.addEventListener('DOMContentLoaded', () => {
+            galleryGrid.classList.add('featured-layout');
+            
+            // Hide all non-featured items on page load
             galleryItems.forEach(item => {
                 if (!item.classList.contains('featured-item')) {
                     item.style.display = 'none';
@@ -1276,21 +1396,61 @@
                 filterBtns.forEach(b => b.classList.remove('active'));
                 const matchingBtn = document.querySelector(`[data-filter="${category}"]`);
                 if (matchingBtn) matchingBtn.classList.add('active');
+                
+                // Show back button
+                backBtn.classList.add('visible');
             });
         });
 
         // Filter button functionality
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
                 const filter = btn.getAttribute('data-filter');
-                filterByCategory(filter);
+                
+                if (filter === 'featured') {
+                    // Return to featured view
+                    returnToFeatured();
+                } else {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    filterByCategory(filter);
+                    backBtn.classList.add('visible');
+                }
             });
         });
 
+        function returnToFeatured() {
+            // Switch back to featured layout
+            galleryGrid.classList.remove('filtered-layout');
+            galleryGrid.classList.add('featured-layout');
+            
+            // Show only featured items
+            galleryItems.forEach(item => {
+                if (item.classList.contains('featured-item')) {
+                    item.style.display = 'block';
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(50px)';
+                    setTimeout(() => {
+                        item.style.display = 'none';
+                    }, 400);
+                }
+            });
+            
+            // Hide back button and remove active states
+            backBtn.classList.remove('visible');
+            filterBtns.forEach(b => b.classList.remove('active'));
+        }
+
         function filterByCategory(filter) {
+            // Switch to filtered layout
+            galleryGrid.classList.remove('featured-layout');
+            galleryGrid.classList.add('filtered-layout');
+            
             galleryItems.forEach(item => {
                 if (item.getAttribute('data-category') === filter) {
                     item.style.display = 'block';
