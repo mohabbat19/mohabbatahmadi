@@ -287,8 +287,6 @@
         .side-menu.active .menu-items li:nth-child(2) { transition-delay: 0.15s; }
         .side-menu.active .menu-items li:nth-child(3) { transition-delay: 0.2s; }
         .side-menu.active .menu-items li:nth-child(4) { transition-delay: 0.25s; }
-        .side-menu.active .menu-items li:nth-child(5) { transition-delay: 0.3s; }
-        .side-menu.active .menu-items li:nth-child(6) { transition-delay: 0.35s; }
 
         .menu-items a {
             font-size: 2rem;
@@ -824,10 +822,6 @@
             color: #3a3a3a;
         }
 
-        .about-content h3 {
-            color: #5a5a5a;
-        }
-
         .about-content p {
             margin-bottom: 25px;
             transition: all 0.6s ease;
@@ -1094,9 +1088,6 @@
             <li><a href="paintings.html">Paintings</a></li>
             <li><a href="calligraphy.html">Calligraphy</a></li>
             <li><a href="photography.html">Photography</a></li>
-            <li><a href="#portfolio">Portfolio</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
         </ul>
     </aside>
 
@@ -1143,7 +1134,7 @@
 
                 <a href="photography.html" class="portfolio-link" aria-label="View photography collection">
                     <article class="portfolio-item">
-                        <div class="portfolio-bg" style="background-image: url('photography-sample.jpg'); background-size: cover; background-position: center;" role="img" aria-label="Sample photography work"></div>
+                        <div class="portfolio-bg" style="background-image: url('Family%20(6).jpg'); background-size: cover; background-position: center;" role="img" aria-label="Sample photography work"></div>
                         <div class="portfolio-info">
                             <h3>Photography</h3>
                             <p>Captured moments through my lens</p>
@@ -1157,7 +1148,6 @@
         <section id="about">
             <h2 class="section-title fade-in">About Me</h2>
             <div class="about-content fade-in">
-                <h3 style="font-size: 1.5rem; margin-bottom: 20px;">My Journey</h3>
                 <p style="font-style: italic; margin-bottom: 15px;">June 1988 - Kabul, Afghanistan</p>
                 
                 <p>I'm not sure if I found art, or if art found me. Perhaps neither. There's no memory of a beginning--art has always been there, inseparable from life, undifferentiated from identity. Art then, is an expression of my heart, inspired by the world-embracing teachings of the Baha'i Faith. It seeks transcendence and strives to create meaning. Where some might see a chaotic mix of colors on a canvas, others will see that every drop of paint and stroke of the brush are purposefully placed, like letters of a word, to open a doorway to the soul.</p>
@@ -1170,7 +1160,7 @@
 
         <section id="contact">
             <h2 class="section-title fade-in">Let's Connect</h2>
-            <form class="contact-form fade-in" aria-label="Contact form">
+            <form class="contact-form fade-in" action="mailto:contact@mohabbatahmadi.com" method="post" enctype="text/plain" aria-label="Contact form">
                 <div class="form-group">
                     <input type="text" id="name" name="name" placeholder="Your Name" required aria-required="true">
                 </div>
@@ -1457,30 +1447,6 @@
                     });
                 }
             });
-        });
-
-        // ========== FORM SUBMISSION WITH ENHANCED ANIMATION ==========
-        document.querySelector('.contact-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('.submit-btn');
-            const originalText = btn.textContent;
-            
-            btn.textContent = 'Sending...';
-            btn.style.background = 'linear-gradient(135deg, #6a6a6a, #8a8a8a)';
-            btn.disabled = true;
-            
-            // Create success ripple effect
-            setTimeout(() => {
-                btn.textContent = '✓ Message Sent!';
-                btn.style.background = 'linear-gradient(135deg, #5a9a5a, #4a8a4a)';
-                
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.style.background = 'linear-gradient(135deg, #5a5a5a, #7a7a7a)';
-                    btn.disabled = false;
-                    e.target.reset();
-                }, 2500);
-            }, 1500);
         });
 
         // ========== SECTION TITLE ANIMATION ON SCROLL ==========
