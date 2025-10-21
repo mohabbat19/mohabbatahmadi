@@ -239,6 +239,12 @@
             font-family: monospace;
             color: #022851;
         }
+        
+        .loading-status {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -253,7 +259,7 @@
                 <div class="last-updated">
                     <strong>Last Updated:</strong> <span id="lastUpdated">Loading...</span>
                 </div>
-                <button class="refresh-btn" onclick="loadDataFromFile()" id="refreshBtn">
+                <button class="refresh-btn" onclick="loadDataFromBox()" id="refreshBtn">
                     <span>🔄</span> Refresh Data
                 </button>
             </div>
@@ -274,94 +280,140 @@
         <div class="data-container" id="dataContainer">
             <div class="loading">
                 <div class="spinner"></div>
-                <p>Loading course data...</p>
+                <p>Loading course data from Box...</p>
+                <p class="loading-status" id="loadingStatus">Attempting connection...</p>
             </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
         let allData = [];
         let currentFilter = 'all';
         
-        // CSV file URL - place the CSV file in the same directory as this HTML file
-        const DATA_FILE_URL = 'ece-courses.csv';
+        // Box file shared link
+        const BOX_SHARED_LINK = 'https://ucdavis.box.com/s/hobikb86i41fhu6cotdyheh4i8u8nim2';
+        const BOX_FILE_ID = '1903872817448';
+        const BOX_SHARED_NAME = 'hobikb86i41fhu6cotdyheh4i8u8nim2';
+        
+        // Multiple URL patterns to try
+        const BOX_URLS = [
+            // Pattern 1: Direct download via shared name
+            `https://ucdavis.box.com/shared/static/${BOX_SHARED_NAME}.xlsx`,
+            // Pattern 2: Download endpoint
+            `https://ucdavis.app.box.com/index.php?rm=box_download_shared_file&shared_name=${BOX_SHARED_NAME}&file_id=f_${BOX_FILE_ID}`,
+            // Pattern 3: Public download
+            `https://ucdavis.ent.box.com/public/static/${BOX_SHARED_NAME}.xlsx`,
+            // Pattern 4: Using CORS proxy as fallback
+            `https://api.allorigins.win/raw?url=${encodeURIComponent('https://ucdavis.box.com/shared/static/' + BOX_SHARED_NAME + '.xlsx')}`
+        ];
         
         // Load data automatically when page loads
         window.addEventListener('load', function() {
-            loadDataFromFile();
+            loadDataFromBox();
         });
         
-        async function loadDataFromFile() {
+        async function loadDataFromBox() {
             const refreshBtn = document.getElementById('refreshBtn');
             const container = document.getElementById('dataContainer');
+            const statusText = document.getElementById('loadingStatus');
             
             refreshBtn.disabled = true;
             container.innerHTML = `
                 <div class="loading">
                     <div class="spinner"></div>
-                    <p>Loading course data...</p>
+                    <p>Loading course data from Box...</p>
+                    <p class="loading-status" id="loadingStatus">Attempting connection...</p>
                 </div>
             `;
             
-            try {
-                // Try to fetch the data file
-                const response = await fetch(DATA_FILE_URL);
-                
-                if (!response.ok) {
-                    throw new Error('Data file not found. Make sure ece-courses.csv is in the same folder as this HTML file.');
+            // Try each URL pattern
+            for (let i = 0; i < BOX_URLS.length; i++) {
+                const url = BOX_URLS[i];
+                const statusEl = document.getElementById('loadingStatus');
+                if (statusEl) {
+                    statusEl.textContent = `Trying method ${i + 1} of ${BOX_URLS.length}...`;
                 }
                 
-                const fileContent = await response.text();
-                
-                // Determine file type and parse accordingly
-                if (DATA_FILE_URL.endsWith('.csv')) {
-                    // Parse CSV
-                    Papa.parse(fileContent, {
-                        header: true,
-                        dynamicTyping: true,
-                        skipEmptyLines: true,
-                        complete: function(results) {
-                            allData = results.data;
-                            updateLastUpdatedTime();
-                            filterByTerm('all');
-                        },
-                        error: function(error) {
-                            throw new Error('Error parsing CSV: ' + error.message);
-                        }
+                try {
+                    console.log(`Attempting to fetch from: ${url}`);
+                    
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        mode: 'cors',
+                        cache: 'no-cache'
                     });
-                } else {
-                    // Parse as Excel
+                    
+                    if (!response.ok) {
+                        console.log(`Method ${i + 1} failed: HTTP ${response.status}`);
+                        continue;
+                    }
+                    
+                    // Successfully got response, try to parse
                     const arrayBuffer = await response.arrayBuffer();
+                    
+                    // Check if it's actually Excel data
+                    if (arrayBuffer.byteLength < 100) {
+                        console.log(`Method ${i + 1} returned too little data`);
+                        continue;
+                    }
+                    
                     const data = new Uint8Array(arrayBuffer);
                     const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+                        console.log(`Method ${i + 1} did not return valid Excel data`);
+                        continue;
+                    }
+                    
                     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                     const jsonData = XLSX.utils.sheet_to_json(firstSheet);
                     
+                    if (jsonData.length === 0) {
+                        console.log(`Method ${i + 1} returned empty data`);
+                        continue;
+                    }
+                    
+                    // Success!
+                    console.log(`Success with method ${i + 1}!`);
                     allData = jsonData;
                     updateLastUpdatedTime();
                     filterByTerm('all');
+                    refreshBtn.disabled = false;
+                    return;
+                    
+                } catch (error) {
+                    console.log(`Method ${i + 1} error:`, error.message);
+                    continue;
                 }
-                
-            } catch (error) {
-                console.error('Error loading data:', error);
-                container.innerHTML = `
-                    <div class="error-message">
-                        <strong>⚠️ Unable to load course data</strong>
-                        <p>${error.message}</p>
-                        <p style="margin-top: 15px;"><strong>Setup Instructions:</strong></p>
-                        <ol style="text-align: left; margin: 10px 0; padding-left: 20px;">
-                            <li>Export your Excel file as CSV (File → Save As → CSV)</li>
-                            <li>Name it: <code>ece-courses.csv</code></li>
-                            <li>Upload it to the same folder as this HTML page</li>
-                            <li>Refresh this page</li>
-                        </ol>
-                    </div>
-                `;
-            } finally {
-                refreshBtn.disabled = false;
             }
+            
+            // If we get here, all methods failed
+            console.error('All Box URL patterns failed');
+            container.innerHTML = `
+                <div class="error-message">
+                    <strong>⚠️ Unable to load data from Box</strong>
+                    <p>The automatic data loading from Box is not working. This is likely due to CORS (Cross-Origin Resource Sharing) restrictions.</p>
+                    
+                    <p style="margin-top: 15px;"><strong>Solutions:</strong></p>
+                    <ol style="text-align: left; margin: 10px 0; padding-left: 20px;">
+                        <li><strong>Option 1:</strong> Have your IT team set up a server-side proxy to fetch from Box</li>
+                        <li><strong>Option 2:</strong> Use the CSV version where staff upload the file</li>
+                        <li><strong>Option 3:</strong> Convert to Google Sheets (more CORS-friendly)</li>
+                    </ol>
+                    
+                    <p style="margin-top: 15px; font-size: 12px;">
+                        <strong>Technical details:</strong><br>
+                        Box URL: ${BOX_SHARED_LINK}<br>
+                        Tried ${BOX_URLS.length} different connection methods
+                    </p>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #e7f3ff; border-radius: 5px;">
+                        <strong>Recommended:</strong> I can provide you with a version that uses a local CSV file or Google Sheets instead. These are more reliable for public websites.
+                    </div>
+                </div>
+            `;
+            refreshBtn.disabled = false;
         }
         
         function updateLastUpdatedTime() {
