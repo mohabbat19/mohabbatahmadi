@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #022851 0%, #FFBF00 100%);
+            background: white;
             min-height: 100vh;
             padding: 20px;
         }
@@ -231,6 +231,14 @@
             border-radius: 4px;
             color: #721c24;
         }
+        
+        .error-message code {
+            background: #fff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #022851;
+        }
     </style>
 </head>
 <body>
@@ -245,7 +253,7 @@
                 <div class="last-updated">
                     <strong>Last Updated:</strong> <span id="lastUpdated">Loading...</span>
                 </div>
-                <button class="refresh-btn" onclick="loadDataFromBox()" id="refreshBtn">
+                <button class="refresh-btn" onclick="loadDataFromFile()" id="refreshBtn">
                     <span>🔄</span> Refresh Data
                 </button>
             </div>
@@ -266,25 +274,26 @@
         <div class="data-container" id="dataContainer">
             <div class="loading">
                 <div class="spinner"></div>
-                <p>Loading course data from Box...</p>
+                <p>Loading course data...</p>
             </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
         let allData = [];
         let currentFilter = 'all';
         
-        // Box file URL - this is the direct download link
-        const BOX_FILE_URL = 'https://ucdavis.box.com/shared/static/hobikb86i41fhu6cotdyheh4i8u8nim2.xlsx';
+        // CSV file URL - place the CSV file in the same directory as this HTML file
+        const DATA_FILE_URL = 'ece-courses.csv';
         
         // Load data automatically when page loads
         window.addEventListener('load', function() {
-            loadDataFromBox();
+            loadDataFromFile();
         });
         
-        async function loadDataFromBox() {
+        async function loadDataFromFile() {
             const refreshBtn = document.getElementById('refreshBtn');
             const container = document.getElementById('dataContainer');
             
@@ -292,35 +301,62 @@
             container.innerHTML = `
                 <div class="loading">
                     <div class="spinner"></div>
-                    <p>Loading course data from Box...</p>
+                    <p>Loading course data...</p>
                 </div>
             `;
             
             try {
-                // Fetch the file from Box
-                const response = await fetch(BOX_FILE_URL);
+                // Try to fetch the data file
+                const response = await fetch(DATA_FILE_URL);
                 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch file from Box');
+                    throw new Error('Data file not found. Make sure ece-courses.csv is in the same folder as this HTML file.');
                 }
                 
-                const arrayBuffer = await response.arrayBuffer();
-                const data = new Uint8Array(arrayBuffer);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                const fileContent = await response.text();
                 
-                allData = jsonData;
-                updateLastUpdatedTime();
-                filterByTerm('all');
+                // Determine file type and parse accordingly
+                if (DATA_FILE_URL.endsWith('.csv')) {
+                    // Parse CSV
+                    Papa.parse(fileContent, {
+                        header: true,
+                        dynamicTyping: true,
+                        skipEmptyLines: true,
+                        complete: function(results) {
+                            allData = results.data;
+                            updateLastUpdatedTime();
+                            filterByTerm('all');
+                        },
+                        error: function(error) {
+                            throw new Error('Error parsing CSV: ' + error.message);
+                        }
+                    });
+                } else {
+                    // Parse as Excel
+                    const arrayBuffer = await response.arrayBuffer();
+                    const data = new Uint8Array(arrayBuffer);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                    
+                    allData = jsonData;
+                    updateLastUpdatedTime();
+                    filterByTerm('all');
+                }
                 
             } catch (error) {
                 console.error('Error loading data:', error);
                 container.innerHTML = `
                     <div class="error-message">
-                        <strong>⚠️ Unable to load data automatically</strong>
-                        <p>Please contact IT support for assistance.</p>
-                        <p style="font-size: 12px; margin-top: 10px;">Error: ${error.message}</p>
+                        <strong>⚠️ Unable to load course data</strong>
+                        <p>${error.message}</p>
+                        <p style="margin-top: 15px;"><strong>Setup Instructions:</strong></p>
+                        <ol style="text-align: left; margin: 10px 0; padding-left: 20px;">
+                            <li>Export your Excel file as CSV (File → Save As → CSV)</li>
+                            <li>Name it: <code>ece-courses.csv</code></li>
+                            <li>Upload it to the same folder as this HTML page</li>
+                            <li>Refresh this page</li>
+                        </ol>
                     </div>
                 `;
             } finally {
