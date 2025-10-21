@@ -165,7 +165,7 @@
         
         .data-container {
             padding: 30px;
-            max-height: 1200px;
+            max-height: 1800px;
             overflow-y: auto;
         }
         
@@ -447,8 +447,11 @@
                     faculty: getAllFaculty(row)
                 }));
             } else {
+                // Map button term to Excel column name
+                const columnName = term === 'Summer Sessions 2026' ? 'Summer 2026' : term;
+                
                 filtered = allData
-                    .filter(row => row[term] === 'X')
+                    .filter(row => row[columnName] === 'X')
                     .map(row => ({
                         courseCode: row['Course Code'],
                         courseTitle: row['Course Title'],
@@ -465,7 +468,7 @@
             if (row['Fall 2025'] === 'X') terms.push('Fall 2025');
             if (row['Winter 2026'] === 'X') terms.push('Winter 2026');
             if (row['Spring 2026'] === 'X') terms.push('Spring 2026');
-            if (row['Summer Sessions 2026'] === 'X') terms.push('Summer 2026');
+            if (row['Summer 2026'] === 'X') terms.push('Summer 2026');
             return terms.join(', ') || 'None';
         }
         
@@ -480,7 +483,7 @@
             if (row['Spring 2026'] === 'X' && row['Spring Faculty']) {
                 faculty.push(`Spring: ${row['Spring Faculty']}`);
             }
-            if (row['Summer Sessions 2026'] === 'X' && row['Summer Faculty']) {
+            if (row['Summer 2026'] === 'X' && row['Summer Faculty']) {
                 faculty.push(`Summer: ${row['Summer Faculty']}`);
             }
             return faculty.join(', ') || 'TBA';
