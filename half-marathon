@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Half Marathon Training Tracker</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const trainingPlan = {
+            week1: [
+                { day: 'Mon Oct 24', workout: 'Rest or 20-min walk', miles: 0 },
+                { day: 'Tue Oct 25', workout: '3 miles easy', miles: 3 },
+                { day: 'Wed Oct 26', workout: '2 miles easy + strength', miles: 2 },
+                { day: 'Thu Oct 27', workout: '3 miles easy', miles: 3 },
+                { day: 'Fri Oct 28', workout: 'Rest', miles: 0 },
+                { day: 'Sat Oct 29', workout: '5 miles comfortable', miles: 5 },
+                { day: 'Sun Oct 30', workout: '2 miles recovery', miles: 2 }
+            ],
+            week2: [
+                { day: 'Mon Oct 31', workout: 'Rest or cross-train 30min', miles: 0 },
+                { day: 'Tue Nov 1', workout: '4 miles (2 at race pace)', miles: 4 },
+                { day: 'Wed Nov 2', workout: '3 miles easy', miles: 3 },
+                { day: 'Thu Nov 3', workout: '4 miles easy', miles: 4 },
+                { day: 'Fri Nov 4', workout: 'Rest', miles: 0 },
+                { day: 'Sat Nov 5', workout: '7 miles long run', miles: 7 },
+                { day: 'Sun Nov 6', workout: '2 miles recovery', miles: 2 }
+            ],
+            week3: [
+                { day: 'Mon Nov 7', workout: 'Rest or 20-min walk', miles: 0 },
+                { day: 'Tue Nov 8', workout: '5 miles (3 at race pace)', miles: 5 },
+                { day: 'Wed Nov 9', workout: '3 miles easy', miles: 3 },
+                { day: 'Thu Nov 10', workout: '4 miles easy', miles: 4 },
+                { day: 'Fri Nov 11', workout: 'Rest', miles: 0 },
+                { day: 'Sat Nov 12', workout: '9-10 miles long run', miles: 9.5 },
+                { day: 'Sun Nov 13', workout: '2-3 miles easy', miles: 2.5 }
+            ],
+            week4: [
+                { day: 'Mon Nov 14', workout: 'Rest', miles: 0 },
+                { day: 'Tue Nov 15', workout: '4 miles easy', miles: 4 },
+                { day: 'Wed Nov 16', workout: '3 miles easy', miles: 3 },
+                { day: 'Thu Nov 17', workout: 'Rest', miles: 0 },
+                { day: 'Fri Nov 18', workout: '2 miles shakeout', miles: 2 },
+                { day: 'Sat Nov 19', workout: 'Rest or 20-min walk', miles: 0 },
+                { day: 'Sun Nov 20', workout: 'Rest', miles: 0 },
+                { day: 'Mon Nov 21', workout: 'Rest - prep gear', miles: 0 },
+                { day: 'Sat Nov 22', workout: 'RACE DAY! 13.1 miles', miles: 13.1 }
+            ]
+        };
+
+        function App() {
+            const [completedRuns, setCompletedRuns] = useState(() => {
+                const saved = localStorage.getItem('halfMarathonProgress');
+                return saved ? JSON.parse(saved) : {};
+            });
+            const [showLogForm, setShowLogForm] = useState(false);
+            const [currentLog, setCurrentLog] = useState({
+                date: '',
+                miles: '',
+                time: '',
+                avgPace: '',
+                notes: ''
+            });
+
+            useEffect(() => {
+                localStorage.setItem('halfMarathonProgress', JSON.stringify(completedRuns));
+            }, [completedRuns]);
+
+            const calculateStats = () => {
+                const totalPlanned = Object.values(trainingPlan).flat().reduce((sum, day) => sum + day.miles, 0);
+                const totalCompleted = Object.values(completedRuns).reduce((sum, run) => sum + parseFloat(run.miles || 0), 0);
+                const runsCompleted = Object.keys(completedRuns).length;
+                const totalPlannedDays = Object.values(trainingPlan).flat().filter(day => day.miles > 0).length;
+                
+                return {
+                    totalPlanned: totalPlanned.toFixed(1),
+                    totalCompleted: totalCompleted.toFixed(1),
+                    adherence: totalPlanned > 0 ? ((totalCompleted / totalPlanned) * 100).toFixed(1) : 0,
+                    runsCompleted,
+                    totalPlannedDays
+                };
+            };
+
+            const stats = calculateStats();
+
+            const handleLogRun = (e) => {
+                e.preventDefault();
+                if (currentLog.date && currentLog.miles) {
+                    setCompletedRuns({
+                        ...completedRuns,
+                        [currentLog.date]: currentLog
+                    });
+                    setCurrentLog({ date: '', miles: '', time: '', avgPace: '', notes: '' });
+                    setShowLogForm(false);
+                }
+            };
+
+            const deleteRun = (date) => {
+                const updated = { ...completedRuns };
+                delete updated[date];
+                setCompletedRuns(updated);
+            };
+
+            const formatPace = (minutes) => {
+                const mins = Math.floor(minutes);
+                const secs = Math.round((minutes - mins) * 60);
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            };
+
+            const getWeekStatus = (weekDays) => {
+                const planned = weekDays.reduce((sum, day) => sum + day.miles, 0);
+                const completed = weekDays.reduce((sum, day) => {
+                    const run = completedRuns[day.day];
+                    return sum + (run ? parseFloat(run.miles || 0) : 0);
+                }, 0);
+                return { planned, completed, percentage: planned > 0 ? (completed / planned * 100) : 0 };
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-8">
+                    <div className="max-w-6xl mx-auto">
+                        {/* Header */}
+                        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+                            <h1 className="text-3xl font-bold text-gray-800 mb-2">🏃‍♂️ Half Marathon Training Tracker</h1>
+                            <p className="text-gray-600">Race Day: November 22, 2025</p>
+                        </div>
+
+                        {/* Stats Dashboard */}
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                            <div className="bg-white rounded-lg shadow p-6">
+                                <div className="text-sm text-gray-600 mb-1">Total Miles</div>
+                                <div className="text-2xl font-bold text-blue-600">{stats.totalCompleted} / {stats.totalPlanned}</div>
+                            </div>
+                            <div className="bg-white rounded-lg shadow p-6">
+                                <div className="text-sm text-gray-600 mb-1">Adherence</div>
+                                <div className="text-2xl font-bold text-green-600">{stats.adherence}%</div>
+                            </div>
+                            <div className="bg-white rounded-lg shadow p-6">
+                                <div className="text-sm text-gray-600 mb-1">Runs Completed</div>
+                                <div className="text-2xl font-bold text-purple-600">{stats.runsCompleted} / {stats.totalPlannedDays}</div>
+                            </div>
+                            <div className="bg-white rounded-lg shadow p-6">
+                                <button
+                                    onClick={() => setShowLogForm(!showLogForm)}
+                                    className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition"
+                                >
+                                    + Log Run
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Log Run Form */}
+                        {showLogForm && (
+                            <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+                                <h2 className="text-xl font-bold mb-4">Log Your Run</h2>
+                                <form onSubmit={handleLogRun} className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g., Tue Oct 25"
+                                                value={currentLog.date}
+                                                onChange={(e) => setCurrentLog({...currentLog, date: e.target.value})}
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Distance (miles)</label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                placeholder="6.01"
+                                                value={currentLog.miles}
+                                                onChange={(e) => setCurrentLog({...currentLog, miles: e.target.value})}
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Total Time (minutes)</label>
+                                            <input
+                                                type="number"
+                                                step="0.1"
+                                                placeholder="56.5"
+                                                value={currentLog.time}
+                                                onChange={(e) => setCurrentLog({...currentLog, time: e.target.value})}
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Avg Pace (min/mi)</label>
+                                            <input
+                                                type="text"
+                                                placeholder="9:24"
+                                                value={currentLog.avgPace}
+                                                onChange={(e) => setCurrentLog({...currentLog, avgPace: e.target.value})}
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                                        <textarea
+                                            placeholder="How did it feel? Trail run? Any issues?"
+                                            value={currentLog.notes}
+                                            onChange={(e) => setCurrentLog({...currentLog, notes: e.target.value})}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                            rows="2"
+                                        />
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="submit"
+                                            className="flex-1 bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition"
+                                        >
+                                            Save Run
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowLogForm(false)}
+                                            className="px-6 bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-300 transition"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        )}
+
+                        {/* Training Plan by Week */}
+                        {Object.entries(trainingPlan).map(([week, days], weekIndex) => {
+                            const weekStatus = getWeekStatus(days);
+                            return (
+                                <div key={week} className="bg-white rounded-lg shadow-lg p-6 mb-6">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h2 className="text-xl font-bold text-gray-800">
+                                            Week {weekIndex + 1}
+                                            {weekIndex === 0 && ' - Base Building'}
+                                            {weekIndex === 1 && ' - Build Mileage'}
+                                            {weekIndex === 2 && ' - Peak Week'}
+                                            {weekIndex === 3 && ' - Taper & Race'}
+                                        </h2>
+                                        <div className="text-sm">
+                                            <span className="font-semibold text-gray-700">{weekStatus.completed.toFixed(1)}</span>
+                                            <span className="text-gray-500"> / {weekStatus.planned.toFixed(1)} mi </span>
+                                            <span className={`ml-2 font-semibold ${weekStatus.percentage >= 100 ? 'text-green-600' : 'text-orange-600'}`}>
+                                                ({weekStatus.percentage.toFixed(0)}%)
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full">
+                                            <thead className="bg-gray-50">
+                                                <tr>
+                                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Planned</th>
+                                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Miles</th>
+                                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actual</th>
+                                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pace</th>
+                                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Notes</th>
+                                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-200">
+                                                {days.map((day, idx) => {
+                                                    const completed = completedRuns[day.day];
+                                                    const isComplete = completed !== undefined;
+                                                    const isRest = day.miles === 0;
+                                                    
+                                                    return (
+                                                        <tr key={idx} className={isComplete ? 'bg-green-50' : ''}>
+                                                            <td className="px-4 py-3 text-sm font-medium text-gray-900">{day.day}</td>
+                                                            <td className="px-4 py-3 text-sm text-gray-700">{day.workout}</td>
+                                                            <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+                                                                {day.miles > 0 ? `${day.miles} mi` : '-'}
+                                                            </td>
+                                                            <td className="px-4 py-3 text-sm font-semibold text-indigo-600">
+                                                                {completed ? `${completed.miles} mi` : '-'}
+                                                            </td>
+                                                            <td className="px-4 py-3 text-sm text-gray-600">
+                                                                {completed?.avgPace || '-'}
+                                                            </td>
+                                                            <td className="px-4 py-3 text-sm text-gray-600">
+                                                                {completed?.notes || '-'}
+                                                            </td>
+                                                            <td className="px-4 py-3 text-sm">
+                                                                {isComplete ? (
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className="text-green-600 font-semibold">✓ Done</span>
+                                                                        <button
+                                                                            onClick={() => deleteRun(day.day)}
+                                                                            className="text-red-500 hover:text-red-700 text-xs"
+                                                                        >
+                                                                            Delete
+                                                                        </button>
+                                                                    </div>
+                                                                ) : isRest ? (
+                                                                    <span className="text-gray-400">Rest Day</span>
+                                                                ) : (
+                                                                    <span className="text-gray-400">Pending</span>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            );
+                        })}
+
+                        {/* Recent Activity */}
+                        {Object.keys(completedRuns).length > 0 && (
+                            <div className="bg-white rounded-lg shadow-lg p-6">
+                                <h2 className="text-xl font-bold text-gray-800 mb-4">Recent Activity</h2>
+                                <div className="space-y-3">
+                                    {Object.entries(completedRuns)
+                                        .sort((a, b) => b[0].localeCompare(a[0]))
+                                        .slice(0, 5)
+                                        .map(([date, run]) => (
+                                            <div key={date} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                                <div>
+                                                    <div className="font-semibold text-gray-900">{date}</div>
+                                                    <div className="text-sm text-gray-600">{run.notes || 'No notes'}</div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <div className="font-bold text-indigo-600">{run.miles} mi</div>
+                                                    <div className="text-sm text-gray-600">{run.avgPace || '-'}</div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
