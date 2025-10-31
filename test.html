@@ -81,8 +81,23 @@
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 0.6; }
+      0%, 100% { opacity: 0.3; transform: translateY(-50%) scale(1); }
+      50% { opacity: 0.8; transform: translateY(-50%) scale(1.2); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes glow {
+      0%, 100% { filter: drop-shadow(0 0 2px rgba(44, 44, 44, 0.3)); }
+      50% { filter: drop-shadow(0 0 8px rgba(44, 44, 44, 0.6)); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
     }
 
     @media (max-width: 768px) {
@@ -96,6 +111,20 @@
         animation: none !important;
         transition: none !important;
       }
+    }
+
+    .milestone-marker {
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+    }
+
+    .milestone-marker:hover {
+      transform: scale(1.3);
+      filter: drop-shadow(0 4px 8px rgba(44, 44, 44, 0.3));
+    }
+
+    .milestone-marker:active {
+      transform: scale(1.1);
     }
   </style>
 </head>
@@ -172,30 +201,46 @@
     // ============================================
     // SVG ICON COMPONENTS
     // ============================================
+    
+    // Improved airplane icon that actually looks like an airplane
     const AirplaneIcon = ({ x, y, rotation = 0, scale = 1 }) => (
       <g transform={`translate(${x}, ${y}) rotate(${rotation}) scale(${scale})`}>
-        <path
-          d="M -20,-2 L -15,-5 L 10,-3 L 18,0 L 10,3 L -15,5 L -20,2 M 0,-8 L 0,8 M 10,-6 L 15,-4 M 10,6 L 15,4"
-          stroke="#2c2c2c"
-          strokeWidth="1.5"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        {/* Main fuselage */}
+        <ellipse cx="0" cy="0" rx="25" ry="8" fill="none" stroke="#2c2c2c" strokeWidth="2" />
+        
+        {/* Cockpit/nose */}
+        <path d="M 20,0 Q 30,-2 32,0 Q 30,2 20,0" fill="none" stroke="#2c2c2c" strokeWidth="2" />
+        
+        {/* Wings */}
+        <path d="M -8,-8 L -15,-20 L 5,-20 L 8,-8 Z" fill="none" stroke="#2c2c2c" strokeWidth="2" strokeLinejoin="round" />
+        <path d="M -8,8 L -15,20 L 5,20 L 8,8 Z" fill="none" stroke="#2c2c2c" strokeWidth="2" strokeLinejoin="round" />
+        
+        {/* Tail fin */}
+        <path d="M -20,-2 L -30,-8 L -25,0 L -30,8 L -20,2" fill="none" stroke="#2c2c2c" strokeWidth="2" strokeLinejoin="round" />
+        
+        {/* Tail wings */}
+        <path d="M -22,-3 L -28,-10 L -20,-5" fill="none" stroke="#2c2c2c" strokeWidth="1.5" />
+        <path d="M -22,3 L -28,10 L -20,5" fill="none" stroke="#2c2c2c" strokeWidth="1.5" />
+        
+        {/* Windows */}
+        <circle cx="10" cy="0" r="2" fill="#2c2c2c" />
+        <circle cx="0" cy="0" r="2" fill="#2c2c2c" />
+        <circle cx="-10" cy="0" r="2" fill="#2c2c2c" />
       </g>
     );
 
     const BookIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`}>
+      <g transform={`translate(${x}, ${y})`} className="milestone-icon">
         <rect x="-12" y="-15" width="24" height="30" stroke="#2c2c2c" strokeWidth="1.5" fill="none" rx="2" />
         <line x1="-12" y1="-10" x2="12" y2="-10" stroke="#2c2c2c" strokeWidth="1" />
         <line x1="-12" y1="-5" x2="12" y2="-5" stroke="#2c2c2c" strokeWidth="1" />
+        <line x1="-12" y1="0" x2="12" y2="0" stroke="#2c2c2c" strokeWidth="1" />
         <line x1="0" y1="-15" x2="0" y2="15" stroke="#2c2c2c" strokeWidth="1.5" />
       </g>
     );
 
     const StarIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`}>
+      <g transform={`translate(${x}, ${y})`} className="milestone-icon">
         <path
           d="M 0,-15 L 4,-5 L 15,-5 L 7,2 L 10,13 L 0,6 L -10,13 L -7,2 L -15,-5 L -4,-5 Z"
           stroke="#2c2c2c"
@@ -203,31 +248,37 @@
           fill="none"
           strokeLinejoin="round"
         />
+        <circle cx="0" cy="0" r="3" fill="none" stroke="#2c2c2c" strokeWidth="1" />
       </g>
     );
 
     const CodeIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`}>
+      <g transform={`translate(${x}, ${y})`} className="milestone-icon">
         <path d="M -15,-10 L -5,0 L -15,10" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M 15,-10 L 5,0 L 15,10" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
         <line x1="-2" y1="-12" x2="2" y2="12" stroke="#2c2c2c" strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="0" cy="-15" r="2" fill="#2c2c2c" />
+        <circle cx="0" cy="15" r="2" fill="#2c2c2c" />
       </g>
     );
 
     const GraduationIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`}>
+      <g transform={`translate(${x}, ${y})`} className="milestone-icon">
         <path d="M -15,-8 L 0,-15 L 15,-8 L 15,0 L 0,7 L -15,0 Z" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
         <line x1="0" y1="7" x2="0" y2="15" stroke="#2c2c2c" strokeWidth="1.5" strokeLinecap="round" />
         <rect x="-5" y="13" width="10" height="3" stroke="#2c2c2c" strokeWidth="1.5" fill="none" />
+        <line x1="15" y1="0" x2="15" y2="10" stroke="#2c2c2c" strokeWidth="1.5" />
+        <circle cx="15" cy="12" r="2" fill="none" stroke="#2c2c2c" strokeWidth="1.5" />
       </g>
     );
 
     const UniversityIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`}>
+      <g transform={`translate(${x}, ${y})`} className="milestone-icon">
         <rect x="-15" y="-10" width="30" height="25" stroke="#2c2c2c" strokeWidth="1.5" fill="none" />
         <path d="M -15,-10 L 0,-18 L 15,-10" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
         <rect x="-10" y="0" width="6" height="15" stroke="#2c2c2c" strokeWidth="1.2" fill="none" />
         <rect x="4" y="0" width="6" height="15" stroke="#2c2c2c" strokeWidth="1.2" fill="none" />
+        <line x1="-18" y1="15" x2="18" y2="15" stroke="#2c2c2c" strokeWidth="1.5" />
       </g>
     );
 
@@ -236,8 +287,9 @@
         <circle cx="0" cy="0" r="8" stroke="#2c2c2c" strokeWidth="1.5" fill="none" />
         <circle cx="0" cy="0" r="3" fill="#2c2c2c" />
         <line x1="0" y1="8" x2="0" y2="20" stroke="#2c2c2c" strokeWidth="1.5" />
+        <circle cx="0" cy="22" r="2" fill="#2c2c2c" />
         {label && (
-          <text x="0" y="35" fontSize="14" textAnchor="middle" fill="#2c2c2c" fontFamily="'Courier New', monospace">
+          <text x="0" y="40" fontSize="14" textAnchor="middle" fill="#2c2c2c" fontFamily="'Courier New', monospace" fontWeight="bold">
             {label}
           </text>
         )}
@@ -251,7 +303,7 @@
           d="M 0,20 L 15,10 L 35,8 L 55,15 L 65,8 L 75,12 L 85,8 L 95,15 L 100,25 L 95,40 L 85,50 L 70,55 L 50,52 L 30,45 L 15,35 L 5,28 Z"
           stroke="#2c2c2c"
           strokeWidth="2"
-          fill="none"
+          fill="rgba(44, 44, 44, 0.05)"
           strokeLinejoin="round"
         />
       </g>
@@ -264,9 +316,18 @@
           d="M 40,0 L 55,5 L 65,15 L 70,30 L 75,50 L 70,70 L 65,90 L 55,110 L 45,125 L 35,135 L 25,125 L 20,110 L 15,90 L 10,70 L 15,50 L 20,30 L 30,15 L 35,5 Z M 25,140 L 20,145 L 25,150"
           stroke="#2c2c2c"
           strokeWidth="2"
-          fill="none"
+          fill="rgba(44, 44, 44, 0.05)"
           strokeLinejoin="round"
         />
+      </g>
+    );
+
+    // Cloud decoration
+    const Cloud = ({ x, y, scale = 1 }) => (
+      <g transform={`translate(${x}, ${y}) scale(${scale})`} opacity="0.3">
+        <ellipse cx="0" cy="0" rx="15" ry="8" fill="none" stroke="#2c2c2c" strokeWidth="1" />
+        <ellipse cx="-10" cy="2" rx="10" ry="6" fill="none" stroke="#2c2c2c" strokeWidth="1" />
+        <ellipse cx="10" cy="2" rx="10" ry="6" fill="none" stroke="#2c2c2c" strokeWidth="1" />
       </g>
     );
 
@@ -278,18 +339,16 @@
       const [selectedMilestone, setSelectedMilestone] = useState(null);
       const [showHint, setShowHint] = useState(true);
       const [reducedMotion, setReducedMotion] = useState(false);
+      const [hoveredMilestone, setHoveredMilestone] = useState(null);
       const containerRef = useRef(null);
-      const maxScroll = 6500; // Total horizontal distance
+      const maxScroll = 6500;
 
       useEffect(() => {
-        // Check for reduced motion preference
         const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
         setReducedMotion(mediaQuery.matches);
 
-        // Hide hint after 3 seconds
         const hintTimer = setTimeout(() => setShowHint(false), 3000);
 
-        // Hide loading screen
         setTimeout(() => {
           const loadingEl = document.getElementById('loading');
           if (loadingEl) loadingEl.classList.add('hidden');
@@ -349,31 +408,31 @@
 
       // Generate the journey path
       const generatePath = () => {
-        let path = "M 100 300"; // Starting point
-        
-        // Path to Afghanistan/India segment
+        let path = "M 100 300";
         path += " L 800 280 Q 1000 270 1200 300";
-        
-        // Afghanistan to India arc
         path += " Q 1400 350 1600 320 Q 1800 290 2000 310";
-        
-        // Continue the journey
         path += " L 2400 300 Q 2600 290 2800 310 L 3600 305";
         path += " Q 3800 300 4000 320 L 4800 315";
         path += " Q 5000 310 5200 300 L 6000 295 L 6500 290";
-        
         return path;
       };
 
       const journeyPath = generatePath();
-      const pathLength = 7000; // Approximate path length
+      const pathLength = 7000;
       const drawProgress = (scrollProgress / maxScroll) * pathLength;
 
-      // Calculate airplane position for Kabul to India segment
+      // Calculate airplane position - CIRCULAR LOOP
       const airplaneProgress = Math.max(0, Math.min(1, (scrollProgress - 1000) / 1000));
-      const airplaneX = 1200 + (airplaneProgress * 800);
-      const airplaneY = 300 + Math.sin(airplaneProgress * Math.PI) * 50;
-      const airplaneRotation = Math.cos(airplaneProgress * Math.PI) * 15;
+      
+      // Create circular loop motion
+      const loopCenterX = 1600;
+      const loopCenterY = 250;
+      const loopRadius = 150;
+      const angle = airplaneProgress * Math.PI * 2; // Full circle
+      
+      const airplaneX = loopCenterX + Math.cos(angle) * loopRadius;
+      const airplaneY = loopCenterY + Math.sin(angle) * loopRadius;
+      const airplaneRotation = (angle * 180 / Math.PI) + 90; // Rotate to face direction of travel
 
       const getIconComponent = (icon) => {
         switch (icon) {
@@ -399,7 +458,7 @@
             width: '100vw',
             height: '100vh',
             overflow: 'hidden',
-            background: '#fafafa',
+            background: 'linear-gradient(to bottom, #fafafa 0%, #f0f0f0 100%)',
             position: 'relative',
             cursor: 'grab',
             fontFamily: "'Courier New', monospace"
@@ -416,17 +475,18 @@
                 background: 'rgba(250, 250, 250, 0.95)',
                 padding: '30px 50px',
                 border: '2px solid #2c2c2c',
-                borderRadius: '8px',
+                borderRadius: '12px',
                 zIndex: 1000,
                 animation: 'fadeOut 3s forwards',
                 fontSize: '18px',
-                textAlign: 'center'
+                textAlign: 'center',
+                boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
               }}
             >
-              <div style={{ marginBottom: '10px', fontSize: '24px' }}>↕️</div>
-              Scroll to travel the line
+              <div style={{ marginBottom: '10px', fontSize: '32px', animation: 'bounce 1s infinite' }}>✈️</div>
+              <strong>Scroll to travel the line</strong>
               <div style={{ fontSize: '14px', marginTop: '10px', opacity: 0.7 }}>
-                Use ← → arrow keys to navigate
+                Use ← → arrow keys • Click milestones for details
               </div>
             </div>
           )}
@@ -439,14 +499,16 @@
               right: '20px',
               fontSize: '16px',
               color: '#2c2c2c',
-              background: 'rgba(250, 250, 250, 0.9)',
-              padding: '10px 20px',
-              border: '1px solid #2c2c2c',
-              borderRadius: '4px',
-              zIndex: 100
+              background: 'rgba(250, 250, 250, 0.95)',
+              padding: '12px 24px',
+              border: '2px solid #2c2c2c',
+              borderRadius: '8px',
+              zIndex: 100,
+              boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+              fontWeight: 'bold'
             }}
           >
-            Progress: {progressPercent}%
+            📍 Progress: {progressPercent}%
           </div>
 
           {/* Scroll cue chevrons */}
@@ -456,14 +518,15 @@
               right: '30px',
               top: '50%',
               transform: 'translateY(-50%)',
-              fontSize: '40px',
+              fontSize: '48px',
               color: '#2c2c2c',
-              opacity: scrollProgress < 100 ? 0.3 : 0,
+              opacity: scrollProgress < 100 ? 0.5 : 0,
               transition: 'opacity 0.5s',
-              animation: 'pulse 2s infinite'
+              animation: scrollProgress < 100 ? 'pulse 2s infinite' : 'none',
+              fontWeight: 'bold'
             }}
           >
-            ‹
+            ‹‹
           </div>
 
           {/* Main SVG Canvas */}
@@ -481,6 +544,15 @@
               <filter id="pencilTexture">
                 <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" result="noise" />
                 <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.5" />
+              </filter>
+
+              {/* Glow effect for active elements */}
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
               </filter>
             </defs>
 
@@ -501,18 +573,40 @@
               ))}
             </g>
 
+            {/* Decorative clouds */}
+            <g transform={`translate(${-scrollProgress * 0.15}, 0)`}>
+              <Cloud x={300} y={100} scale={0.8} />
+              <Cloud x={800} y={150} scale={1.2} />
+              <Cloud x={1500} y={80} scale={1} />
+              <Cloud x={2200} y={120} scale={0.9} />
+              <Cloud x={3000} y={100} scale={1.1} />
+              <Cloud x={4000} y={90} scale={0.85} />
+            </g>
+
             {/* Main content group that moves with scroll */}
             <g transform={`translate(${-scrollProgress}, 0)`}>
-              {/* The journey line */}
+              {/* The journey line - NOW DASHED */}
               <path
                 d={journeyPath}
                 stroke="#2c2c2c"
-                strokeWidth="2.5"
+                strokeWidth="3"
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeDasharray={pathLength}
-                strokeDashoffset={reducedMotion ? 0 : Math.max(0, pathLength - drawProgress)}
+                strokeDasharray="20 10"
+                opacity="0.8"
+              />
+
+              {/* Animated drawing overlay - dashed */}
+              <path
+                d={journeyPath}
+                stroke="#2c2c2c"
+                strokeWidth="3"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray={`20 10 ${pathLength}`}
+                strokeDashoffset={reducedMotion ? 0 : Math.max(0, pathLength - drawProgress + 30)}
                 style={{
                   transition: reducedMotion ? 'none' : 'stroke-dashoffset 0.1s ease-out'
                 }}
@@ -521,20 +615,44 @@
               {/* Afghanistan and India maps during the travel segment */}
               {scrollProgress > 900 && scrollProgress < 2200 && (
                 <>
-                  <AfghanistanMap x={950} y={150} scale={0.8} />
-                  <PinIcon x={1000} y={200} label="Kabul" />
+                  <g style={{ animation: 'float 3s ease-in-out infinite' }}>
+                    <AfghanistanMap x={950} y={150} scale={0.8} />
+                    <PinIcon x={1000} y={200} label="Kabul" />
+                  </g>
                   
-                  <IndiaMap x={1700} y={100} scale={1} />
-                  <PinIcon x={1765} y={180} label="New Delhi" />
+                  <g style={{ animation: 'float 3s ease-in-out infinite 1.5s' }}>
+                    <IndiaMap x={1700} y={100} scale={1} />
+                    <PinIcon x={1765} y={180} label="New Delhi" />
+                  </g>
 
-                  {/* Animated airplane */}
+                  {/* Circular loop path visualization */}
                   {!reducedMotion && scrollProgress > 1000 && scrollProgress < 2000 && (
-                    <AirplaneIcon 
-                      x={airplaneX} 
-                      y={airplaneY} 
-                      rotation={airplaneRotation}
-                      scale={1.5}
-                    />
+                    <>
+                      <circle 
+                        cx={loopCenterX} 
+                        cy={loopCenterY} 
+                        r={loopRadius} 
+                        stroke="#2c2c2c" 
+                        strokeWidth="2" 
+                        strokeDasharray="10 5"
+                        fill="none" 
+                        opacity="0.3"
+                      />
+                      
+                      {/* Animated airplane in circular loop */}
+                      <g style={{ animation: 'glow 2s ease-in-out infinite' }}>
+                        <AirplaneIcon 
+                          x={airplaneX} 
+                          y={airplaneY} 
+                          rotation={airplaneRotation}
+                          scale={1.8}
+                        />
+                      </g>
+
+                      {/* Decorative clouds around the airplane */}
+                      <Cloud x={loopCenterX - 200} y={loopCenterY - 50} scale={0.6} />
+                      <Cloud x={loopCenterX + 180} y={loopCenterY + 80} scale={0.7} />
+                    </>
                   )}
                 </>
               )}
@@ -544,44 +662,100 @@
                 const IconComponent = getIconComponent(milestone.icon);
                 const isVisible = Math.abs(milestone.position - scrollProgress) < 800;
                 const isNear = Math.abs(milestone.position - scrollProgress) < 200;
+                const isHovered = hoveredMilestone === index;
 
                 return (
                   <g key={index}>
                     {isVisible && (
                       <g 
+                        className="milestone-marker"
                         transform={`translate(${milestone.position}, ${295})`}
                         style={{ 
-                          cursor: 'pointer',
                           opacity: isNear ? 1 : 0.6,
-                          transition: 'opacity 0.3s'
+                          transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                          cursor: 'pointer',
                         }}
                         onClick={() => setSelectedMilestone(milestone)}
+                        onMouseEnter={() => setHoveredMilestone(index)}
+                        onMouseLeave={() => setHoveredMilestone(null)}
                       >
-                        <line x1="0" y1="5" x2="0" y2="60" stroke="#2c2c2c" strokeWidth="1.5" />
+                        {/* Glow circle on hover */}
+                        {isHovered && (
+                          <circle 
+                            cx="0" 
+                            cy="-30" 
+                            r="25" 
+                            fill="rgba(44, 44, 44, 0.1)" 
+                            style={{ animation: 'bounce 0.5s' }}
+                          />
+                        )}
+
+                        {/* Connection line with pulse effect */}
+                        <line 
+                          x1="0" 
+                          y1="5" 
+                          x2="0" 
+                          y2="60" 
+                          stroke="#2c2c2c" 
+                          strokeWidth={isHovered ? "2.5" : "1.5"}
+                          strokeDasharray={isHovered ? "5 5" : "none"}
+                          style={{ transition: 'all 0.3s' }}
+                        />
+                        
                         <IconComponent x={0} y={-30} />
                         
-                        {/* Age label */}
-                        <text 
-                          x="0" 
-                          y="80" 
-                          fontSize="16" 
-                          textAnchor="middle" 
-                          fill="#2c2c2c"
-                          fontWeight="bold"
-                        >
-                          Age {milestone.age}
-                        </text>
-
-                        {/* Title */}
-                        {isNear && (
+                        {/* Age label with background */}
+                        <g>
+                          <rect 
+                            x="-20" 
+                            y="65" 
+                            width="40" 
+                            height="22" 
+                            rx="4"
+                            fill={isHovered ? "#2c2c2c" : "rgba(250, 250, 250, 0.9)"}
+                            stroke="#2c2c2c"
+                            strokeWidth="1.5"
+                            style={{ transition: 'all 0.3s' }}
+                          />
                           <text 
                             x="0" 
-                            y="100" 
-                            fontSize="12" 
+                            y="80" 
+                            fontSize="14" 
+                            textAnchor="middle" 
+                            fill={isHovered ? "#fafafa" : "#2c2c2c"}
+                            fontWeight="bold"
+                            style={{ transition: 'all 0.3s' }}
+                          >
+                            Age {milestone.age}
+                          </text>
+                        </g>
+
+                        {/* Title */}
+                        {(isNear || isHovered) && (
+                          <text 
+                            x="0" 
+                            y="105" 
+                            fontSize="13" 
                             textAnchor="middle" 
                             fill="#2c2c2c"
+                            fontWeight="bold"
+                            style={{ animation: isHovered ? 'float 1s ease-in-out infinite' : 'none' }}
                           >
                             {milestone.title}
+                          </text>
+                        )}
+
+                        {/* Interactive hint */}
+                        {isHovered && (
+                          <text 
+                            x="0" 
+                            y="125" 
+                            fontSize="10" 
+                            textAnchor="middle" 
+                            fill="#555"
+                            style={{ animation: 'fadeOut 2s forwards' }}
+                          >
+                            Click for details
                           </text>
                         )}
                       </g>
@@ -604,15 +778,16 @@
               height: '50px',
               background: 'rgba(250, 250, 250, 0.95)',
               border: '2px solid #2c2c2c',
-              borderRadius: '8px',
+              borderRadius: '12px',
               padding: '10px 20px',
               display: 'flex',
               alignItems: 'center',
-              zIndex: 100
+              zIndex: 100,
+              boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
             }}
           >
-            <div style={{ flex: 1, position: 'relative', height: '10px', background: '#e0e0e0', borderRadius: '5px' }}>
-              {/* Progress bar */}
+            <div style={{ flex: 1, position: 'relative', height: '12px', background: '#e0e0e0', borderRadius: '6px', overflow: 'hidden' }}>
+              {/* Progress bar with gradient */}
               <div 
                 style={{
                   position: 'absolute',
@@ -620,43 +795,59 @@
                   top: 0,
                   height: '100%',
                   width: `${progressPercent}%`,
-                  background: '#2c2c2c',
-                  borderRadius: '5px',
-                  transition: 'width 0.1s ease-out'
+                  background: 'linear-gradient(90deg, #2c2c2c 0%, #555 100%)',
+                  borderRadius: '6px',
+                  transition: 'width 0.2s ease-out',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
                 }}
               />
               
-              {/* Milestone ticks */}
+              {/* Milestone ticks with hover effect */}
               {milestonesData.map((milestone, index) => (
                 <div
                   key={index}
                   style={{
                     position: 'absolute',
                     left: `${(milestone.position / maxScroll) * 100}%`,
-                    top: '-5px',
-                    width: '2px',
-                    height: '20px',
+                    top: '-6px',
+                    width: '3px',
+                    height: '24px',
                     background: '#2c2c2c',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    borderRadius: '2px',
+                    transition: 'all 0.2s',
+                    transform: hoveredMilestone === index ? 'scaleY(1.3)' : 'scaleY(1)'
                   }}
                   onClick={() => setScrollProgress(milestone.position)}
+                  onMouseEnter={() => setHoveredMilestone(index)}
+                  onMouseLeave={() => setHoveredMilestone(null)}
                   title={`Age ${milestone.age}: ${milestone.title}`}
                 />
               ))}
 
-              {/* Draggable handle */}
+              {/* Draggable handle with shadow */}
               <div
                 style={{
                   position: 'absolute',
                   left: `${progressPercent}%`,
                   top: '50%',
                   transform: 'translate(-50%, -50%)',
-                  width: '20px',
-                  height: '20px',
-                  background: '#2c2c2c',
+                  width: '24px',
+                  height: '24px',
+                  background: 'linear-gradient(135deg, #2c2c2c 0%, #555 100%)',
                   borderRadius: '50%',
                   cursor: 'grab',
-                  border: '2px solid #fafafa'
+                  border: '3px solid #fafafa',
+                  boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+                  transition: 'transform 0.2s'
+                }}
+                onMouseDown={(e) => {
+                  e.currentTarget.style.cursor = 'grabbing';
+                  e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1.1)';
+                }}
+                onMouseUp={(e) => {
+                  e.currentTarget.style.cursor = 'grab';
+                  e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)';
                 }}
               />
             </div>
@@ -664,63 +855,110 @@
 
           {/* Milestone detail card */}
           {selectedMilestone && (
-            <div 
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                background: '#fafafa',
-                border: '3px solid #2c2c2c',
-                borderRadius: '12px',
-                padding: '30px',
-                maxWidth: '400px',
-                width: '90%',
-                zIndex: 1000,
-                boxShadow: '8px 8px 0 rgba(0,0,0,0.1)'
-              }}
-              role="dialog"
-              aria-labelledby="milestone-title"
-            >
-              <button
-                onClick={() => setSelectedMilestone(null)}
+            <>
+              {/* Backdrop */}
+              <div 
                 style={{
                   position: 'absolute',
-                  top: '10px',
-                  right: '10px',
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '24px',
-                  cursor: 'pointer',
-                  color: '#2c2c2c',
-                  padding: '5px 10px'
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  background: 'rgba(0, 0, 0, 0.5)',
+                  zIndex: 999,
+                  animation: 'fadeOut 0.3s reverse'
                 }}
-                aria-label="Close"
+                onClick={() => setSelectedMilestone(null)}
+              />
+              
+              {/* Card */}
+              <div 
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  background: '#fafafa',
+                  border: '3px solid #2c2c2c',
+                  borderRadius: '16px',
+                  padding: '35px',
+                  maxWidth: '450px',
+                  width: '90%',
+                  zIndex: 1000,
+                  boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+                  animation: 'bounce 0.5s'
+                }}
+                role="dialog"
+                aria-labelledby="milestone-title"
               >
-                ×
-              </button>
-              
-              <h2 id="milestone-title" style={{ marginTop: 0, fontSize: '24px', color: '#2c2c2c' }}>
-                Age {selectedMilestone.age}
-              </h2>
-              <h3 style={{ fontSize: '18px', color: '#555', marginTop: '5px' }}>
-                {selectedMilestone.title}
-              </h3>
-              <p style={{ fontSize: '16px', lineHeight: '1.6', color: '#2c2c2c', marginTop: '15px' }}>
-                {selectedMilestone.description}
-              </p>
-              
-              {selectedMilestone.from && selectedMilestone.to && (
-                <div style={{ marginTop: '20px', padding: '15px', background: '#f0f0f0', borderRadius: '6px' }}>
-                  <div style={{ fontSize: '14px', color: '#555' }}>
-                    <strong>From:</strong> {selectedMilestone.from.city}, {selectedMilestone.from.country}
-                  </div>
-                  <div style={{ fontSize: '14px', color: '#555', marginTop: '5px' }}>
-                    <strong>To:</strong> {selectedMilestone.to.city}, {selectedMilestone.to.country}
-                  </div>
+                <button
+                  onClick={() => setSelectedMilestone(null)}
+                  style={{
+                    position: 'absolute',
+                    top: '15px',
+                    right: '15px',
+                    background: '#2c2c2c',
+                    color: '#fafafa',
+                    border: 'none',
+                    fontSize: '24px',
+                    cursor: 'pointer',
+                    padding: '5px 12px',
+                    borderRadius: '50%',
+                    width: '40px',
+                    height: '40px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
+                  }}
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+                
+                <div style={{ marginBottom: '10px', fontSize: '36px' }}>
+                  {selectedMilestone.icon === 'airplane' && '✈️'}
+                  {selectedMilestone.icon === 'book' && '📚'}
+                  {selectedMilestone.icon === 'star' && '⭐'}
+                  {selectedMilestone.icon === 'code' && '💻'}
+                  {selectedMilestone.icon === 'graduation' && '🎓'}
+                  {selectedMilestone.icon === 'university' && '🏛️'}
                 </div>
-              )}
-            </div>
+
+                <h2 id="milestone-title" style={{ marginTop: 0, fontSize: '28px', color: '#2c2c2c' }}>
+                  Age {selectedMilestone.age}
+                </h2>
+                <h3 style={{ fontSize: '20px', color: '#555', marginTop: '8px', marginBottom: '15px' }}>
+                  {selectedMilestone.title}
+                </h3>
+                <p style={{ fontSize: '16px', lineHeight: '1.8', color: '#2c2c2c', marginTop: '15px' }}>
+                  {selectedMilestone.description}
+                </p>
+                
+                {selectedMilestone.from && selectedMilestone.to && (
+                  <div style={{ 
+                    marginTop: '25px', 
+                    padding: '20px', 
+                    background: 'linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%)', 
+                    borderRadius: '10px',
+                    border: '2px solid #e0e0e0'
+                  }}>
+                    <div style={{ fontSize: '15px', color: '#555', marginBottom: '8px' }}>
+                      <strong>📍 From:</strong> {selectedMilestone.from.city}, {selectedMilestone.from.country}
+                    </div>
+                    <div style={{ fontSize: '15px', color: '#555' }}>
+                      <strong>📍 To:</strong> {selectedMilestone.to.city}, {selectedMilestone.to.country}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
           )}
         </div>
       );
