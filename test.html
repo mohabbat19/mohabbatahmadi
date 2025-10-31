@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Life Journey Timeline - Interactive Story</title>
   <meta name="description" content="An interactive life story told through minimalist pencil line art and horizontal scrolling">
+  <title>Life Journey Timeline - Interactive Story</title>
   
   <!-- React and ReactDOM from CDN -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -14,11 +14,18 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
       overflow: hidden;
       font-family: 'Courier New', monospace;
+      background: #fafafa;
     }
     
     #root {
@@ -66,6 +73,30 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      70% { opacity: 1; }
+      100% { opacity: 0; pointer-events: none; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    @media (max-width: 768px) {
+      .loading-text {
+        font-size: 16px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -82,7 +113,9 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
-    // Milestone data structure
+    // ============================================
+    // MILESTONE DATA - CUSTOMIZE YOUR STORY HERE
+    // ============================================
     const milestonesData = [
       {
         age: 0,
@@ -95,7 +128,7 @@
       {
         age: 4,
         title: "Move from Kabul to India",
-        description: "Our family permanently moved from Kabul, Afghanistan to New Delhi, India.",
+        description: "Our family permanently moved from Kabul, Afghanistan to New Delhi, India. A life-changing journey across borders.",
         type: "move",
         from: { city: "Kabul", country: "Afghanistan" },
         to: { city: "New Delhi", country: "India" },
@@ -105,7 +138,7 @@
       {
         age: 8,
         title: "First Day of School",
-        description: "Started elementary education in New Delhi.",
+        description: "Started elementary education in New Delhi. Made lifelong friends and discovered a love for learning.",
         type: "education",
         icon: "book",
         position: 2400
@@ -113,7 +146,7 @@
       {
         age: 12,
         title: "Discovered Programming",
-        description: "Wrote my first computer program in BASIC.",
+        description: "Wrote my first computer program in BASIC. Fell in love with creating things through code.",
         type: "achievement",
         icon: "code",
         position: 3600
@@ -121,7 +154,7 @@
       {
         age: 16,
         title: "High School Graduation",
-        description: "Graduated with honors, ready for the next chapter.",
+        description: "Graduated with honors, ready for the next chapter. Excited about the future and endless possibilities.",
         type: "education",
         icon: "graduation",
         position: 4800
@@ -129,14 +162,16 @@
       {
         age: 18,
         title: "University Life Begins",
-        description: "Started studying Computer Science.",
+        description: "Started studying Computer Science. A new adventure in learning and growth.",
         type: "education",
         icon: "university",
         position: 6000
       }
     ];
 
-    // SVG Icon Components
+    // ============================================
+    // SVG ICON COMPONENTS
+    // ============================================
     const AirplaneIcon = ({ x, y, rotation = 0, scale = 1 }) => (
       <g transform={`translate(${x}, ${y}) rotate(${rotation}) scale(${scale})`}>
         <path
@@ -209,6 +244,7 @@
       </g>
     );
 
+    // Simplified Afghanistan outline
     const AfghanistanMap = ({ x, y, scale = 1 }) => (
       <g transform={`translate(${x}, ${y}) scale(${scale})`}>
         <path
@@ -221,6 +257,7 @@
       </g>
     );
 
+    // Simplified India outline
     const IndiaMap = ({ x, y, scale = 1 }) => (
       <g transform={`translate(${x}, ${y}) scale(${scale})`}>
         <path
@@ -233,24 +270,29 @@
       </g>
     );
 
-    // Main Component
+    // ============================================
+    // MAIN COMPONENT
+    // ============================================
     const LifeJourneyTimeline = () => {
       const [scrollProgress, setScrollProgress] = useState(0);
       const [selectedMilestone, setSelectedMilestone] = useState(null);
       const [showHint, setShowHint] = useState(true);
       const [reducedMotion, setReducedMotion] = useState(false);
       const containerRef = useRef(null);
-      const maxScroll = 6500;
+      const maxScroll = 6500; // Total horizontal distance
 
       useEffect(() => {
+        // Check for reduced motion preference
         const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
         setReducedMotion(mediaQuery.matches);
 
+        // Hide hint after 3 seconds
         const hintTimer = setTimeout(() => setShowHint(false), 3000);
 
         // Hide loading screen
         setTimeout(() => {
-          document.getElementById('loading').classList.add('hidden');
+          const loadingEl = document.getElementById('loading');
+          if (loadingEl) loadingEl.classList.add('hidden');
         }, 500);
 
         return () => clearTimeout(hintTimer);
@@ -305,20 +347,29 @@
         return () => window.removeEventListener('keydown', handleKeyDown);
       }, [scrollProgress, selectedMilestone]);
 
+      // Generate the journey path
       const generatePath = () => {
-        let path = "M 100 300";
+        let path = "M 100 300"; // Starting point
+        
+        // Path to Afghanistan/India segment
         path += " L 800 280 Q 1000 270 1200 300";
+        
+        // Afghanistan to India arc
         path += " Q 1400 350 1600 320 Q 1800 290 2000 310";
+        
+        // Continue the journey
         path += " L 2400 300 Q 2600 290 2800 310 L 3600 305";
         path += " Q 3800 300 4000 320 L 4800 315";
         path += " Q 5000 310 5200 300 L 6000 295 L 6500 290";
+        
         return path;
       };
 
       const journeyPath = generatePath();
-      const pathLength = 7000;
+      const pathLength = 7000; // Approximate path length
       const drawProgress = (scrollProgress / maxScroll) * pathLength;
 
+      // Calculate airplane position for Kabul to India segment
       const airplaneProgress = Math.max(0, Math.min(1, (scrollProgress - 1000) / 1000));
       const airplaneX = 1200 + (airplaneProgress * 800);
       const airplaneY = 300 + Math.sin(airplaneProgress * Math.PI) * 50;
@@ -354,6 +405,7 @@
             fontFamily: "'Courier New', monospace"
           }}
         >
+          {/* Hint overlay */}
           {showHint && (
             <div 
               style={{
@@ -379,6 +431,7 @@
             </div>
           )}
 
+          {/* Progress indicator */}
           <div 
             style={{
               position: 'absolute',
@@ -396,6 +449,7 @@
             Progress: {progressPercent}%
           </div>
 
+          {/* Scroll cue chevrons */}
           <div 
             style={{
               position: 'absolute',
@@ -412,6 +466,7 @@
             ‹
           </div>
 
+          {/* Main SVG Canvas */}
           <svg 
             width="100%" 
             height="100%" 
@@ -422,13 +477,16 @@
             }}
           >
             <defs>
+              {/* Pencil texture filter */}
               <filter id="pencilTexture">
                 <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" result="noise" />
                 <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.5" />
               </filter>
             </defs>
 
+            {/* Background elements that move with scroll */}
             <g transform={`translate(${-scrollProgress * 0.1}, 0)`}>
+              {/* Subtle grid lines */}
               {[...Array(20)].map((_, i) => (
                 <line 
                   key={i}
@@ -443,7 +501,9 @@
               ))}
             </g>
 
+            {/* Main content group that moves with scroll */}
             <g transform={`translate(${-scrollProgress}, 0)`}>
+              {/* The journey line */}
               <path
                 d={journeyPath}
                 stroke="#2c2c2c"
@@ -458,6 +518,7 @@
                 }}
               />
 
+              {/* Afghanistan and India maps during the travel segment */}
               {scrollProgress > 900 && scrollProgress < 2200 && (
                 <>
                   <AfghanistanMap x={950} y={150} scale={0.8} />
@@ -466,6 +527,7 @@
                   <IndiaMap x={1700} y={100} scale={1} />
                   <PinIcon x={1765} y={180} label="New Delhi" />
 
+                  {/* Animated airplane */}
                   {!reducedMotion && scrollProgress > 1000 && scrollProgress < 2000 && (
                     <AirplaneIcon 
                       x={airplaneX} 
@@ -477,6 +539,7 @@
                 </>
               )}
 
+              {/* Milestone markers */}
               {milestonesData.map((milestone, index) => {
                 const IconComponent = getIconComponent(milestone.icon);
                 const isVisible = Math.abs(milestone.position - scrollProgress) < 800;
@@ -497,6 +560,7 @@
                         <line x1="0" y1="5" x2="0" y2="60" stroke="#2c2c2c" strokeWidth="1.5" />
                         <IconComponent x={0} y={-30} />
                         
+                        {/* Age label */}
                         <text 
                           x="0" 
                           y="80" 
@@ -508,6 +572,7 @@
                           Age {milestone.age}
                         </text>
 
+                        {/* Title */}
                         {isNear && (
                           <text 
                             x="0" 
@@ -527,6 +592,7 @@
             </g>
           </svg>
 
+          {/* Timeline navigator */}
           <div 
             style={{
               position: 'absolute',
@@ -546,6 +612,7 @@
             }}
           >
             <div style={{ flex: 1, position: 'relative', height: '10px', background: '#e0e0e0', borderRadius: '5px' }}>
+              {/* Progress bar */}
               <div 
                 style={{
                   position: 'absolute',
@@ -559,6 +626,7 @@
                 }}
               />
               
+              {/* Milestone ticks */}
               {milestonesData.map((milestone, index) => (
                 <div
                   key={index}
@@ -576,6 +644,7 @@
                 />
               ))}
 
+              {/* Draggable handle */}
               <div
                 style={{
                   position: 'absolute',
@@ -593,6 +662,7 @@
             </div>
           </div>
 
+          {/* Milestone detail card */}
           {selectedMilestone && (
             <div 
               style={{
@@ -605,6 +675,7 @@
                 borderRadius: '12px',
                 padding: '30px',
                 maxWidth: '400px',
+                width: '90%',
                 zIndex: 1000,
                 boxShadow: '8px 8px 0 rgba(0,0,0,0.1)'
               }}
@@ -621,7 +692,8 @@
                   border: 'none',
                   fontSize: '24px',
                   cursor: 'pointer',
-                  color: '#2c2c2c'
+                  color: '#2c2c2c',
+                  padding: '5px 10px'
                 }}
                 aria-label="Close"
               >
@@ -650,38 +722,6 @@
               )}
             </div>
           )}
-
-          <style>{`
-            @keyframes fadeOut {
-              0% { opacity: 1; }
-              70% { opacity: 1; }
-              100% { opacity: 0; pointer-events: none; }
-            }
-
-            @keyframes pulse {
-              0%, 100% { opacity: 0.3; }
-              50% { opacity: 0.6; }
-            }
-
-            * {
-              margin: 0;
-              padding: 0;
-              box-sizing: border-box;
-            }
-
-            @media (max-width: 768px) {
-              .life-journey-container {
-                font-size: 14px;
-              }
-            }
-
-            @media (prefers-reduced-motion: reduce) {
-              * {
-                animation: none !important;
-                transition: none !important;
-              }
-            }
-          `}</style>
         </div>
       );
     };
