@@ -1,572 +1,693 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ECE Course Offerings Filter</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: white;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: #022851;
-            color: #FFBF00;
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            color: #fff;
-            opacity: 0.9;
-        }
-        
-        .controls {
-            padding: 30px;
-            background: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
-        }
-        
-        .refresh-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-        }
-        
-        .last-updated {
-            color: #6c757d;
-            font-size: 14px;
-        }
-        
-        .last-updated strong {
-            color: #022851;
-        }
-        
-        .refresh-btn {
-            padding: 10px 20px;
-            background: #FFBF00;
-            color: #022851;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .refresh-btn:hover {
-            background: #e6ac00;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255,191,0,0.4);
-        }
-        
-        .refresh-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #022851;
-        }
-        
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #022851;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .filter-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        
-        .filter-btn {
-            flex: 1;
-            min-width: 140px;
-            padding: 15px 20px;
-            border: 2px solid #022851;
-            background: white;
-            color: #022851;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .filter-btn:hover {
-            background: #022851;
-            color: #FFBF00;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(2,40,81,0.3);
-        }
-        
-        .filter-btn.active {
-            background: #022851;
-            color: #FFBF00;
-        }
-        
-        .results-info {
-            padding: 20px 30px;
-            background: #e7f3ff;
-            border-left: 4px solid #022851;
-            margin: 20px 30px;
-            border-radius: 4px;
-            display: none;
-        }
-        
-        .results-info strong {
-            color: #022851;
-        }
-        
-        .data-container {
-            padding: 30px;
-            max-height: 1800px;
-            overflow-y: auto;
-        }
-        
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-        
-        .data-table thead {
-            position: sticky;
-            top: 0;
-            background: #022851;
-            color: white;
-            z-index: 10;
-        }
-        
-        .data-table th {
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            border-bottom: 2px solid #FFBF00;
-        }
-        
-        .data-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #dee2e6;
-        }
-        
-        .data-table tbody tr:hover {
-            background: #f8f9fa;
-        }
-        
-        .data-table tbody tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-        
-        .data-table tbody tr:nth-child(even):hover {
-            background: #f0f0f0;
-        }
-        
-        .course-code {
-            font-weight: 600;
-            color: #022851;
-        }
-        
-        .no-data {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6c757d;
-        }
-        
-        .no-data p {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        
-        .error-message {
-            background: #fee;
-            border-left: 4px solid #dc3545;
-            padding: 15px;
-            margin: 20px 30px;
-            border-radius: 4px;
-            color: #721c24;
-        }
-        
-        .error-message code {
-            background: #fff;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: monospace;
-            color: #022851;
-        }
-        
-        .loading-status {
-            font-size: 12px;
-            color: #6c757d;
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Life Journey Timeline - Interactive Story</title>
+  <meta name="description" content="An interactive life story told through minimalist pencil line art and horizontal scrolling">
+  
+  <!-- React and ReactDOM from CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <!-- Babel Standalone for JSX transformation -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Courier New', monospace;
+    }
+    
+    #root {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* Loading screen */
+    #loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s;
+    }
+
+    #loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-text {
+      font-size: 18px;
+      color: #2c2c2c;
+      margin-top: 20px;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid #e0e0e0;
+      border-top: 3px solid #2c2c2c;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>ECE Course Offerings 2025-26</h1>
-            <p>Filter courses by academic term</p>
-        </div>
-        
-        <div class="controls">
-            <div class="refresh-section">
-                <div class="last-updated">
-                    <strong>Last Updated:</strong> <span id="lastUpdated">Loading...</span>
-                </div>
-                <button class="refresh-btn" onclick="loadDataFromBox()" id="refreshBtn">
-                    <span>🔄</span> Refresh Data
-                </button>
-            </div>
-            
-            <div class="filter-buttons">
-                <button class="filter-btn active" onclick="filterByTerm('all')">All Terms</button>
-                <button class="filter-btn" onclick="filterByTerm('Fall 2025')">Fall 2025</button>
-                <button class="filter-btn" onclick="filterByTerm('Winter 2026')">Winter 2026</button>
-                <button class="filter-btn" onclick="filterByTerm('Spring 2026')">Spring 2026</button>
-                <button class="filter-btn" onclick="filterByTerm('Summer Sessions 2026')">Summer Sessions 2026</button>
-            </div>
-        </div>
-        
-        <div class="results-info" id="resultsInfo">
-            Showing <strong id="resultCount">0</strong> courses
-        </div>
-        
-        <div class="data-container" id="dataContainer">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Loading course data from Box...</p>
-                <p class="loading-status" id="loadingStatus">Attempting connection...</p>
-            </div>
-        </div>
-    </div>
+  <!-- Loading Screen -->
+  <div id="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Drawing your journey...</div>
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script>
-        let allData = [];
-        let currentFilter = 'all';
-        
-        // Box file shared link
-        const BOX_SHARED_LINK = 'https://ucdavis.box.com/s/hobikb86i41fhu6cotdyheh4i8u8nim2';
-        const BOX_FILE_ID = '1903872817448';
-        const BOX_SHARED_NAME = 'hobikb86i41fhu6cotdyheh4i8u8nim2';
-        
-        // Multiple URL patterns to try
-        const BOX_URLS = [
-            // Pattern 1: Direct download via shared name
-            `https://ucdavis.box.com/shared/static/${BOX_SHARED_NAME}.xlsx`,
-            // Pattern 2: Download endpoint
-            `https://ucdavis.app.box.com/index.php?rm=box_download_shared_file&shared_name=${BOX_SHARED_NAME}&file_id=f_${BOX_FILE_ID}`,
-            // Pattern 3: Public download
-            `https://ucdavis.ent.box.com/public/static/${BOX_SHARED_NAME}.xlsx`,
-            // Pattern 4: Using CORS proxy as fallback
-            `https://api.allorigins.win/raw?url=${encodeURIComponent('https://ucdavis.box.com/shared/static/' + BOX_SHARED_NAME + '.xlsx')}`
-        ];
-        
-        // Load data automatically when page loads
-        window.addEventListener('load', function() {
-            loadDataFromBox();
-        });
-        
-        async function loadDataFromBox() {
-            const refreshBtn = document.getElementById('refreshBtn');
-            const container = document.getElementById('dataContainer');
-            const statusText = document.getElementById('loadingStatus');
-            
-            refreshBtn.disabled = true;
-            container.innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Loading course data from Box...</p>
-                    <p class="loading-status" id="loadingStatus">Attempting connection...</p>
+  <!-- React App Root -->
+  <div id="root"></div>
+
+  <!-- The Life Journey Component -->
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    // Milestone data structure
+    const milestonesData = [
+      {
+        age: 0,
+        title: "Beginning",
+        description: "The story begins...",
+        type: "birth",
+        icon: "star",
+        position: 0
+      },
+      {
+        age: 4,
+        title: "Move from Kabul to India",
+        description: "Our family permanently moved from Kabul, Afghanistan to New Delhi, India.",
+        type: "move",
+        from: { city: "Kabul", country: "Afghanistan" },
+        to: { city: "New Delhi", country: "India" },
+        icon: "airplane",
+        position: 1200
+      },
+      {
+        age: 8,
+        title: "First Day of School",
+        description: "Started elementary education in New Delhi.",
+        type: "education",
+        icon: "book",
+        position: 2400
+      },
+      {
+        age: 12,
+        title: "Discovered Programming",
+        description: "Wrote my first computer program in BASIC.",
+        type: "achievement",
+        icon: "code",
+        position: 3600
+      },
+      {
+        age: 16,
+        title: "High School Graduation",
+        description: "Graduated with honors, ready for the next chapter.",
+        type: "education",
+        icon: "graduation",
+        position: 4800
+      },
+      {
+        age: 18,
+        title: "University Life Begins",
+        description: "Started studying Computer Science.",
+        type: "education",
+        icon: "university",
+        position: 6000
+      }
+    ];
+
+    // SVG Icon Components
+    const AirplaneIcon = ({ x, y, rotation = 0, scale = 1 }) => (
+      <g transform={`translate(${x}, ${y}) rotate(${rotation}) scale(${scale})`}>
+        <path
+          d="M -20,-2 L -15,-5 L 10,-3 L 18,0 L 10,3 L -15,5 L -20,2 M 0,-8 L 0,8 M 10,-6 L 15,-4 M 10,6 L 15,4"
+          stroke="#2c2c2c"
+          strokeWidth="1.5"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+    );
+
+    const BookIcon = ({ x, y }) => (
+      <g transform={`translate(${x}, ${y})`}>
+        <rect x="-12" y="-15" width="24" height="30" stroke="#2c2c2c" strokeWidth="1.5" fill="none" rx="2" />
+        <line x1="-12" y1="-10" x2="12" y2="-10" stroke="#2c2c2c" strokeWidth="1" />
+        <line x1="-12" y1="-5" x2="12" y2="-5" stroke="#2c2c2c" strokeWidth="1" />
+        <line x1="0" y1="-15" x2="0" y2="15" stroke="#2c2c2c" strokeWidth="1.5" />
+      </g>
+    );
+
+    const StarIcon = ({ x, y }) => (
+      <g transform={`translate(${x}, ${y})`}>
+        <path
+          d="M 0,-15 L 4,-5 L 15,-5 L 7,2 L 10,13 L 0,6 L -10,13 L -7,2 L -15,-5 L -4,-5 Z"
+          stroke="#2c2c2c"
+          strokeWidth="1.5"
+          fill="none"
+          strokeLinejoin="round"
+        />
+      </g>
+    );
+
+    const CodeIcon = ({ x, y }) => (
+      <g transform={`translate(${x}, ${y})`}>
+        <path d="M -15,-10 L -5,0 L -15,10" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M 15,-10 L 5,0 L 15,10" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="-2" y1="-12" x2="2" y2="12" stroke="#2c2c2c" strokeWidth="1.5" strokeLinecap="round" />
+      </g>
+    );
+
+    const GraduationIcon = ({ x, y }) => (
+      <g transform={`translate(${x}, ${y})`}>
+        <path d="M -15,-8 L 0,-15 L 15,-8 L 15,0 L 0,7 L -15,0 Z" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
+        <line x1="0" y1="7" x2="0" y2="15" stroke="#2c2c2c" strokeWidth="1.5" strokeLinecap="round" />
+        <rect x="-5" y="13" width="10" height="3" stroke="#2c2c2c" strokeWidth="1.5" fill="none" />
+      </g>
+    );
+
+    const UniversityIcon = ({ x, y }) => (
+      <g transform={`translate(${x}, ${y})`}>
+        <rect x="-15" y="-10" width="30" height="25" stroke="#2c2c2c" strokeWidth="1.5" fill="none" />
+        <path d="M -15,-10 L 0,-18 L 15,-10" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
+        <rect x="-10" y="0" width="6" height="15" stroke="#2c2c2c" strokeWidth="1.2" fill="none" />
+        <rect x="4" y="0" width="6" height="15" stroke="#2c2c2c" strokeWidth="1.2" fill="none" />
+      </g>
+    );
+
+    const PinIcon = ({ x, y, label }) => (
+      <g transform={`translate(${x}, ${y})`}>
+        <circle cx="0" cy="0" r="8" stroke="#2c2c2c" strokeWidth="1.5" fill="none" />
+        <circle cx="0" cy="0" r="3" fill="#2c2c2c" />
+        <line x1="0" y1="8" x2="0" y2="20" stroke="#2c2c2c" strokeWidth="1.5" />
+        {label && (
+          <text x="0" y="35" fontSize="14" textAnchor="middle" fill="#2c2c2c" fontFamily="'Courier New', monospace">
+            {label}
+          </text>
+        )}
+      </g>
+    );
+
+    const AfghanistanMap = ({ x, y, scale = 1 }) => (
+      <g transform={`translate(${x}, ${y}) scale(${scale})`}>
+        <path
+          d="M 0,20 L 15,10 L 35,8 L 55,15 L 65,8 L 75,12 L 85,8 L 95,15 L 100,25 L 95,40 L 85,50 L 70,55 L 50,52 L 30,45 L 15,35 L 5,28 Z"
+          stroke="#2c2c2c"
+          strokeWidth="2"
+          fill="none"
+          strokeLinejoin="round"
+        />
+      </g>
+    );
+
+    const IndiaMap = ({ x, y, scale = 1 }) => (
+      <g transform={`translate(${x}, ${y}) scale(${scale})`}>
+        <path
+          d="M 40,0 L 55,5 L 65,15 L 70,30 L 75,50 L 70,70 L 65,90 L 55,110 L 45,125 L 35,135 L 25,125 L 20,110 L 15,90 L 10,70 L 15,50 L 20,30 L 30,15 L 35,5 Z M 25,140 L 20,145 L 25,150"
+          stroke="#2c2c2c"
+          strokeWidth="2"
+          fill="none"
+          strokeLinejoin="round"
+        />
+      </g>
+    );
+
+    // Main Component
+    const LifeJourneyTimeline = () => {
+      const [scrollProgress, setScrollProgress] = useState(0);
+      const [selectedMilestone, setSelectedMilestone] = useState(null);
+      const [showHint, setShowHint] = useState(true);
+      const [reducedMotion, setReducedMotion] = useState(false);
+      const containerRef = useRef(null);
+      const maxScroll = 6500;
+
+      useEffect(() => {
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        setReducedMotion(mediaQuery.matches);
+
+        const hintTimer = setTimeout(() => setShowHint(false), 3000);
+
+        // Hide loading screen
+        setTimeout(() => {
+          document.getElementById('loading').classList.add('hidden');
+        }, 500);
+
+        return () => clearTimeout(hintTimer);
+      }, []);
+
+      useEffect(() => {
+        const handleWheel = (e) => {
+          e.preventDefault();
+          const delta = e.deltaY;
+          setScrollProgress((prev) => {
+            const newProgress = prev + delta * 0.5;
+            return Math.max(0, Math.min(maxScroll, newProgress));
+          });
+        };
+
+        const container = containerRef.current;
+        if (container) {
+          container.addEventListener('wheel', handleWheel, { passive: false });
+        }
+
+        return () => {
+          if (container) {
+            container.removeEventListener('wheel', handleWheel);
+          }
+        };
+      }, []);
+
+      useEffect(() => {
+        const handleKeyDown = (e) => {
+          if (selectedMilestone !== null) {
+            if (e.key === 'Escape') {
+              setSelectedMilestone(null);
+            }
+            return;
+          }
+
+          if (e.key === 'ArrowRight') {
+            setScrollProgress((prev) => Math.min(maxScroll, prev + 100));
+          } else if (e.key === 'ArrowLeft') {
+            setScrollProgress((prev) => Math.max(0, prev - 100));
+          } else if (e.key === 'Enter') {
+            const closest = milestonesData.reduce((prev, curr) => 
+              Math.abs(curr.position - scrollProgress) < Math.abs(prev.position - scrollProgress) ? curr : prev
+            );
+            if (Math.abs(closest.position - scrollProgress) < 200) {
+              setSelectedMilestone(closest);
+            }
+          }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+      }, [scrollProgress, selectedMilestone]);
+
+      const generatePath = () => {
+        let path = "M 100 300";
+        path += " L 800 280 Q 1000 270 1200 300";
+        path += " Q 1400 350 1600 320 Q 1800 290 2000 310";
+        path += " L 2400 300 Q 2600 290 2800 310 L 3600 305";
+        path += " Q 3800 300 4000 320 L 4800 315";
+        path += " Q 5000 310 5200 300 L 6000 295 L 6500 290";
+        return path;
+      };
+
+      const journeyPath = generatePath();
+      const pathLength = 7000;
+      const drawProgress = (scrollProgress / maxScroll) * pathLength;
+
+      const airplaneProgress = Math.max(0, Math.min(1, (scrollProgress - 1000) / 1000));
+      const airplaneX = 1200 + (airplaneProgress * 800);
+      const airplaneY = 300 + Math.sin(airplaneProgress * Math.PI) * 50;
+      const airplaneRotation = Math.cos(airplaneProgress * Math.PI) * 15;
+
+      const getIconComponent = (icon) => {
+        switch (icon) {
+          case 'airplane': return AirplaneIcon;
+          case 'book': return BookIcon;
+          case 'star': return StarIcon;
+          case 'code': return CodeIcon;
+          case 'graduation': return GraduationIcon;
+          case 'university': return UniversityIcon;
+          default: return StarIcon;
+        }
+      };
+
+      const progressPercent = Math.round((scrollProgress / maxScroll) * 100);
+
+      return (
+        <div 
+          ref={containerRef}
+          className="life-journey-container"
+          role="application"
+          aria-label="Interactive life journey timeline"
+          style={{
+            width: '100vw',
+            height: '100vh',
+            overflow: 'hidden',
+            background: '#fafafa',
+            position: 'relative',
+            cursor: 'grab',
+            fontFamily: "'Courier New', monospace"
+          }}
+        >
+          {showHint && (
+            <div 
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                background: 'rgba(250, 250, 250, 0.95)',
+                padding: '30px 50px',
+                border: '2px solid #2c2c2c',
+                borderRadius: '8px',
+                zIndex: 1000,
+                animation: 'fadeOut 3s forwards',
+                fontSize: '18px',
+                textAlign: 'center'
+              }}
+            >
+              <div style={{ marginBottom: '10px', fontSize: '24px' }}>↕️</div>
+              Scroll to travel the line
+              <div style={{ fontSize: '14px', marginTop: '10px', opacity: 0.7 }}>
+                Use ← → arrow keys to navigate
+              </div>
+            </div>
+          )}
+
+          <div 
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              fontSize: '16px',
+              color: '#2c2c2c',
+              background: 'rgba(250, 250, 250, 0.9)',
+              padding: '10px 20px',
+              border: '1px solid #2c2c2c',
+              borderRadius: '4px',
+              zIndex: 100
+            }}
+          >
+            Progress: {progressPercent}%
+          </div>
+
+          <div 
+            style={{
+              position: 'absolute',
+              right: '30px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              fontSize: '40px',
+              color: '#2c2c2c',
+              opacity: scrollProgress < 100 ? 0.3 : 0,
+              transition: 'opacity 0.5s',
+              animation: 'pulse 2s infinite'
+            }}
+          >
+            ‹
+          </div>
+
+          <svg 
+            width="100%" 
+            height="100%" 
+            viewBox="0 0 1400 700"
+            preserveAspectRatio="xMidYMid slice"
+            style={{
+              filter: 'url(#pencilTexture)'
+            }}
+          >
+            <defs>
+              <filter id="pencilTexture">
+                <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.5" />
+              </filter>
+            </defs>
+
+            <g transform={`translate(${-scrollProgress * 0.1}, 0)`}>
+              {[...Array(20)].map((_, i) => (
+                <line 
+                  key={i}
+                  x1={i * 400}
+                  y1="0"
+                  x2={i * 400}
+                  y2="700"
+                  stroke="#e0e0e0"
+                  strokeWidth="0.5"
+                  opacity="0.3"
+                />
+              ))}
+            </g>
+
+            <g transform={`translate(${-scrollProgress}, 0)`}>
+              <path
+                d={journeyPath}
+                stroke="#2c2c2c"
+                strokeWidth="2.5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray={pathLength}
+                strokeDashoffset={reducedMotion ? 0 : Math.max(0, pathLength - drawProgress)}
+                style={{
+                  transition: reducedMotion ? 'none' : 'stroke-dashoffset 0.1s ease-out'
+                }}
+              />
+
+              {scrollProgress > 900 && scrollProgress < 2200 && (
+                <>
+                  <AfghanistanMap x={950} y={150} scale={0.8} />
+                  <PinIcon x={1000} y={200} label="Kabul" />
+                  
+                  <IndiaMap x={1700} y={100} scale={1} />
+                  <PinIcon x={1765} y={180} label="New Delhi" />
+
+                  {!reducedMotion && scrollProgress > 1000 && scrollProgress < 2000 && (
+                    <AirplaneIcon 
+                      x={airplaneX} 
+                      y={airplaneY} 
+                      rotation={airplaneRotation}
+                      scale={1.5}
+                    />
+                  )}
+                </>
+              )}
+
+              {milestonesData.map((milestone, index) => {
+                const IconComponent = getIconComponent(milestone.icon);
+                const isVisible = Math.abs(milestone.position - scrollProgress) < 800;
+                const isNear = Math.abs(milestone.position - scrollProgress) < 200;
+
+                return (
+                  <g key={index}>
+                    {isVisible && (
+                      <g 
+                        transform={`translate(${milestone.position}, ${295})`}
+                        style={{ 
+                          cursor: 'pointer',
+                          opacity: isNear ? 1 : 0.6,
+                          transition: 'opacity 0.3s'
+                        }}
+                        onClick={() => setSelectedMilestone(milestone)}
+                      >
+                        <line x1="0" y1="5" x2="0" y2="60" stroke="#2c2c2c" strokeWidth="1.5" />
+                        <IconComponent x={0} y={-30} />
+                        
+                        <text 
+                          x="0" 
+                          y="80" 
+                          fontSize="16" 
+                          textAnchor="middle" 
+                          fill="#2c2c2c"
+                          fontWeight="bold"
+                        >
+                          Age {milestone.age}
+                        </text>
+
+                        {isNear && (
+                          <text 
+                            x="0" 
+                            y="100" 
+                            fontSize="12" 
+                            textAnchor="middle" 
+                            fill="#2c2c2c"
+                          >
+                            {milestone.title}
+                          </text>
+                        )}
+                      </g>
+                    )}
+                  </g>
+                );
+              })}
+            </g>
+          </svg>
+
+          <div 
+            style={{
+              position: 'absolute',
+              bottom: '30px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '80%',
+              maxWidth: '800px',
+              height: '50px',
+              background: 'rgba(250, 250, 250, 0.95)',
+              border: '2px solid #2c2c2c',
+              borderRadius: '8px',
+              padding: '10px 20px',
+              display: 'flex',
+              alignItems: 'center',
+              zIndex: 100
+            }}
+          >
+            <div style={{ flex: 1, position: 'relative', height: '10px', background: '#e0e0e0', borderRadius: '5px' }}>
+              <div 
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  height: '100%',
+                  width: `${progressPercent}%`,
+                  background: '#2c2c2c',
+                  borderRadius: '5px',
+                  transition: 'width 0.1s ease-out'
+                }}
+              />
+              
+              {milestonesData.map((milestone, index) => (
+                <div
+                  key={index}
+                  style={{
+                    position: 'absolute',
+                    left: `${(milestone.position / maxScroll) * 100}%`,
+                    top: '-5px',
+                    width: '2px',
+                    height: '20px',
+                    background: '#2c2c2c',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => setScrollProgress(milestone.position)}
+                  title={`Age ${milestone.age}: ${milestone.title}`}
+                />
+              ))}
+
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${progressPercent}%`,
+                  top: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '20px',
+                  height: '20px',
+                  background: '#2c2c2c',
+                  borderRadius: '50%',
+                  cursor: 'grab',
+                  border: '2px solid #fafafa'
+                }}
+              />
+            </div>
+          </div>
+
+          {selectedMilestone && (
+            <div 
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                background: '#fafafa',
+                border: '3px solid #2c2c2c',
+                borderRadius: '12px',
+                padding: '30px',
+                maxWidth: '400px',
+                zIndex: 1000,
+                boxShadow: '8px 8px 0 rgba(0,0,0,0.1)'
+              }}
+              role="dialog"
+              aria-labelledby="milestone-title"
+            >
+              <button
+                onClick={() => setSelectedMilestone(null)}
+                style={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px',
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '24px',
+                  cursor: 'pointer',
+                  color: '#2c2c2c'
+                }}
+                aria-label="Close"
+              >
+                ×
+              </button>
+              
+              <h2 id="milestone-title" style={{ marginTop: 0, fontSize: '24px', color: '#2c2c2c' }}>
+                Age {selectedMilestone.age}
+              </h2>
+              <h3 style={{ fontSize: '18px', color: '#555', marginTop: '5px' }}>
+                {selectedMilestone.title}
+              </h3>
+              <p style={{ fontSize: '16px', lineHeight: '1.6', color: '#2c2c2c', marginTop: '15px' }}>
+                {selectedMilestone.description}
+              </p>
+              
+              {selectedMilestone.from && selectedMilestone.to && (
+                <div style={{ marginTop: '20px', padding: '15px', background: '#f0f0f0', borderRadius: '6px' }}>
+                  <div style={{ fontSize: '14px', color: '#555' }}>
+                    <strong>From:</strong> {selectedMilestone.from.city}, {selectedMilestone.from.country}
+                  </div>
+                  <div style={{ fontSize: '14px', color: '#555', marginTop: '5px' }}>
+                    <strong>To:</strong> {selectedMilestone.to.city}, {selectedMilestone.to.country}
+                  </div>
                 </div>
-            `;
-            
-            // Try each URL pattern
-            for (let i = 0; i < BOX_URLS.length; i++) {
-                const url = BOX_URLS[i];
-                const statusEl = document.getElementById('loadingStatus');
-                if (statusEl) {
-                    statusEl.textContent = `Trying method ${i + 1} of ${BOX_URLS.length}...`;
-                }
-                
-                try {
-                    console.log(`Attempting to fetch from: ${url}`);
-                    
-                    const response = await fetch(url, {
-                        method: 'GET',
-                        mode: 'cors',
-                        cache: 'no-cache'
-                    });
-                    
-                    if (!response.ok) {
-                        console.log(`Method ${i + 1} failed: HTTP ${response.status}`);
-                        continue;
-                    }
-                    
-                    // Successfully got response, try to parse
-                    const arrayBuffer = await response.arrayBuffer();
-                    
-                    // Check if it's actually Excel data
-                    if (arrayBuffer.byteLength < 100) {
-                        console.log(`Method ${i + 1} returned too little data`);
-                        continue;
-                    }
-                    
-                    const data = new Uint8Array(arrayBuffer);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    
-                    if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
-                        console.log(`Method ${i + 1} did not return valid Excel data`);
-                        continue;
-                    }
-                    
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
-                    
-                    if (jsonData.length === 0) {
-                        console.log(`Method ${i + 1} returned empty data`);
-                        continue;
-                    }
-                    
-                    // Success!
-                    console.log(`Success with method ${i + 1}!`);
-                    console.log('Sample data row:', jsonData[0]);
-                    console.log('Column names:', Object.keys(jsonData[0]));
-                    allData = jsonData;
-                    updateLastUpdatedTime();
-                    filterByTerm('all');
-                    refreshBtn.disabled = false;
-                    return;
-                    
-                } catch (error) {
-                    console.log(`Method ${i + 1} error:`, error.message);
-                    continue;
-                }
+              )}
+            </div>
+          )}
+
+          <style>{`
+            @keyframes fadeOut {
+              0% { opacity: 1; }
+              70% { opacity: 1; }
+              100% { opacity: 0; pointer-events: none; }
             }
-            
-            // If we get here, all methods failed
-            console.error('All Box URL patterns failed');
-            container.innerHTML = `
-                <div class="error-message">
-                    <strong>⚠️ Unable to load data from Box</strong>
-                    <p>The automatic data loading from Box is not working. This is likely due to CORS (Cross-Origin Resource Sharing) restrictions.</p>
-                    
-                    <p style="margin-top: 15px;"><strong>Solutions:</strong></p>
-                    <ol style="text-align: left; margin: 10px 0; padding-left: 20px;">
-                        <li><strong>Option 1:</strong> Have your IT team set up a server-side proxy to fetch from Box</li>
-                        <li><strong>Option 2:</strong> Use the CSV version where staff upload the file</li>
-                        <li><strong>Option 3:</strong> Convert to Google Sheets (more CORS-friendly)</li>
-                    </ol>
-                    
-                    <p style="margin-top: 15px; font-size: 12px;">
-                        <strong>Technical details:</strong><br>
-                        Box URL: ${BOX_SHARED_LINK}<br>
-                        Tried ${BOX_URLS.length} different connection methods
-                    </p>
-                    
-                    <div style="margin-top: 20px; padding: 15px; background: #e7f3ff; border-radius: 5px;">
-                        <strong>Recommended:</strong> I can provide you with a version that uses a local CSV file or Google Sheets instead. These are more reliable for public websites.
-                    </div>
-                </div>
-            `;
-            refreshBtn.disabled = false;
-        }
-        
-        function updateLastUpdatedTime() {
-            const now = new Date();
-            const timeString = now.toLocaleString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true
-            });
-            document.getElementById('lastUpdated').textContent = timeString;
-        }
-        
-        function filterByTerm(term) {
-            currentFilter = term;
-            setActiveFilter(term);
-            
-            if (allData.length === 0) {
-                return;
+
+            @keyframes pulse {
+              0%, 100% { opacity: 0.3; }
+              50% { opacity: 0.6; }
             }
-            
-            let filtered = [];
-            
-            if (term === 'all') {
-                filtered = allData.map(row => ({
-                    courseCode: row['Course Code'],
-                    courseTitle: row['Course Title'],
-                    term: getAllTerms(row),
-                    faculty: getAllFaculty(row)
-                }));
-            } else {
-                // Map button term to exact Excel column name
-                let columnName = term;
-                if (term === 'Summer Sessions 2026') {
-                    columnName = 'Summer 2026';
-                }
-                
-                console.log('Filtering for term:', term);
-                console.log('Looking for column:', columnName);
-                console.log('Sample row columns:', allData[0] ? Object.keys(allData[0]) : 'No data');
-                
-                filtered = allData
-                    .filter(row => {
-                        const hasX = row[columnName] === 'X';
-                        if (hasX) console.log('Found course with X:', row['Course Code']);
-                        return hasX;
-                    })
-                    .map(row => ({
-                        courseCode: row['Course Code'],
-                        courseTitle: row['Course Title'],
-                        term: term,
-                        faculty: getFacultyForTerm(row, term)
-                    }));
-                
-                console.log('Filtered courses count:', filtered.length);
+
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
             }
-            
-            displayData(filtered, term);
-        }
-        
-        function getAllTerms(row) {
-            const terms = [];
-            if (row['Fall 2025'] === 'X') terms.push('Fall 2025');
-            if (row['Winter 2026'] === 'X') terms.push('Winter 2026');
-            if (row['Spring 2026'] === 'X') terms.push('Spring 2026');
-            if (row['Summer 2026'] === 'X') terms.push('Summer 2026');
-            return terms.join(', ') || 'None';
-        }
-        
-        function getAllFaculty(row) {
-            const faculty = [];
-            if (row['Fall 2025'] === 'X' && row['Fall Faculty']) {
-                faculty.push(`Fall: ${row['Fall Faculty']}`);
+
+            @media (max-width: 768px) {
+              .life-journey-container {
+                font-size: 14px;
+              }
             }
-            if (row['Winter 2026'] === 'X' && row['Winter Faculty']) {
-                faculty.push(`Winter: ${row['Winter Faculty']}`);
+
+            @media (prefers-reduced-motion: reduce) {
+              * {
+                animation: none !important;
+                transition: none !important;
+              }
             }
-            if (row['Spring 2026'] === 'X' && row['Spring Faculty']) {
-                faculty.push(`Spring: ${row['Spring Faculty']}`);
-            }
-            if (row['Summer 2026'] === 'X' && row['Summer Faculty']) {
-                faculty.push(`Summer: ${row['Summer Faculty']}`);
-            }
-            return faculty.join(', ') || 'TBA';
-        }
-        
-        function getFacultyForTerm(row, term) {
-            if (term === 'Fall 2025') return row['Fall Faculty'] || 'TBA';
-            if (term === 'Winter 2026') return row['Winter Faculty'] || 'TBA';
-            if (term === 'Spring 2026') return row['Spring Faculty'] || 'TBA';
-            if (term === 'Summer Sessions 2026') return row['Summer Faculty'] || 'TBA';
-            return 'TBA';
-        }
-        
-        function setActiveFilter(term) {
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent.trim() === (term === 'all' ? 'All Terms' : term)) {
-                    btn.classList.add('active');
-                }
-            });
-        }
-        
-        function displayData(data, term) {
-            const container = document.getElementById('dataContainer');
-            const resultsInfo = document.getElementById('resultsInfo');
-            const resultCount = document.getElementById('resultCount');
-            
-            if (data.length === 0) {
-                container.innerHTML = `
-                    <div class="no-data">
-                        <p>📭 No courses found</p>
-                        <p style="font-size: 14px; color: #adb5bd;">No courses are offered in ${term}</p>
-                    </div>
-                `;
-                resultsInfo.style.display = 'none';
-                return;
-            }
-            
-            resultsInfo.style.display = 'block';
-            resultCount.textContent = data.length;
-            
-            let tableHTML = `
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Course Code</th>
-                            <th>Course Title</th>
-                            <th>${term === 'all' ? 'Terms Offered' : 'Term'}</th>
-                            <th>Faculty</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-            
-            data.forEach(row => {
-                tableHTML += `
-                    <tr>
-                        <td class="course-code">${row.courseCode || ''}</td>
-                        <td>${row.courseTitle || ''}</td>
-                        <td>${row.term || ''}</td>
-                        <td>${row.faculty || ''}</td>
-                    </tr>
-                `;
-            });
-            
-            tableHTML += '</tbody></table>';
-            container.innerHTML = tableHTML;
-        }
-    </script>
+          `}</style>
+        </div>
+      );
+    };
+
+    // Render the app
+    ReactDOM.createRoot(document.getElementById('root')).render(<LifeJourneyTimeline />);
+  </script>
 </body>
 </html>
