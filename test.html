@@ -91,13 +91,18 @@
     }
 
     @keyframes glow {
-      0%, 100% { filter: drop-shadow(0 0 2px rgba(44, 44, 44, 0.3)); }
-      50% { filter: drop-shadow(0 0 8px rgba(44, 44, 44, 0.6)); }
+      0%, 100% { filter: drop-shadow(0 0 3px rgba(44, 44, 44, 0.4)); }
+      50% { filter: drop-shadow(0 0 12px rgba(44, 44, 44, 0.8)); }
     }
 
     @keyframes bounce {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.1); }
+    }
+
+    @keyframes trail {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
     }
 
     @media (max-width: 768px) {
@@ -202,30 +207,40 @@
     // SVG ICON COMPONENTS
     // ============================================
     
-    // Improved airplane icon that actually looks like an airplane
+    // Solid filled airplane silhouette - inspired by reference image
     const AirplaneIcon = ({ x, y, rotation = 0, scale = 1 }) => (
       <g transform={`translate(${x}, ${y}) rotate(${rotation}) scale(${scale})`}>
-        {/* Main fuselage */}
-        <ellipse cx="0" cy="0" rx="25" ry="8" fill="none" stroke="#2c2c2c" strokeWidth="2" />
+        {/* Main body/fuselage as solid shape */}
+        <path 
+          d="M -8,-2 L 15,-1 L 18,0 L 15,1 L -8,2 Z" 
+          fill="#2c2c2c"
+        />
         
-        {/* Cockpit/nose */}
-        <path d="M 20,0 Q 30,-2 32,0 Q 30,2 20,0" fill="none" stroke="#2c2c2c" strokeWidth="2" />
+        {/* Wings - solid filled */}
+        <path 
+          d="M -5,-2 L -12,-12 L -2,-14 L 3,-2 Z" 
+          fill="#2c2c2c"
+        />
+        <path 
+          d="M -5,2 L -12,12 L -2,14 L 3,2 Z" 
+          fill="#2c2c2c"
+        />
         
-        {/* Wings */}
-        <path d="M -8,-8 L -15,-20 L 5,-20 L 8,-8 Z" fill="none" stroke="#2c2c2c" strokeWidth="2" strokeLinejoin="round" />
-        <path d="M -8,8 L -15,20 L 5,20 L 8,8 Z" fill="none" stroke="#2c2c2c" strokeWidth="2" strokeLinejoin="round" />
+        {/* Tail fin - solid filled */}
+        <path 
+          d="M -8,-2 L -15,-6 L -12,-1 L -15,6 L -8,2 Z" 
+          fill="#2c2c2c"
+        />
         
-        {/* Tail fin */}
-        <path d="M -20,-2 L -30,-8 L -25,0 L -30,8 L -20,2" fill="none" stroke="#2c2c2c" strokeWidth="2" strokeLinejoin="round" />
-        
-        {/* Tail wings */}
-        <path d="M -22,-3 L -28,-10 L -20,-5" fill="none" stroke="#2c2c2c" strokeWidth="1.5" />
-        <path d="M -22,3 L -28,10 L -20,5" fill="none" stroke="#2c2c2c" strokeWidth="1.5" />
-        
-        {/* Windows */}
-        <circle cx="10" cy="0" r="2" fill="#2c2c2c" />
-        <circle cx="0" cy="0" r="2" fill="#2c2c2c" />
-        <circle cx="-10" cy="0" r="2" fill="#2c2c2c" />
+        {/* Tail stabilizers */}
+        <path 
+          d="M -10,-2 L -16,-8 L -11,-3" 
+          fill="#2c2c2c"
+        />
+        <path 
+          d="M -10,2 L -16,8 L -11,3" 
+          fill="#2c2c2c"
+        />
       </g>
     );
 
@@ -284,12 +299,14 @@
 
     const PinIcon = ({ x, y, label }) => (
       <g transform={`translate(${x}, ${y})`}>
-        <circle cx="0" cy="0" r="8" stroke="#2c2c2c" strokeWidth="1.5" fill="none" />
-        <circle cx="0" cy="0" r="3" fill="#2c2c2c" />
-        <line x1="0" y1="8" x2="0" y2="20" stroke="#2c2c2c" strokeWidth="1.5" />
-        <circle cx="0" cy="22" r="2" fill="#2c2c2c" />
+        {/* Solid filled pin like in reference image */}
+        <path 
+          d="M 0,-20 Q -12,-20 -12,-8 Q -12,0 0,15 Q 12,0 12,-8 Q 12,-20 0,-20 Z" 
+          fill="#2c2c2c"
+        />
+        <circle cx="0" cy="-8" r="5" fill="#fafafa" />
         {label && (
-          <text x="0" y="40" fontSize="14" textAnchor="middle" fill="#2c2c2c" fontFamily="'Courier New', monospace" fontWeight="bold">
+          <text x="0" y="35" fontSize="14" textAnchor="middle" fill="#2c2c2c" fontFamily="'Courier New', monospace" fontWeight="bold">
             {label}
           </text>
         )}
@@ -421,18 +438,30 @@
       const pathLength = 7000;
       const drawProgress = (scrollProgress / maxScroll) * pathLength;
 
-      // Calculate airplane position - CIRCULAR LOOP
+      // Calculate airplane position - CIRCULAR LOOP like reference image
       const airplaneProgress = Math.max(0, Math.min(1, (scrollProgress - 1000) / 1000));
       
       // Create circular loop motion
       const loopCenterX = 1600;
       const loopCenterY = 250;
-      const loopRadius = 150;
+      const loopRadius = 120;
       const angle = airplaneProgress * Math.PI * 2; // Full circle
       
       const airplaneX = loopCenterX + Math.cos(angle) * loopRadius;
       const airplaneY = loopCenterY + Math.sin(angle) * loopRadius;
-      const airplaneRotation = (angle * 180 / Math.PI) + 90; // Rotate to face direction of travel
+      const airplaneRotation = (angle * 180 / Math.PI) + 90;
+
+      // Generate dotted loop path like in reference image
+      const generateLoopPath = () => {
+        const points = [];
+        for (let i = 0; i <= 360; i += 5) {
+          const rad = (i * Math.PI) / 180;
+          const x = loopCenterX + Math.cos(rad) * loopRadius;
+          const y = loopCenterY + Math.sin(rad) * loopRadius;
+          points.push(`${i === 0 ? 'M' : 'L'} ${x} ${y}`);
+        }
+        return points.join(' ') + ' Z';
+      };
 
       const getIconComponent = (icon) => {
         switch (icon) {
@@ -585,7 +614,7 @@
 
             {/* Main content group that moves with scroll */}
             <g transform={`translate(${-scrollProgress}, 0)`}>
-              {/* The journey line - NOW DASHED */}
+              {/* The journey line - DASHED like reference */}
               <path
                 d={journeyPath}
                 stroke="#2c2c2c"
@@ -593,8 +622,8 @@
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeDasharray="20 10"
-                opacity="0.8"
+                strokeDasharray="15 10"
+                opacity="0.7"
               />
 
               {/* Animated drawing overlay - dashed */}
@@ -605,8 +634,8 @@
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeDasharray={`20 10 ${pathLength}`}
-                strokeDashoffset={reducedMotion ? 0 : Math.max(0, pathLength - drawProgress + 30)}
+                strokeDasharray={`15 10 ${pathLength}`}
+                strokeDashoffset={reducedMotion ? 0 : Math.max(0, pathLength - drawProgress + 25)}
                 style={{
                   transition: reducedMotion ? 'none' : 'stroke-dashoffset 0.1s ease-out'
                 }}
@@ -625,33 +654,85 @@
                     <PinIcon x={1765} y={180} label="New Delhi" />
                   </g>
 
-                  {/* Circular loop path visualization */}
+                  {/* DOTTED LOOP PATH - like reference image */}
                   {!reducedMotion && scrollProgress > 1000 && scrollProgress < 2000 && (
                     <>
-                      <circle 
-                        cx={loopCenterX} 
-                        cy={loopCenterY} 
-                        r={loopRadius} 
-                        stroke="#2c2c2c" 
-                        strokeWidth="2" 
-                        strokeDasharray="10 5"
+                      {/* Main dotted loop path */}
+                      <path 
+                        d={generateLoopPath()}
+                        stroke="#555" 
+                        strokeWidth="3" 
+                        strokeDasharray="12 8"
                         fill="none" 
-                        opacity="0.3"
+                        opacity="0.6"
                       />
                       
-                      {/* Animated airplane in circular loop */}
-                      <g style={{ animation: 'glow 2s ease-in-out infinite' }}>
+                      {/* Progress on the loop - shows completed portion */}
+                      <path 
+                        d={generateLoopPath()}
+                        stroke="#2c2c2c" 
+                        strokeWidth="3" 
+                        strokeDasharray="12 8"
+                        fill="none" 
+                        strokeDashoffset={-airplaneProgress * (loopRadius * 2 * Math.PI)}
+                        opacity="0.8"
+                      />
+
+                      {/* Dotted line from Kabul to loop start */}
+                      <line 
+                        x1={1000} 
+                        y1={215} 
+                        x2={loopCenterX - loopRadius} 
+                        y2={loopCenterY}
+                        stroke="#555"
+                        strokeWidth="3"
+                        strokeDasharray="12 8"
+                        opacity="0.5"
+                      />
+
+                      {/* Dotted line from loop to India */}
+                      <line 
+                        x1={loopCenterX + loopRadius} 
+                        y1={loopCenterY} 
+                        x2={1765} 
+                        y2={195}
+                        stroke="#555"
+                        strokeWidth="3"
+                        strokeDasharray="12 8"
+                        opacity="0.5"
+                      />
+                      
+                      {/* SOLID FILLED AIRPLANE with glow - like reference image */}
+                      <g style={{ animation: 'glow 2s ease-in-out infinite', filter: 'drop-shadow(0 0 8px rgba(44,44,44,0.6))' }}>
                         <AirplaneIcon 
                           x={airplaneX} 
                           y={airplaneY} 
                           rotation={airplaneRotation}
-                          scale={1.8}
+                          scale={2.2}
                         />
                       </g>
 
-                      {/* Decorative clouds around the airplane */}
-                      <Cloud x={loopCenterX - 200} y={loopCenterY - 50} scale={0.6} />
-                      <Cloud x={loopCenterX + 180} y={loopCenterY + 80} scale={0.7} />
+                      {/* Trail effect behind airplane */}
+                      {[...Array(5)].map((_, i) => {
+                        const trailAngle = angle - (i * 0.15);
+                        const trailX = loopCenterX + Math.cos(trailAngle) * loopRadius;
+                        const trailY = loopCenterY + Math.sin(trailAngle) * loopRadius;
+                        const trailOpacity = 0.3 - (i * 0.06);
+                        return (
+                          <circle 
+                            key={i}
+                            cx={trailX} 
+                            cy={trailY} 
+                            r={3 - i * 0.4} 
+                            fill="#2c2c2c" 
+                            opacity={trailOpacity}
+                          />
+                        );
+                      })}
+
+                      {/* Decorative clouds around the loop */}
+                      <Cloud x={loopCenterX - 180} y={loopCenterY - 60} scale={0.6} />
+                      <Cloud x={loopCenterX + 160} y={loopCenterY + 70} scale={0.7} />
                     </>
                   )}
                 </>
@@ -690,7 +771,7 @@
                           />
                         )}
 
-                        {/* Connection line with pulse effect */}
+                        {/* Connection line - DASHED */}
                         <line 
                           x1="0" 
                           y1="5" 
@@ -698,7 +779,7 @@
                           y2="60" 
                           stroke="#2c2c2c" 
                           strokeWidth={isHovered ? "2.5" : "1.5"}
-                          strokeDasharray={isHovered ? "5 5" : "none"}
+                          strokeDasharray="6 4"
                           style={{ transition: 'all 0.3s' }}
                         />
                         
