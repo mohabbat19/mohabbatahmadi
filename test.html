@@ -33,7 +33,6 @@
       height: 100vh;
     }
 
-    /* Loading screen */
     #loading {
       position: fixed;
       top: 0;
@@ -90,19 +89,9 @@
       50% { transform: translateY(-10px); }
     }
 
-    @keyframes glow {
-      0%, 100% { filter: drop-shadow(0 0 3px rgba(44, 44, 44, 0.4)); }
-      50% { filter: drop-shadow(0 0 12px rgba(44, 44, 44, 0.8)); }
-    }
-
     @keyframes bounce {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.1); }
-    }
-
-    @keyframes trail {
-      0% { opacity: 1; }
-      100% { opacity: 0; }
     }
 
     @media (max-width: 768px) {
@@ -127,29 +116,19 @@
       transform: scale(1.3);
       filter: drop-shadow(0 4px 8px rgba(44, 44, 44, 0.3));
     }
-
-    .milestone-marker:active {
-      transform: scale(1.1);
-    }
   </style>
 </head>
 <body>
-  <!-- Loading Screen -->
   <div id="loading">
     <div class="loading-spinner"></div>
     <div class="loading-text">Drawing your journey...</div>
   </div>
 
-  <!-- React App Root -->
   <div id="root"></div>
 
-  <!-- The Life Journey Component -->
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
-    // ============================================
-    // MILESTONE DATA - CUSTOMIZE YOUR STORY HERE
-    // ============================================
     const milestonesData = [
       {
         age: 0,
@@ -203,72 +182,38 @@
       }
     ];
 
-    // ============================================
-    // SVG ICON COMPONENTS
-    // ============================================
-    
-    // Solid filled airplane silhouette - inspired by reference image
     const AirplaneIcon = ({ x, y, rotation = 0, scale = 1 }) => (
       <g transform={`translate(${x}, ${y}) rotate(${rotation}) scale(${scale})`}>
-        {/* Main body/fuselage as solid shape */}
-        <path 
-          d="M -8,-2 L 15,-1 L 18,0 L 15,1 L -8,2 Z" 
-          fill="#2c2c2c"
-        />
-        
-        {/* Wings - solid filled */}
-        <path 
-          d="M -5,-2 L -12,-12 L -2,-14 L 3,-2 Z" 
-          fill="#2c2c2c"
-        />
-        <path 
-          d="M -5,2 L -12,12 L -2,14 L 3,2 Z" 
-          fill="#2c2c2c"
-        />
-        
-        {/* Tail fin - solid filled */}
-        <path 
-          d="M -8,-2 L -15,-6 L -12,-1 L -15,6 L -8,2 Z" 
-          fill="#2c2c2c"
-        />
-        
-        {/* Tail stabilizers */}
-        <path 
-          d="M -10,-2 L -16,-8 L -11,-3" 
-          fill="#2c2c2c"
-        />
-        <path 
-          d="M -10,2 L -16,8 L -11,3" 
-          fill="#2c2c2c"
-        />
+        <path d="M -8,-2 L 15,-1 L 18,0 L 15,1 L -8,2 Z" fill="#4a5568"/>
+        <path d="M -5,-2 L -12,-12 L -2,-14 L 3,-2 Z" fill="#4a5568"/>
+        <path d="M -5,2 L -12,12 L -2,14 L 3,2 Z" fill="#4a5568"/>
+        <path d="M -8,-2 L -15,-6 L -12,-1 L -15,6 L -8,2 Z" fill="#4a5568"/>
+        <path d="M -10,-2 L -16,-8 L -11,-3" fill="#4a5568"/>
+        <path d="M -10,2 L -16,8 L -11,3" fill="#4a5568"/>
       </g>
     );
 
     const BookIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`} className="milestone-icon">
+      <g transform={`translate(${x}, ${y})`}>
         <rect x="-12" y="-15" width="24" height="30" stroke="#2c2c2c" strokeWidth="1.5" fill="none" rx="2" />
         <line x1="-12" y1="-10" x2="12" y2="-10" stroke="#2c2c2c" strokeWidth="1" />
         <line x1="-12" y1="-5" x2="12" y2="-5" stroke="#2c2c2c" strokeWidth="1" />
-        <line x1="-12" y1="0" x2="12" y2="0" stroke="#2c2c2c" strokeWidth="1" />
         <line x1="0" y1="-15" x2="0" y2="15" stroke="#2c2c2c" strokeWidth="1.5" />
       </g>
     );
 
     const StarIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`} className="milestone-icon">
+      <g transform={`translate(${x}, ${y})`}>
         <path
           d="M 0,-15 L 4,-5 L 15,-5 L 7,2 L 10,13 L 0,6 L -10,13 L -7,2 L -15,-5 L -4,-5 Z"
-          stroke="#2c2c2c"
-          strokeWidth="1.5"
-          fill="none"
-          strokeLinejoin="round"
+          stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinejoin="round"
         />
         <circle cx="0" cy="0" r="3" fill="none" stroke="#2c2c2c" strokeWidth="1" />
       </g>
     );
 
     const CodeIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`} className="milestone-icon">
+      <g transform={`translate(${x}, ${y})`}>
         <path d="M -15,-10 L -5,0 L -15,10" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M 15,-10 L 5,0 L 15,10" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
         <line x1="-2" y1="-12" x2="2" y2="12" stroke="#2c2c2c" strokeWidth="1.5" strokeLinecap="round" />
@@ -278,7 +223,7 @@
     );
 
     const GraduationIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`} className="milestone-icon">
+      <g transform={`translate(${x}, ${y})`}>
         <path d="M -15,-8 L 0,-15 L 15,-8 L 15,0 L 0,7 L -15,0 Z" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
         <line x1="0" y1="7" x2="0" y2="15" stroke="#2c2c2c" strokeWidth="1.5" strokeLinecap="round" />
         <rect x="-5" y="13" width="10" height="3" stroke="#2c2c2c" strokeWidth="1.5" fill="none" />
@@ -288,7 +233,7 @@
     );
 
     const UniversityIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`} className="milestone-icon">
+      <g transform={`translate(${x}, ${y})`}>
         <rect x="-15" y="-10" width="30" height="25" stroke="#2c2c2c" strokeWidth="1.5" fill="none" />
         <path d="M -15,-10 L 0,-18 L 15,-10" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
         <rect x="-10" y="0" width="6" height="15" stroke="#2c2c2c" strokeWidth="1.2" fill="none" />
@@ -299,58 +244,42 @@
 
     const PinIcon = ({ x, y, label }) => (
       <g transform={`translate(${x}, ${y})`}>
-        {/* Solid filled pin like in reference image */}
-        <path 
-          d="M 0,-20 Q -12,-20 -12,-8 Q -12,0 0,15 Q 12,0 12,-8 Q 12,-20 0,-20 Z" 
-          fill="#2c2c2c"
-        />
+        <path d="M 0,-20 Q -12,-20 -12,-8 Q -12,0 0,15 Q 12,0 12,-8 Q 12,-20 0,-20 Z" fill="#2c2c2c"/>
         <circle cx="0" cy="-8" r="5" fill="#fafafa" />
         {label && (
-          <text x="0" y="35" fontSize="14" textAnchor="middle" fill="#2c2c2c" fontFamily="'Courier New', monospace" fontWeight="bold">
+          <text x="0" y="35" fontSize="13" textAnchor="middle" fill="#2c2c2c" fontFamily="'Courier New', monospace" fontWeight="bold">
             {label}
           </text>
         )}
       </g>
     );
 
-    // Simplified Afghanistan outline
     const AfghanistanMap = ({ x, y, scale = 1 }) => (
       <g transform={`translate(${x}, ${y}) scale(${scale})`}>
         <path
-          d="M 0,20 L 15,10 L 35,8 L 55,15 L 65,8 L 75,12 L 85,8 L 95,15 L 100,25 L 95,40 L 85,50 L 70,55 L 50,52 L 30,45 L 15,35 L 5,28 Z"
-          stroke="#2c2c2c"
-          strokeWidth="2"
-          fill="rgba(44, 44, 44, 0.05)"
-          strokeLinejoin="round"
+          d="M 20,35 L 35,28 L 50,25 L 68,20 L 85,18 L 100,22 L 115,20 L 128,25 L 138,22 L 145,30 L 148,42 L 145,55 L 138,65 L 125,72 L 108,75 L 90,75 L 72,72 L 55,68 L 40,60 L 28,50 L 22,42 Z"
+          stroke="#2c2c2c" strokeWidth="2" fill="none" strokeLinejoin="round"
         />
       </g>
     );
 
-    // Simplified India outline
     const IndiaMap = ({ x, y, scale = 1 }) => (
       <g transform={`translate(${x}, ${y}) scale(${scale})`}>
         <path
-          d="M 40,0 L 55,5 L 65,15 L 70,30 L 75,50 L 70,70 L 65,90 L 55,110 L 45,125 L 35,135 L 25,125 L 20,110 L 15,90 L 10,70 L 15,50 L 20,30 L 30,15 L 35,5 Z M 25,140 L 20,145 L 25,150"
-          stroke="#2c2c2c"
-          strokeWidth="2"
-          fill="rgba(44, 44, 44, 0.05)"
-          strokeLinejoin="round"
+          d="M 60,10 L 75,8 L 88,12 L 98,20 L 105,35 L 108,52 L 110,70 L 108,88 L 105,105 L 98,122 L 88,138 L 78,150 L 68,158 L 58,162 L 48,158 L 40,150 L 35,138 L 30,122 L 28,105 L 25,88 L 25,70 L 28,52 L 32,35 L 38,22 L 48,12 Z M 55,165 L 48,172 L 52,178"
+          stroke="#2c2c2c" strokeWidth="2" fill="none" strokeLinejoin="round"
         />
       </g>
     );
 
-    // Cloud decoration
     const Cloud = ({ x, y, scale = 1 }) => (
-      <g transform={`translate(${x}, ${y}) scale(${scale})`} opacity="0.3">
-        <ellipse cx="0" cy="0" rx="15" ry="8" fill="none" stroke="#2c2c2c" strokeWidth="1" />
-        <ellipse cx="-10" cy="2" rx="10" ry="6" fill="none" stroke="#2c2c2c" strokeWidth="1" />
-        <ellipse cx="10" cy="2" rx="10" ry="6" fill="none" stroke="#2c2c2c" strokeWidth="1" />
+      <g transform={`translate(${x}, ${y}) scale(${scale})`} opacity="0.25">
+        <ellipse cx="0" cy="0" rx="18" ry="10" fill="none" stroke="#2c2c2c" strokeWidth="1.5" />
+        <ellipse cx="-12" cy="3" rx="12" ry="8" fill="none" stroke="#2c2c2c" strokeWidth="1.5" />
+        <ellipse cx="12" cy="3" rx="12" ry="8" fill="none" stroke="#2c2c2c" strokeWidth="1.5" />
       </g>
     );
 
-    // ============================================
-    // MAIN COMPONENT
-    // ============================================
     const LifeJourneyTimeline = () => {
       const [scrollProgress, setScrollProgress] = useState(0);
       const [selectedMilestone, setSelectedMilestone] = useState(null);
@@ -363,14 +292,11 @@
       useEffect(() => {
         const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
         setReducedMotion(mediaQuery.matches);
-
         const hintTimer = setTimeout(() => setShowHint(false), 3000);
-
         setTimeout(() => {
           const loadingEl = document.getElementById('loading');
           if (loadingEl) loadingEl.classList.add('hidden');
         }, 500);
-
         return () => clearTimeout(hintTimer);
       }, []);
 
@@ -423,11 +349,10 @@
         return () => window.removeEventListener('keydown', handleKeyDown);
       }, [scrollProgress, selectedMilestone]);
 
-      // Generate the journey path
       const generatePath = () => {
         let path = "M 100 300";
         path += " L 800 280 Q 1000 270 1200 300";
-        path += " Q 1400 350 1600 320 Q 1800 290 2000 310";
+        path += " Q 1350 320 1500 310 Q 1650 295 1800 305";
         path += " L 2400 300 Q 2600 290 2800 310 L 3600 305";
         path += " Q 3800 300 4000 320 L 4800 315";
         path += " Q 5000 310 5200 300 L 6000 295 L 6500 290";
@@ -438,30 +363,10 @@
       const pathLength = 7000;
       const drawProgress = (scrollProgress / maxScroll) * pathLength;
 
-      // Calculate airplane position - CIRCULAR LOOP like reference image
       const airplaneProgress = Math.max(0, Math.min(1, (scrollProgress - 1000) / 1000));
-      
-      // Create circular loop motion
-      const loopCenterX = 1600;
-      const loopCenterY = 250;
-      const loopRadius = 120;
-      const angle = airplaneProgress * Math.PI * 2; // Full circle
-      
-      const airplaneX = loopCenterX + Math.cos(angle) * loopRadius;
-      const airplaneY = loopCenterY + Math.sin(angle) * loopRadius;
-      const airplaneRotation = (angle * 180 / Math.PI) + 90;
-
-      // Generate dotted loop path like in reference image
-      const generateLoopPath = () => {
-        const points = [];
-        for (let i = 0; i <= 360; i += 5) {
-          const rad = (i * Math.PI) / 180;
-          const x = loopCenterX + Math.cos(rad) * loopRadius;
-          const y = loopCenterY + Math.sin(rad) * loopRadius;
-          points.push(`${i === 0 ? 'M' : 'L'} ${x} ${y}`);
-        }
-        return points.join(' ') + ' Z';
-      };
+      const airplaneX = 1200 + (airplaneProgress * 600);
+      const airplaneY = 300 + Math.sin(airplaneProgress * Math.PI * 0.8) * 20 + (airplaneProgress * 5);
+      const airplaneRotation = -15 + (airplaneProgress * 10);
 
       const getIconComponent = (icon) => {
         switch (icon) {
@@ -487,13 +392,12 @@
             width: '100vw',
             height: '100vh',
             overflow: 'hidden',
-            background: 'linear-gradient(to bottom, #fafafa 0%, #f0f0f0 100%)',
+            background: 'linear-gradient(to bottom, #f5f5f5 0%, #e8e8e8 100%)',
             position: 'relative',
             cursor: 'grab',
             fontFamily: "'Courier New', monospace"
           }}
         >
-          {/* Hint overlay */}
           {showHint && (
             <div 
               style={{
@@ -520,7 +424,6 @@
             </div>
           )}
 
-          {/* Progress indicator */}
           <div 
             style={{
               position: 'absolute',
@@ -540,7 +443,6 @@
             📍 Progress: {progressPercent}%
           </div>
 
-          {/* Scroll cue chevrons */}
           <div 
             style={{
               position: 'absolute',
@@ -558,36 +460,20 @@
             ‹‹
           </div>
 
-          {/* Main SVG Canvas */}
           <svg 
             width="100%" 
             height="100%" 
             viewBox="0 0 1400 700"
             preserveAspectRatio="xMidYMid slice"
-            style={{
-              filter: 'url(#pencilTexture)'
-            }}
           >
             <defs>
-              {/* Pencil texture filter */}
               <filter id="pencilTexture">
-                <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.5" />
-              </filter>
-
-              {/* Glow effect for active elements */}
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
+                <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.3" />
               </filter>
             </defs>
 
-            {/* Background elements that move with scroll */}
             <g transform={`translate(${-scrollProgress * 0.1}, 0)`}>
-              {/* Subtle grid lines */}
               {[...Array(20)].map((_, i) => (
                 <line 
                   key={i}
@@ -595,26 +481,20 @@
                   y1="0"
                   x2={i * 400}
                   y2="700"
-                  stroke="#e0e0e0"
+                  stroke="#d0d0d0"
                   strokeWidth="0.5"
-                  opacity="0.3"
+                  opacity="0.4"
                 />
               ))}
             </g>
 
-            {/* Decorative clouds */}
-            <g transform={`translate(${-scrollProgress * 0.15}, 0)`}>
-              <Cloud x={300} y={100} scale={0.8} />
-              <Cloud x={800} y={150} scale={1.2} />
-              <Cloud x={1500} y={80} scale={1} />
-              <Cloud x={2200} y={120} scale={0.9} />
-              <Cloud x={3000} y={100} scale={1.1} />
-              <Cloud x={4000} y={90} scale={0.85} />
+            <g transform={`translate(${-scrollProgress * 0.2}, 0)`}>
+              <Cloud x={200} y={80} scale={0.7} />
+              <Cloud x={600} y={120} scale={0.9} />
+              <Cloud x={1100} y={90} scale={0.8} />
             </g>
 
-            {/* Main content group that moves with scroll */}
-            <g transform={`translate(${-scrollProgress}, 0)`}>
-              {/* The journey line - DASHED like reference */}
+            <g transform={`translate(${-scrollProgress}, 0)`} style={{ filter: 'url(#pencilTexture)' }}>
               <path
                 d={journeyPath}
                 stroke="#2c2c2c"
@@ -623,14 +503,13 @@
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeDasharray="15 10"
-                opacity="0.7"
+                opacity="0.6"
               />
 
-              {/* Animated drawing overlay - dashed */}
               <path
                 d={journeyPath}
                 stroke="#2c2c2c"
-                strokeWidth="3"
+                strokeWidth="3.5"
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -641,104 +520,64 @@
                 }}
               />
 
-              {/* Afghanistan and India maps during the travel segment */}
               {scrollProgress > 900 && scrollProgress < 2200 && (
                 <>
-                  <g style={{ animation: 'float 3s ease-in-out infinite' }}>
-                    <AfghanistanMap x={950} y={150} scale={0.8} />
-                    <PinIcon x={1000} y={200} label="Kabul" />
+                  <g style={{ animation: 'float 4s ease-in-out infinite' }}>
+                    <AfghanistanMap x={850} y={80} scale={1} />
+                    <PinIcon x={1000} y={120} label="Kabul" />
                   </g>
                   
-                  <g style={{ animation: 'float 3s ease-in-out infinite 1.5s' }}>
-                    <IndiaMap x={1700} y={100} scale={1} />
-                    <PinIcon x={1765} y={180} label="New Delhi" />
+                  <g style={{ animation: 'float 4s ease-in-out infinite 2s' }}>
+                    <IndiaMap x={1650} y={50} scale={1} />
+                    <PinIcon x={1740} y={125} label="New Delhi" />
                   </g>
 
-                  {/* DOTTED LOOP PATH - like reference image */}
                   {!reducedMotion && scrollProgress > 1000 && scrollProgress < 2000 && (
                     <>
-                      {/* Main dotted loop path */}
-                      <path 
-                        d={generateLoopPath()}
-                        stroke="#555" 
-                        strokeWidth="3" 
-                        strokeDasharray="12 8"
-                        fill="none" 
-                        opacity="0.6"
-                      />
-                      
-                      {/* Progress on the loop - shows completed portion */}
-                      <path 
-                        d={generateLoopPath()}
-                        stroke="#2c2c2c" 
-                        strokeWidth="3" 
-                        strokeDasharray="12 8"
-                        fill="none" 
-                        strokeDashoffset={-airplaneProgress * (loopRadius * 2 * Math.PI)}
-                        opacity="0.8"
-                      />
-
-                      {/* Dotted line from Kabul to loop start */}
                       <line 
-                        x1={1000} 
-                        y1={215} 
-                        x2={loopCenterX - loopRadius} 
-                        y2={loopCenterY}
-                        stroke="#555"
-                        strokeWidth="3"
-                        strokeDasharray="12 8"
+                        x1={1200}
+                        y1={355}
+                        x2={airplaneX}
+                        y2={airplaneY}
+                        stroke="#666"
+                        strokeWidth="2"
+                        strokeDasharray="6 4"
                         opacity="0.5"
                       />
 
-                      {/* Dotted line from loop to India */}
-                      <line 
-                        x1={loopCenterX + loopRadius} 
-                        y1={loopCenterY} 
-                        x2={1765} 
-                        y2={195}
-                        stroke="#555"
-                        strokeWidth="3"
-                        strokeDasharray="12 8"
-                        opacity="0.5"
-                      />
-                      
-                      {/* SOLID FILLED AIRPLANE with glow - like reference image */}
-                      <g style={{ animation: 'glow 2s ease-in-out infinite', filter: 'drop-shadow(0 0 8px rgba(44,44,44,0.6))' }}>
+                      <g style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}>
                         <AirplaneIcon 
                           x={airplaneX} 
                           y={airplaneY} 
                           rotation={airplaneRotation}
-                          scale={2.2}
+                          scale={2.5}
                         />
                       </g>
 
-                      {/* Trail effect behind airplane */}
-                      {[...Array(5)].map((_, i) => {
-                        const trailAngle = angle - (i * 0.15);
-                        const trailX = loopCenterX + Math.cos(trailAngle) * loopRadius;
-                        const trailY = loopCenterY + Math.sin(trailAngle) * loopRadius;
-                        const trailOpacity = 0.3 - (i * 0.06);
+                      {[...Array(6)].map((_, i) => {
+                        const trailProgress = Math.max(0, airplaneProgress - (i * 0.08));
+                        const trailX = 1200 + (trailProgress * 600);
+                        const trailY = 300 + Math.sin(trailProgress * Math.PI * 0.8) * 20 + (trailProgress * 5);
+                        const trailOpacity = 0.4 - (i * 0.06);
                         return (
                           <circle 
                             key={i}
                             cx={trailX} 
                             cy={trailY} 
-                            r={3 - i * 0.4} 
-                            fill="#2c2c2c" 
+                            r={2.5 - i * 0.3} 
+                            fill="#4a5568" 
                             opacity={trailOpacity}
                           />
                         );
                       })}
 
-                      {/* Decorative clouds around the loop */}
-                      <Cloud x={loopCenterX - 180} y={loopCenterY - 60} scale={0.6} />
-                      <Cloud x={loopCenterX + 160} y={loopCenterY + 70} scale={0.7} />
+                      <Cloud x={airplaneX - 100} y={airplaneY - 40} scale={0.5} />
+                      <Cloud x={airplaneX + 120} y={airplaneY + 50} scale={0.6} />
                     </>
                   )}
                 </>
               )}
 
-              {/* Milestone markers */}
               {milestonesData.map((milestone, index) => {
                 const IconComponent = getIconComponent(milestone.icon);
                 const isVisible = Math.abs(milestone.position - scrollProgress) < 800;
@@ -747,98 +586,81 @@
 
                 return (
                   <g key={index}>
-                    {isVisible && (
+                    {isVisible && milestone.icon !== 'airplane' && (
                       <g 
                         className="milestone-marker"
                         transform={`translate(${milestone.position}, ${295})`}
                         style={{ 
                           opacity: isNear ? 1 : 0.6,
-                          transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                           cursor: 'pointer',
                         }}
                         onClick={() => setSelectedMilestone(milestone)}
                         onMouseEnter={() => setHoveredMilestone(index)}
                         onMouseLeave={() => setHoveredMilestone(null)}
                       >
-                        {/* Glow circle on hover */}
                         {isHovered && (
-                          <circle 
-                            cx="0" 
-                            cy="-30" 
-                            r="25" 
-                            fill="rgba(44, 44, 44, 0.1)" 
-                            style={{ animation: 'bounce 0.5s' }}
-                          />
+                          <circle cx="0" cy="-30" r="28" fill="rgba(44, 44, 44, 0.08)" style={{ animation: 'bounce 0.5s' }} />
                         )}
 
-                        {/* Connection line - DASHED */}
                         <line 
-                          x1="0" 
-                          y1="5" 
-                          x2="0" 
-                          y2="60" 
+                          x1="0" y1="5" x2="0" y2="60" 
                           stroke="#2c2c2c" 
                           strokeWidth={isHovered ? "2.5" : "1.5"}
                           strokeDasharray="6 4"
-                          style={{ transition: 'all 0.3s' }}
                         />
                         
                         <IconComponent x={0} y={-30} />
                         
-                        {/* Age label with background */}
                         <g>
                           <rect 
-                            x="-20" 
-                            y="65" 
-                            width="40" 
-                            height="22" 
-                            rx="4"
-                            fill={isHovered ? "#2c2c2c" : "rgba(250, 250, 250, 0.9)"}
+                            x="-20" y="65" width="40" height="22" rx="4"
+                            fill={isHovered ? "#2c2c2c" : "rgba(250, 250, 250, 0.95)"}
                             stroke="#2c2c2c"
                             strokeWidth="1.5"
-                            style={{ transition: 'all 0.3s' }}
                           />
                           <text 
-                            x="0" 
-                            y="80" 
-                            fontSize="14" 
-                            textAnchor="middle" 
+                            x="0" y="80" fontSize="14" textAnchor="middle" 
                             fill={isHovered ? "#fafafa" : "#2c2c2c"}
                             fontWeight="bold"
-                            style={{ transition: 'all 0.3s' }}
                           >
                             Age {milestone.age}
                           </text>
                         </g>
 
-                        {/* Title */}
                         {(isNear || isHovered) && (
                           <text 
-                            x="0" 
-                            y="105" 
-                            fontSize="13" 
-                            textAnchor="middle" 
-                            fill="#2c2c2c"
-                            fontWeight="bold"
-                            style={{ animation: isHovered ? 'float 1s ease-in-out infinite' : 'none' }}
+                            x="0" y="105" fontSize="13" textAnchor="middle" 
+                            fill="#2c2c2c" fontWeight="bold"
                           >
                             {milestone.title}
                           </text>
                         )}
+                      </g>
+                    )}
 
-                        {/* Interactive hint */}
-                        {isHovered && (
-                          <text 
-                            x="0" 
-                            y="125" 
-                            fontSize="10" 
-                            textAnchor="middle" 
-                            fill="#555"
-                            style={{ animation: 'fadeOut 2s forwards' }}
-                          >
-                            Click for details
-                          </text>
-                        )}
+                    {isVisible && milestone.icon === 'airplane' && (
+                      <g 
+                        className="milestone-marker"
+                        transform={`translate(${milestone.position}, ${355})`}
+                        style={{ 
+                          opacity: isNear ? 1 : 0.6,
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => setSelectedMilestone(milestone)}
+                        onMouseEnter={() => setHoveredMilestone(index)}
+                        onMouseLeave={() => setHoveredMilestone(null)}
+                      >
+                        <rect 
+                          x="-28" y="-12" width="56" height="24" rx="6"
+                          fill={isHovered ? "#2c2c2c" : "rgba(250, 250, 250, 0.95)"}
+                          stroke="#2c2c2c" strokeWidth="2"
+                        />
+                        <text 
+                          x="0" y="3" fontSize="14" textAnchor="middle" 
+                          fill={isHovered ? "#fafafa" : "#2c2c2c"} fontWeight="bold"
+                        >
+                          Age {milestone.age}
+                        </text>
                       </g>
                     )}
                   </g>
@@ -847,7 +669,6 @@
             </g>
           </svg>
 
-          {/* Timeline navigator */}
           <div 
             style={{
               position: 'absolute',
@@ -867,8 +688,7 @@
               boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
             }}
           >
-            <div style={{ flex: 1, position: 'relative', height: '12px', background: '#e0e0e0', borderRadius: '6px', overflow: 'hidden' }}>
-              {/* Progress bar with gradient */}
+            <div style={{ flex: 1, position: 'relative', height: '12px', background: '#d0d0d0', borderRadius: '6px', overflow: 'hidden' }}>
               <div 
                 style={{
                   position: 'absolute',
@@ -876,14 +696,13 @@
                   top: 0,
                   height: '100%',
                   width: `${progressPercent}%`,
-                  background: 'linear-gradient(90deg, #2c2c2c 0%, #555 100%)',
+                  background: 'linear-gradient(90deg, #2c2c2c 0%, #4a5568 100%)',
                   borderRadius: '6px',
                   transition: 'width 0.2s ease-out',
                   boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
                 }}
               />
               
-              {/* Milestone ticks with hover effect */}
               {milestonesData.map((milestone, index) => (
                 <div
                   key={index}
@@ -896,8 +715,7 @@
                     background: '#2c2c2c',
                     cursor: 'pointer',
                     borderRadius: '2px',
-                    transition: 'all 0.2s',
-                    transform: hoveredMilestone === index ? 'scaleY(1.3)' : 'scaleY(1)'
+                    transform: hoveredMilestone === index ? 'scaleY(1.4)' : 'scaleY(1)'
                   }}
                   onClick={() => setScrollProgress(milestone.position)}
                   onMouseEnter={() => setHoveredMilestone(index)}
@@ -906,7 +724,6 @@
                 />
               ))}
 
-              {/* Draggable handle with shadow */}
               <div
                 style={{
                   position: 'absolute',
@@ -915,29 +732,18 @@
                   transform: 'translate(-50%, -50%)',
                   width: '24px',
                   height: '24px',
-                  background: 'linear-gradient(135deg, #2c2c2c 0%, #555 100%)',
+                  background: 'linear-gradient(135deg, #2c2c2c 0%, #4a5568 100%)',
                   borderRadius: '50%',
                   cursor: 'grab',
                   border: '3px solid #fafafa',
-                  boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
-                  transition: 'transform 0.2s'
-                }}
-                onMouseDown={(e) => {
-                  e.currentTarget.style.cursor = 'grabbing';
-                  e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1.1)';
-                }}
-                onMouseUp={(e) => {
-                  e.currentTarget.style.cursor = 'grab';
-                  e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)';
+                  boxShadow: '0 4px 8px rgba(0,0,0,0.3)'
                 }}
               />
             </div>
           </div>
 
-          {/* Milestone detail card */}
           {selectedMilestone && (
             <>
-              {/* Backdrop */}
               <div 
                 style={{
                   position: 'absolute',
@@ -946,13 +752,11 @@
                   width: '100%',
                   height: '100%',
                   background: 'rgba(0, 0, 0, 0.5)',
-                  zIndex: 999,
-                  animation: 'fadeOut 0.3s reverse'
+                  zIndex: 999
                 }}
                 onClick={() => setSelectedMilestone(null)}
               />
               
-              {/* Card */}
               <div 
                 style={{
                   position: 'absolute',
@@ -989,14 +793,7 @@
                     height: '40px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
+                    justifyContent: 'center'
                   }}
                   aria-label="Close"
                 >
@@ -1026,9 +823,9 @@
                   <div style={{ 
                     marginTop: '25px', 
                     padding: '20px', 
-                    background: 'linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%)', 
+                    background: 'linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%)', 
                     borderRadius: '10px',
-                    border: '2px solid #e0e0e0'
+                    border: '2px solid #d0d0d0'
                   }}>
                     <div style={{ fontSize: '15px', color: '#555', marginBottom: '8px' }}>
                       <strong>📍 From:</strong> {selectedMilestone.from.city}, {selectedMilestone.from.country}
@@ -1045,7 +842,6 @@
       );
     };
 
-    // Render the app
     ReactDOM.createRoot(document.getElementById('root')).render(<LifeJourneyTimeline />);
   </script>
 </body>
