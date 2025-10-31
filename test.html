@@ -3,14 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="An interactive life story told through minimalist pencil line art and horizontal scrolling">
-  <title>Life Journey Timeline - Interactive Story</title>
+  <title>Kabul to Delhi - Zoom Animation</title>
   
-  <!-- React and ReactDOM from CDN -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  
-  <!-- Babel Standalone for JSX transformation -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
   <style>
@@ -25,7 +21,7 @@
       padding: 0;
       overflow: hidden;
       font-family: 'Courier New', monospace;
-      background: #fafafa;
+      background: #f5f5f5;
     }
     
     #root {
@@ -33,279 +29,83 @@
       height: 100vh;
     }
 
-    #loading {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #fafafa;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.5s;
-    }
-
-    #loading.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .loading-text {
-      font-size: 18px;
-      color: #2c2c2c;
-      margin-top: 20px;
-    }
-
-    .loading-spinner {
-      width: 50px;
-      height: 50px;
-      border: 3px solid #e0e0e0;
-      border-top: 3px solid #2c2c2c;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      70% { opacity: 1; }
-      100% { opacity: 0; pointer-events: none; }
-    }
-
     @keyframes pulse {
-      0%, 100% { opacity: 0.3; transform: translateY(-50%) scale(1); }
-      50% { opacity: 0.8; transform: translateY(-50%) scale(1.2); }
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-
-    @media (max-width: 768px) {
-      .loading-text {
-        font-size: 16px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        animation: none !important;
-        transition: none !important;
-      }
-    }
-
-    .milestone-marker {
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      cursor: pointer;
-    }
-
-    .milestone-marker:hover {
-      transform: scale(1.3);
-      filter: drop-shadow(0 4px 8px rgba(44, 44, 44, 0.3));
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
     }
   </style>
 </head>
 <body>
-  <div id="loading">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">Drawing your journey...</div>
-  </div>
-
   <div id="root"></div>
 
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
-    const milestonesData = [
-      {
-        age: 0,
-        title: "Beginning",
-        description: "The story begins...",
-        type: "birth",
-        icon: "star",
-        position: 0
-      },
-      {
-        age: 4,
-        title: "Move from Kabul to India",
-        description: "Our family permanently moved from Kabul, Afghanistan to New Delhi, India. A life-changing journey across borders.",
-        type: "move",
-        from: { city: "Kabul", country: "Afghanistan" },
-        to: { city: "New Delhi", country: "India" },
-        icon: "airplane",
-        position: 1200
-      },
-      {
-        age: 8,
-        title: "First Day of School",
-        description: "Started elementary education in New Delhi. Made lifelong friends and discovered a love for learning.",
-        type: "education",
-        icon: "book",
-        position: 2400
-      },
-      {
-        age: 12,
-        title: "Discovered Programming",
-        description: "Wrote my first computer program in BASIC. Fell in love with creating things through code.",
-        type: "achievement",
-        icon: "code",
-        position: 3600
-      },
-      {
-        age: 16,
-        title: "High School Graduation",
-        description: "Graduated with honors, ready for the next chapter. Excited about the future and endless possibilities.",
-        type: "education",
-        icon: "graduation",
-        position: 4800
-      },
-      {
-        age: 18,
-        title: "University Life Begins",
-        description: "Started studying Computer Science. A new adventure in learning and growth.",
-        type: "education",
-        icon: "university",
-        position: 6000
-      }
-    ];
-
-    const AirplaneIcon = ({ x, y, rotation = 0, scale = 1 }) => (
-      <g transform={`translate(${x}, ${y}) rotate(${rotation}) scale(${scale})`}>
-        <path d="M -8,-2 L 15,-1 L 18,0 L 15,1 L -8,2 Z" fill="#4a5568"/>
-        <path d="M -5,-2 L -12,-12 L -2,-14 L 3,-2 Z" fill="#4a5568"/>
-        <path d="M -5,2 L -12,12 L -2,14 L 3,2 Z" fill="#4a5568"/>
-        <path d="M -8,-2 L -15,-6 L -12,-1 L -15,6 L -8,2 Z" fill="#4a5568"/>
-        <path d="M -10,-2 L -16,-8 L -11,-3" fill="#4a5568"/>
-        <path d="M -10,2 L -16,8 L -11,3" fill="#4a5568"/>
-      </g>
-    );
-
-    const BookIcon = ({ x, y }) => (
+    // Pin marker component
+    const PinIcon = ({ x, y, label, color = "#2c2c2c" }) => (
       <g transform={`translate(${x}, ${y})`}>
-        <rect x="-12" y="-15" width="24" height="30" stroke="#2c2c2c" strokeWidth="1.5" fill="none" rx="2" />
-        <line x1="-12" y1="-10" x2="12" y2="-10" stroke="#2c2c2c" strokeWidth="1" />
-        <line x1="-12" y1="-5" x2="12" y2="-5" stroke="#2c2c2c" strokeWidth="1" />
-        <line x1="0" y1="-15" x2="0" y2="15" stroke="#2c2c2c" strokeWidth="1.5" />
-      </g>
-    );
-
-    const StarIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`}>
-        <path
-          d="M 0,-15 L 4,-5 L 15,-5 L 7,2 L 10,13 L 0,6 L -10,13 L -7,2 L -15,-5 L -4,-5 Z"
-          stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinejoin="round"
+        <path 
+          d="M 0,-30 Q -18,-30 -18,-12 Q -18,0 0,22 Q 18,0 18,-12 Q 18,-30 0,-30 Z" 
+          fill={color}
+          style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.3))' }}
         />
-        <circle cx="0" cy="0" r="3" fill="none" stroke="#2c2c2c" strokeWidth="1" />
-      </g>
-    );
-
-    const CodeIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`}>
-        <path d="M -15,-10 L -5,0 L -15,10" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M 15,-10 L 5,0 L 15,10" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="-2" y1="-12" x2="2" y2="12" stroke="#2c2c2c" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="0" cy="-15" r="2" fill="#2c2c2c" />
-        <circle cx="0" cy="15" r="2" fill="#2c2c2c" />
-      </g>
-    );
-
-    const GraduationIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`}>
-        <path d="M -15,-8 L 0,-15 L 15,-8 L 15,0 L 0,7 L -15,0 Z" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
-        <line x1="0" y1="7" x2="0" y2="15" stroke="#2c2c2c" strokeWidth="1.5" strokeLinecap="round" />
-        <rect x="-5" y="13" width="10" height="3" stroke="#2c2c2c" strokeWidth="1.5" fill="none" />
-        <line x1="15" y1="0" x2="15" y2="10" stroke="#2c2c2c" strokeWidth="1.5" />
-        <circle cx="15" cy="12" r="2" fill="none" stroke="#2c2c2c" strokeWidth="1.5" />
-      </g>
-    );
-
-    const UniversityIcon = ({ x, y }) => (
-      <g transform={`translate(${x}, ${y})`}>
-        <rect x="-15" y="-10" width="30" height="25" stroke="#2c2c2c" strokeWidth="1.5" fill="none" />
-        <path d="M -15,-10 L 0,-18 L 15,-10" stroke="#2c2c2c" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
-        <rect x="-10" y="0" width="6" height="15" stroke="#2c2c2c" strokeWidth="1.2" fill="none" />
-        <rect x="4" y="0" width="6" height="15" stroke="#2c2c2c" strokeWidth="1.2" fill="none" />
-        <line x1="-18" y1="15" x2="18" y2="15" stroke="#2c2c2c" strokeWidth="1.5" />
-      </g>
-    );
-
-    const PinIcon = ({ x, y, label }) => (
-      <g transform={`translate(${x}, ${y})`}>
-        <path d="M 0,-20 Q -12,-20 -12,-8 Q -12,0 0,15 Q 12,0 12,-8 Q 12,-20 0,-20 Z" fill="#2c2c2c"/>
-        <circle cx="0" cy="-8" r="5" fill="#fafafa" />
+        <circle cx="0" cy="-12" r="7" fill="#fafafa" />
         {label && (
-          <text x="0" y="35" fontSize="13" textAnchor="middle" fill="#2c2c2c" fontFamily="'Courier New', monospace" fontWeight="bold">
+          <text 
+            x="0" 
+            y="45" 
+            fontSize="24" 
+            fontWeight="bold"
+            textAnchor="middle" 
+            fill="#2c2c2c" 
+            fontFamily="'Courier New', monospace"
+            style={{ filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.2))' }}
+          >
             {label}
           </text>
         )}
       </g>
     );
 
-    const AfghanistanMap = ({ x, y, scale = 1 }) => (
-      <g transform={`translate(${x}, ${y}) scale(${scale})`}>
+    // Afghanistan map outline
+    const AfghanistanMap = ({ scale = 1, opacity = 1 }) => (
+      <g opacity={opacity}>
         <path
-          d="M 20,35 L 35,28 L 50,25 L 68,20 L 85,18 L 100,22 L 115,20 L 128,25 L 138,22 L 145,30 L 148,42 L 145,55 L 138,65 L 125,72 L 108,75 L 90,75 L 72,72 L 55,68 L 40,60 L 28,50 L 22,42 Z"
-          stroke="#2c2c2c" strokeWidth="2" fill="none" strokeLinejoin="round"
+          d="M 400,450 L 430,435 L 465,428 L 505,418 L 545,412 L 580,420 L 615,415 L 645,425 L 665,418 L 685,435 L 692,460 L 685,495 L 665,525 L 635,550 L 595,562 L 550,562 L 505,550 L 465,535 L 430,510 L 410,485 L 402,465 Z"
+          stroke="#2c2c2c"
+          strokeWidth={3 / scale}
+          fill="rgba(44, 44, 44, 0.08)"
+          strokeLinejoin="round"
+          style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}
         />
       </g>
     );
 
-    const IndiaMap = ({ x, y, scale = 1 }) => (
-      <g transform={`translate(${x}, ${y}) scale(${scale})`}>
+    // India map outline
+    const IndiaMap = ({ scale = 1, opacity = 1 }) => (
+      <g opacity={opacity}>
         <path
-          d="M 60,10 L 75,8 L 88,12 L 98,20 L 105,35 L 108,52 L 110,70 L 108,88 L 105,105 L 98,122 L 88,138 L 78,150 L 68,158 L 58,162 L 48,158 L 40,150 L 35,138 L 30,122 L 28,105 L 25,88 L 25,70 L 28,52 L 32,35 L 38,22 L 48,12 Z M 55,165 L 48,172 L 52,178"
-          stroke="#2c2c2c" strokeWidth="2" fill="none" strokeLinejoin="round"
+          d="M 480,280 L 510,275 L 540,282 L 565,295 L 585,320 L 595,352 L 600,385 L 595,418 L 585,450 L 565,480 L 540,505 L 515,522 L 490,532 L 465,535 L 440,530 L 420,515 L 405,495 L 390,468 L 382,440 L 375,410 L 375,380 L 382,350 L 392,322 L 408,298 L 430,280 Z M 458,540 L 445,552 L 452,562"
+          stroke="#2c2c2c"
+          strokeWidth={3 / scale}
+          fill="rgba(44, 44, 44, 0.08)"
+          strokeLinejoin="round"
+          style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}
         />
       </g>
     );
 
-    const Cloud = ({ x, y, scale = 1 }) => (
-      <g transform={`translate(${x}, ${y}) scale(${scale})`} opacity="0.25">
-        <ellipse cx="0" cy="0" rx="18" ry="10" fill="none" stroke="#2c2c2c" strokeWidth="1.5" />
-        <ellipse cx="-12" cy="3" rx="12" ry="8" fill="none" stroke="#2c2c2c" strokeWidth="1.5" />
-        <ellipse cx="12" cy="3" rx="12" ry="8" fill="none" stroke="#2c2c2c" strokeWidth="1.5" />
-      </g>
-    );
-
-    const LifeJourneyTimeline = () => {
+    const MapZoomAnimation = () => {
       const [scrollProgress, setScrollProgress] = useState(0);
-      const [selectedMilestone, setSelectedMilestone] = useState(null);
-      const [showHint, setShowHint] = useState(true);
-      const [reducedMotion, setReducedMotion] = useState(false);
-      const [hoveredMilestone, setHoveredMilestone] = useState(null);
       const containerRef = useRef(null);
-      const maxScroll = 6500;
-
-      useEffect(() => {
-        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-        setReducedMotion(mediaQuery.matches);
-        const hintTimer = setTimeout(() => setShowHint(false), 3000);
-        setTimeout(() => {
-          const loadingEl = document.getElementById('loading');
-          if (loadingEl) loadingEl.classList.add('hidden');
-        }, 500);
-        return () => clearTimeout(hintTimer);
-      }, []);
+      const maxScroll = 1000; // Total scroll distance for the animation
 
       useEffect(() => {
         const handleWheel = (e) => {
           e.preventDefault();
           const delta = e.deltaY;
           setScrollProgress((prev) => {
-            const newProgress = prev + delta * 0.5;
+            const newProgress = prev + delta * 0.8;
             return Math.max(0, Math.min(maxScroll, newProgress));
           });
         };
@@ -318,531 +118,267 @@
         return () => {
           if (container) {
             container.removeEventListener('wheel', handleWheel);
-          }
+          };
         };
       }, []);
 
-      useEffect(() => {
-        const handleKeyDown = (e) => {
-          if (selectedMilestone !== null) {
-            if (e.key === 'Escape') {
-              setSelectedMilestone(null);
-            }
-            return;
-          }
+      // Calculate animation phases based on scroll
+      const progress = scrollProgress / maxScroll; // 0 to 1
+      
+      // Phase 1: Zoomed in on Kabul (0 - 0.3)
+      // Phase 2: Zoom out from Afghanistan (0.3 - 0.5)
+      // Phase 3: Wide view of both (0.5 - 0.6)
+      // Phase 4: Zoom into India (0.6 - 0.8)
+      // Phase 5: Zoomed in on Delhi (0.8 - 1.0)
 
-          if (e.key === 'ArrowRight') {
-            setScrollProgress((prev) => Math.min(maxScroll, prev + 100));
-          } else if (e.key === 'ArrowLeft') {
-            setScrollProgress((prev) => Math.max(0, prev - 100));
-          } else if (e.key === 'Enter') {
-            const closest = milestonesData.reduce((prev, curr) => 
-              Math.abs(curr.position - scrollProgress) < Math.abs(prev.position - scrollProgress) ? curr : prev
-            );
-            if (Math.abs(closest.position - scrollProgress) < 200) {
-              setSelectedMilestone(closest);
-            }
-          }
-        };
+      let viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight;
+      let afghanistanOpacity, indiaOpacity;
+      let kabulPinOpacity, delhiPinOpacity;
 
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-      }, [scrollProgress, selectedMilestone]);
+      if (progress < 0.3) {
+        // Phase 1: Zoomed in on Kabul, Afghanistan
+        const phase = progress / 0.3;
+        viewBoxX = 450 - (phase * 50);
+        viewBoxY = 380 - (phase * 50);
+        viewBoxWidth = 250 + (phase * 250);
+        viewBoxHeight = 250 + (phase * 250);
+        afghanistanOpacity = 1;
+        indiaOpacity = 0;
+        kabulPinOpacity = 1;
+        delhiPinOpacity = 0;
+      } else if (progress < 0.5) {
+        // Phase 2: Zoom out from Afghanistan
+        const phase = (progress - 0.3) / 0.2;
+        viewBoxX = 400 - (phase * 150);
+        viewBoxY = 330 - (phase * 130);
+        viewBoxWidth = 500 + (phase * 600);
+        viewBoxHeight = 500 + (phase * 400);
+        afghanistanOpacity = 1;
+        indiaOpacity = Math.min(1, phase * 2);
+        kabulPinOpacity = 1;
+        delhiPinOpacity = 0;
+      } else if (progress < 0.6) {
+        // Phase 3: Wide view showing both countries
+        const phase = (progress - 0.5) / 0.1;
+        viewBoxX = 250;
+        viewBoxY = 200;
+        viewBoxWidth = 1100;
+        viewBoxHeight = 900;
+        afghanistanOpacity = 1 - (phase * 0.5);
+        indiaOpacity = 1;
+        kabulPinOpacity = 1 - (phase * 0.8);
+        delhiPinOpacity = phase * 0.3;
+      } else if (progress < 0.8) {
+        // Phase 4: Zoom into India
+        const phase = (progress - 0.6) / 0.2;
+        viewBoxX = 250 + (phase * 150);
+        viewBoxY = 200 + (phase * 80);
+        viewBoxWidth = 1100 - (phase * 600);
+        viewBoxHeight = 900 - (phase * 400);
+        afghanistanOpacity = 0.5 - (phase * 0.5);
+        indiaOpacity = 1;
+        kabulPinOpacity = 0.2 - (phase * 0.2);
+        delhiPinOpacity = 0.3 + (phase * 0.5);
+      } else {
+        // Phase 5: Zoomed in on Delhi, India
+        const phase = (progress - 0.8) / 0.2;
+        viewBoxX = 400 + (phase * 50);
+        viewBoxY = 280 + (phase * 50);
+        viewBoxWidth = 500 - (phase * 250);
+        viewBoxHeight = 500 - (phase * 250);
+        afghanistanOpacity = 0;
+        indiaOpacity = 1;
+        kabulPinOpacity = 0;
+        delhiPinOpacity = 0.8 + (phase * 0.2);
+      }
 
-      const generatePath = () => {
-        let path = "M 100 300";
-        path += " L 800 280 Q 1000 270 1200 300";
-        path += " Q 1350 320 1500 310 Q 1650 295 1800 305";
-        path += " L 2400 300 Q 2600 290 2800 310 L 3600 305";
-        path += " Q 3800 300 4000 320 L 4800 315";
-        path += " Q 5000 310 5200 300 L 6000 295 L 6500 290";
-        return path;
-      };
-
-      const journeyPath = generatePath();
-      const pathLength = 7000;
-      const drawProgress = (scrollProgress / maxScroll) * pathLength;
-
-      const airplaneProgress = Math.max(0, Math.min(1, (scrollProgress - 1000) / 1000));
-      const airplaneX = 1200 + (airplaneProgress * 600);
-      const airplaneY = 300 + Math.sin(airplaneProgress * Math.PI * 0.8) * 20 + (airplaneProgress * 5);
-      const airplaneRotation = -15 + (airplaneProgress * 10);
-
-      const getIconComponent = (icon) => {
-        switch (icon) {
-          case 'airplane': return AirplaneIcon;
-          case 'book': return BookIcon;
-          case 'star': return StarIcon;
-          case 'code': return CodeIcon;
-          case 'graduation': return GraduationIcon;
-          case 'university': return UniversityIcon;
-          default: return StarIcon;
-        }
-      };
-
-      const progressPercent = Math.round((scrollProgress / maxScroll) * 100);
+      const progressPercent = Math.round(progress * 100);
 
       return (
         <div 
           ref={containerRef}
-          className="life-journey-container"
-          role="application"
-          aria-label="Interactive life journey timeline"
           style={{
             width: '100vw',
             height: '100vh',
             overflow: 'hidden',
-            background: 'linear-gradient(to bottom, #f5f5f5 0%, #e8e8e8 100%)',
+            background: 'linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%)',
             position: 'relative',
-            cursor: 'grab',
-            fontFamily: "'Courier New', monospace"
+            cursor: 'grab'
           }}
         >
-          {showHint && (
+          {/* Instructions */}
+          <div 
+            style={{
+              position: 'absolute',
+              top: '30px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: 'rgba(255, 255, 255, 0.95)',
+              padding: '15px 30px',
+              borderRadius: '12px',
+              border: '2px solid #2c2c2c',
+              zIndex: 100,
+              textAlign: 'center',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+            }}
+          >
+            <div style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '5px' }}>
+              Scroll to zoom from Kabul to Delhi
+            </div>
+            <div style={{ fontSize: '14px', color: '#666' }}>
+              Progress: {progressPercent}%
+            </div>
+          </div>
+
+          {/* Scroll indicator */}
+          {progress < 0.95 && (
             <div 
               style={{
                 position: 'absolute',
-                top: '50%',
+                bottom: '40px',
                 left: '50%',
-                transform: 'translate(-50%, -50%)',
-                background: 'rgba(250, 250, 250, 0.95)',
-                padding: '30px 50px',
-                border: '2px solid #2c2c2c',
-                borderRadius: '12px',
-                zIndex: 1000,
-                animation: 'fadeOut 3s forwards',
-                fontSize: '18px',
-                textAlign: 'center',
-                boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+                transform: 'translateX(-50%)',
+                fontSize: '40px',
+                animation: 'pulse 2s infinite',
+                color: '#2c2c2c'
               }}
             >
-              <div style={{ marginBottom: '10px', fontSize: '32px', animation: 'bounce 1s infinite' }}>✈️</div>
-              <strong>Scroll to travel the line</strong>
-              <div style={{ fontSize: '14px', marginTop: '10px', opacity: 0.7 }}>
-                Use ← → arrow keys • Click milestones for details
-              </div>
+              ↓
             </div>
           )}
 
-          <div 
-            style={{
-              position: 'absolute',
-              top: '20px',
-              right: '20px',
-              fontSize: '16px',
-              color: '#2c2c2c',
-              background: 'rgba(250, 250, 250, 0.95)',
-              padding: '12px 24px',
-              border: '2px solid #2c2c2c',
-              borderRadius: '8px',
-              zIndex: 100,
-              boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-              fontWeight: 'bold'
-            }}
-          >
-            📍 Progress: {progressPercent}%
-          </div>
-
-          <div 
-            style={{
-              position: 'absolute',
-              right: '30px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              fontSize: '48px',
-              color: '#2c2c2c',
-              opacity: scrollProgress < 100 ? 0.5 : 0,
-              transition: 'opacity 0.5s',
-              animation: scrollProgress < 100 ? 'pulse 2s infinite' : 'none',
-              fontWeight: 'bold'
-            }}
-          >
-            ‹‹
-          </div>
-
+          {/* Main SVG */}
           <svg 
             width="100%" 
             height="100%" 
-            viewBox="0 0 1400 700"
-            preserveAspectRatio="xMidYMid slice"
+            viewBox={`${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`}
+            preserveAspectRatio="xMidYMid meet"
+            style={{
+              transition: 'all 0.3s ease-out'
+            }}
           >
             <defs>
-              <filter id="pencilTexture">
-                <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.3" />
+              <filter id="softGlow">
+                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
               </filter>
             </defs>
 
-            <g transform={`translate(${-scrollProgress * 0.1}, 0)`}>
-              {[...Array(20)].map((_, i) => (
-                <line 
-                  key={i}
-                  x1={i * 400}
-                  y1="0"
-                  x2={i * 400}
-                  y2="700"
-                  stroke="#d0d0d0"
-                  strokeWidth="0.5"
-                  opacity="0.4"
+            {/* Afghanistan Map */}
+            <g opacity={afghanistanOpacity} style={{ transition: 'opacity 0.3s' }}>
+              <AfghanistanMap scale={viewBoxWidth / 1000} />
+              
+              {/* Kabul Pin */}
+              <g opacity={kabulPinOpacity}>
+                <PinIcon 
+                  x={550} 
+                  y={460} 
+                  label="Kabul"
+                  color="#e74c3c"
                 />
-              ))}
+              </g>
             </g>
 
-            <g transform={`translate(${-scrollProgress * 0.2}, 0)`}>
-              <Cloud x={200} y={80} scale={0.7} />
-              <Cloud x={600} y={120} scale={0.9} />
-              <Cloud x={1100} y={90} scale={0.8} />
+            {/* India Map */}
+            <g opacity={indiaOpacity} style={{ transition: 'opacity 0.3s' }}>
+              <IndiaMap scale={viewBoxWidth / 1000} />
+              
+              {/* Delhi Pin */}
+              <g opacity={delhiPinOpacity}>
+                <PinIcon 
+                  x={480} 
+                  y={330} 
+                  label="New Delhi"
+                  color="#3498db"
+                />
+              </g>
             </g>
 
-            <g transform={`translate(${-scrollProgress}, 0)`} style={{ filter: 'url(#pencilTexture)' }}>
-              <path
-                d={journeyPath}
+            {/* Connection line (visible in middle phase) */}
+            {progress > 0.4 && progress < 0.7 && (
+              <line
+                x1={550}
+                y1={460}
+                x2={480}
+                y2={330}
                 stroke="#2c2c2c"
-                strokeWidth="3"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                strokeWidth={3}
                 strokeDasharray="15 10"
-                opacity="0.6"
+                opacity={0.3}
+                style={{ transition: 'opacity 0.3s' }}
               />
-
-              <path
-                d={journeyPath}
-                stroke="#2c2c2c"
-                strokeWidth="3.5"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeDasharray={`15 10 ${pathLength}`}
-                strokeDashoffset={reducedMotion ? 0 : Math.max(0, pathLength - drawProgress + 25)}
-                style={{
-                  transition: reducedMotion ? 'none' : 'stroke-dashoffset 0.1s ease-out'
-                }}
-              />
-
-              {scrollProgress > 900 && scrollProgress < 2200 && (
-                <>
-                  <g style={{ animation: 'float 4s ease-in-out infinite' }}>
-                    <AfghanistanMap x={850} y={80} scale={1} />
-                    <PinIcon x={1000} y={120} label="Kabul" />
-                  </g>
-                  
-                  <g style={{ animation: 'float 4s ease-in-out infinite 2s' }}>
-                    <IndiaMap x={1650} y={50} scale={1} />
-                    <PinIcon x={1740} y={125} label="New Delhi" />
-                  </g>
-
-                  {!reducedMotion && scrollProgress > 1000 && scrollProgress < 2000 && (
-                    <>
-                      <line 
-                        x1={1200}
-                        y1={355}
-                        x2={airplaneX}
-                        y2={airplaneY}
-                        stroke="#666"
-                        strokeWidth="2"
-                        strokeDasharray="6 4"
-                        opacity="0.5"
-                      />
-
-                      <g style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}>
-                        <AirplaneIcon 
-                          x={airplaneX} 
-                          y={airplaneY} 
-                          rotation={airplaneRotation}
-                          scale={2.5}
-                        />
-                      </g>
-
-                      {[...Array(6)].map((_, i) => {
-                        const trailProgress = Math.max(0, airplaneProgress - (i * 0.08));
-                        const trailX = 1200 + (trailProgress * 600);
-                        const trailY = 300 + Math.sin(trailProgress * Math.PI * 0.8) * 20 + (trailProgress * 5);
-                        const trailOpacity = 0.4 - (i * 0.06);
-                        return (
-                          <circle 
-                            key={i}
-                            cx={trailX} 
-                            cy={trailY} 
-                            r={2.5 - i * 0.3} 
-                            fill="#4a5568" 
-                            opacity={trailOpacity}
-                          />
-                        );
-                      })}
-
-                      <Cloud x={airplaneX - 100} y={airplaneY - 40} scale={0.5} />
-                      <Cloud x={airplaneX + 120} y={airplaneY + 50} scale={0.6} />
-                    </>
-                  )}
-                </>
-              )}
-
-              {milestonesData.map((milestone, index) => {
-                const IconComponent = getIconComponent(milestone.icon);
-                const isVisible = Math.abs(milestone.position - scrollProgress) < 800;
-                const isNear = Math.abs(milestone.position - scrollProgress) < 200;
-                const isHovered = hoveredMilestone === index;
-
-                return (
-                  <g key={index}>
-                    {isVisible && milestone.icon !== 'airplane' && (
-                      <g 
-                        className="milestone-marker"
-                        transform={`translate(${milestone.position}, ${295})`}
-                        style={{ 
-                          opacity: isNear ? 1 : 0.6,
-                          cursor: 'pointer',
-                        }}
-                        onClick={() => setSelectedMilestone(milestone)}
-                        onMouseEnter={() => setHoveredMilestone(index)}
-                        onMouseLeave={() => setHoveredMilestone(null)}
-                      >
-                        {isHovered && (
-                          <circle cx="0" cy="-30" r="28" fill="rgba(44, 44, 44, 0.08)" style={{ animation: 'bounce 0.5s' }} />
-                        )}
-
-                        <line 
-                          x1="0" y1="5" x2="0" y2="60" 
-                          stroke="#2c2c2c" 
-                          strokeWidth={isHovered ? "2.5" : "1.5"}
-                          strokeDasharray="6 4"
-                        />
-                        
-                        <IconComponent x={0} y={-30} />
-                        
-                        <g>
-                          <rect 
-                            x="-20" y="65" width="40" height="22" rx="4"
-                            fill={isHovered ? "#2c2c2c" : "rgba(250, 250, 250, 0.95)"}
-                            stroke="#2c2c2c"
-                            strokeWidth="1.5"
-                          />
-                          <text 
-                            x="0" y="80" fontSize="14" textAnchor="middle" 
-                            fill={isHovered ? "#fafafa" : "#2c2c2c"}
-                            fontWeight="bold"
-                          >
-                            Age {milestone.age}
-                          </text>
-                        </g>
-
-                        {(isNear || isHovered) && (
-                          <text 
-                            x="0" y="105" fontSize="13" textAnchor="middle" 
-                            fill="#2c2c2c" fontWeight="bold"
-                          >
-                            {milestone.title}
-                          </text>
-                        )}
-                      </g>
-                    )}
-
-                    {isVisible && milestone.icon === 'airplane' && (
-                      <g 
-                        className="milestone-marker"
-                        transform={`translate(${milestone.position}, ${355})`}
-                        style={{ 
-                          opacity: isNear ? 1 : 0.6,
-                          cursor: 'pointer',
-                        }}
-                        onClick={() => setSelectedMilestone(milestone)}
-                        onMouseEnter={() => setHoveredMilestone(index)}
-                        onMouseLeave={() => setHoveredMilestone(null)}
-                      >
-                        <rect 
-                          x="-28" y="-12" width="56" height="24" rx="6"
-                          fill={isHovered ? "#2c2c2c" : "rgba(250, 250, 250, 0.95)"}
-                          stroke="#2c2c2c" strokeWidth="2"
-                        />
-                        <text 
-                          x="0" y="3" fontSize="14" textAnchor="middle" 
-                          fill={isHovered ? "#fafafa" : "#2c2c2c"} fontWeight="bold"
-                        >
-                          Age {milestone.age}
-                        </text>
-                      </g>
-                    )}
-                  </g>
-                );
-              })}
-            </g>
+            )}
           </svg>
+
+          {/* Progress bar */}
+          <div 
+            style={{
+              position: 'absolute',
+              bottom: '20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '80%',
+              maxWidth: '600px',
+              height: '8px',
+              background: '#dee2e6',
+              borderRadius: '4px',
+              overflow: 'hidden',
+              border: '1px solid #adb5bd'
+            }}
+          >
+            <div 
+              style={{
+                height: '100%',
+                width: `${progressPercent}%`,
+                background: 'linear-gradient(90deg, #e74c3c 0%, #3498db 100%)',
+                transition: 'width 0.1s',
+                borderRadius: '4px'
+              }}
+            />
+          </div>
+
+          {/* Location labels */}
+          <div 
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '20px',
+              transform: 'translateY(-50%)',
+              opacity: progress < 0.5 ? 1 : 0,
+              transition: 'opacity 0.5s',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#e74c3c',
+              textShadow: '2px 2px 4px rgba(0,0,0,0.2)'
+            }}
+          >
+            🇦🇫 Afghanistan
+          </div>
 
           <div 
             style={{
               position: 'absolute',
-              bottom: '30px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '80%',
-              maxWidth: '800px',
-              height: '50px',
-              background: 'rgba(250, 250, 250, 0.95)',
-              border: '2px solid #2c2c2c',
-              borderRadius: '12px',
-              padding: '10px 20px',
-              display: 'flex',
-              alignItems: 'center',
-              zIndex: 100,
-              boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+              top: '50%',
+              right: '20px',
+              transform: 'translateY(-50%)',
+              opacity: progress > 0.5 ? 1 : 0,
+              transition: 'opacity 0.5s',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#3498db',
+              textShadow: '2px 2px 4px rgba(0,0,0,0.2)'
             }}
           >
-            <div style={{ flex: 1, position: 'relative', height: '12px', background: '#d0d0d0', borderRadius: '6px', overflow: 'hidden' }}>
-              <div 
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  height: '100%',
-                  width: `${progressPercent}%`,
-                  background: 'linear-gradient(90deg, #2c2c2c 0%, #4a5568 100%)',
-                  borderRadius: '6px',
-                  transition: 'width 0.2s ease-out',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                }}
-              />
-              
-              {milestonesData.map((milestone, index) => (
-                <div
-                  key={index}
-                  style={{
-                    position: 'absolute',
-                    left: `${(milestone.position / maxScroll) * 100}%`,
-                    top: '-6px',
-                    width: '3px',
-                    height: '24px',
-                    background: '#2c2c2c',
-                    cursor: 'pointer',
-                    borderRadius: '2px',
-                    transform: hoveredMilestone === index ? 'scaleY(1.4)' : 'scaleY(1)'
-                  }}
-                  onClick={() => setScrollProgress(milestone.position)}
-                  onMouseEnter={() => setHoveredMilestone(index)}
-                  onMouseLeave={() => setHoveredMilestone(null)}
-                  title={`Age ${milestone.age}: ${milestone.title}`}
-                />
-              ))}
-
-              <div
-                style={{
-                  position: 'absolute',
-                  left: `${progressPercent}%`,
-                  top: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '24px',
-                  height: '24px',
-                  background: 'linear-gradient(135deg, #2c2c2c 0%, #4a5568 100%)',
-                  borderRadius: '50%',
-                  cursor: 'grab',
-                  border: '3px solid #fafafa',
-                  boxShadow: '0 4px 8px rgba(0,0,0,0.3)'
-                }}
-              />
-            </div>
+            India 🇮🇳
           </div>
-
-          {selectedMilestone && (
-            <>
-              <div 
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  background: 'rgba(0, 0, 0, 0.5)',
-                  zIndex: 999
-                }}
-                onClick={() => setSelectedMilestone(null)}
-              />
-              
-              <div 
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  background: '#fafafa',
-                  border: '3px solid #2c2c2c',
-                  borderRadius: '16px',
-                  padding: '35px',
-                  maxWidth: '450px',
-                  width: '90%',
-                  zIndex: 1000,
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-                  animation: 'bounce 0.5s'
-                }}
-                role="dialog"
-                aria-labelledby="milestone-title"
-              >
-                <button
-                  onClick={() => setSelectedMilestone(null)}
-                  style={{
-                    position: 'absolute',
-                    top: '15px',
-                    right: '15px',
-                    background: '#2c2c2c',
-                    color: '#fafafa',
-                    border: 'none',
-                    fontSize: '24px',
-                    cursor: 'pointer',
-                    padding: '5px 12px',
-                    borderRadius: '50%',
-                    width: '40px',
-                    height: '40px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                  aria-label="Close"
-                >
-                  ×
-                </button>
-                
-                <div style={{ marginBottom: '10px', fontSize: '36px' }}>
-                  {selectedMilestone.icon === 'airplane' && '✈️'}
-                  {selectedMilestone.icon === 'book' && '📚'}
-                  {selectedMilestone.icon === 'star' && '⭐'}
-                  {selectedMilestone.icon === 'code' && '💻'}
-                  {selectedMilestone.icon === 'graduation' && '🎓'}
-                  {selectedMilestone.icon === 'university' && '🏛️'}
-                </div>
-
-                <h2 id="milestone-title" style={{ marginTop: 0, fontSize: '28px', color: '#2c2c2c' }}>
-                  Age {selectedMilestone.age}
-                </h2>
-                <h3 style={{ fontSize: '20px', color: '#555', marginTop: '8px', marginBottom: '15px' }}>
-                  {selectedMilestone.title}
-                </h3>
-                <p style={{ fontSize: '16px', lineHeight: '1.8', color: '#2c2c2c', marginTop: '15px' }}>
-                  {selectedMilestone.description}
-                </p>
-                
-                {selectedMilestone.from && selectedMilestone.to && (
-                  <div style={{ 
-                    marginTop: '25px', 
-                    padding: '20px', 
-                    background: 'linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%)', 
-                    borderRadius: '10px',
-                    border: '2px solid #d0d0d0'
-                  }}>
-                    <div style={{ fontSize: '15px', color: '#555', marginBottom: '8px' }}>
-                      <strong>📍 From:</strong> {selectedMilestone.from.city}, {selectedMilestone.from.country}
-                    </div>
-                    <div style={{ fontSize: '15px', color: '#555' }}>
-                      <strong>📍 To:</strong> {selectedMilestone.to.city}, {selectedMilestone.to.country}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </>
-          )}
         </div>
       );
     };
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<LifeJourneyTimeline />);
+    ReactDOM.createRoot(document.getElementById('root')).render(<MapZoomAnimation />);
   </script>
 </body>
 </html>
