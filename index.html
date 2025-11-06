@@ -958,6 +958,22 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
+        /* Form Success Message */
+        .form-success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .form-success.show {
+            display: block;
+            animation: fadeInUp 0.6s ease;
+        }
+
         /* Scroll Animation */
         .fade-in {
             opacity: 0;
@@ -1179,7 +1195,7 @@
 
         <section id="contact">
             <h2 class="section-title fade-in">Let's Connect</h2>
-            <form class="contact-form fade-in" action="mailto:contact@mohabbatahmadi.com" method="post" enctype="text/plain" aria-label="Contact form">
+            <form class="contact-form fade-in" action="https://formspree.io/f/xzzknoov" method="POST" aria-label="Contact form">
                 <div class="form-group">
                     <input type="text" id="name" name="name" placeholder="Your Name" required aria-required="true">
                 </div>
@@ -1191,6 +1207,9 @@
                 </div>
                 <button type="submit" class="submit-btn">Send Message</button>
             </form>
+            <div class="form-success" id="formSuccess">
+                <p style="margin: 0; font-size: 1.2rem; font-weight: 600;">Thank you! Your message has been sent.</p>
+            </div>
         </section>
     </main>
 
@@ -1523,6 +1542,30 @@
             }
         `;
         document.head.appendChild(style);
+
+        // ========== FORMSPREE SUBMISSION HANDLING ==========
+        const contactForm = document.querySelector('.contact-form');
+        const formSuccess = document.getElementById('formSuccess');
+
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('.submit-btn');
+                submitBtn.textContent = 'Sending...';
+                submitBtn.disabled = true;
+            });
+        }
+
+        // Show success message after redirect
+        if (window.location.search.includes('success=true')) {
+            if (formSuccess) {
+                formSuccess.classList.add('show');
+                contactForm.reset();
+                window.scrollTo({
+                    top: document.getElementById('contact').offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        }
 
         // ========== PERFORMANCE: REDUCE ANIMATIONS ON MOBILE ==========
         if (window.innerWidth < 768) {
