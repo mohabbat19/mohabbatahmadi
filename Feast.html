@@ -982,6 +982,21 @@
         let playerName = '';
         let totalSlides = 32;
         let answeredQuestions = {};
+        
+        // HOST MODE: Add ?host=true to URL to enable navigation controls
+        const urlParams = new URLSearchParams(window.location.search);
+        const isHost = urlParams.get('host') === 'true';
+        
+        // Check for slide sync from URL hash (for participant sync)
+        function checkSlideFromHash() {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#slide')) {
+                const slideNum = parseInt(hash.replace('#slide', ''));
+                if (!isNaN(slideNum) && slideNum >= 0 && slideNum < totalSlides) {
+                    goToSlide(slideNum, false);
+                }
+            }
+        }
 
         const answers = {
             2: { correct: 'b', explanation: 'The September 2024 letter states that racial prejudice was identified by Shoghi Effendi as "the most vital and challenging issue" among the three evil tendencies.' },
@@ -1012,11 +1027,16 @@
             goToSlide(1);
         }
 
-        function goToSlide(slideNum) {
+        function goToSlide(slideNum, updateHash = true) {
             document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
             document.getElementById('slide' + slideNum).classList.add('active');
             currentSlide = slideNum;
             updateProgress();
+            
+            // Update URL hash for participant sync (host only)
+            if (isHost && updateHash) {
+                window.location.hash = 'slide' + slideNum;
+            }
         }
 
         function updateProgress() {
@@ -1081,8 +1101,10 @@
             document.getElementById('rankingText').innerHTML = stars + '<br><br>' + ranking;
         }
 
-        // Keyboard navigation for host
+        // Keyboard navigation for host ONLY
         document.addEventListener('keydown', function(e) {
+            if (!isHost) return; // Block navigation for participants
+            
             if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
                 e.preventDefault();
                 if (currentSlide < totalSlides - 1) {
@@ -1099,13 +1121,15 @@
             }
         });
 
-        // Touch swipe for mobile
+        // Touch swipe for mobile - HOST ONLY
         let touchStartX = 0;
         document.addEventListener('touchstart', function(e) {
             touchStartX = e.touches[0].clientX;
         });
 
         document.addEventListener('touchend', function(e) {
+            if (!isHost) return; // Block navigation for participants
+            
             const touchEndX = e.changedTouches[0].clientX;
             const diff = touchStartX - touchEndX;
             
@@ -1120,6 +1144,45 @@
                 }
             }
         });
+        
+        // Initialize: check URL hash on load and show host indicator
+        window.addEventListener('load', function() {
+            checkSlideFromHash();
+            
+            if (isHost) {
+                // Add host indicator
+                const hostBadge = document.createElement('div');
+                hostBadge.innerHTML = '🎛️ HOST MODE<br><small>Arrow keys to navigate</small>';
+                hostBadge.style.cssText = 'position:fixed;top:20px;left:20px;background:rgba(76,175,80,0.9);color:white;padding:10px 15px;border-radius:10px;font-size:0.85rem;z-index:102;text-align:center;';
+                document.body.appendChild(hostBadge);
+            }
+            
+            // Update nav hints based on mode
+            document.querySelectorAll('.nav-hint').forEach(hint => {
+                if (isHost) {
+                    hint.textContent = 'Press → or Space to continue';
+                } else {
+                    hint.textContent = 'Waiting for host to advance...';
+                }
+            });
+        });
+        
+        // For participants: poll for slide changes via hash (every 2 seconds)
+        if (!isHost) {
+            setInterval(function() {
+                // Check if hash has changed (host advanced)
+                const hash = window.location.hash;
+                if (hash && hash.startsWith('#slide')) {
+                    const slideNum = parseInt(hash.replace('#slide', ''));
+                    if (!isNaN(slideNum) && slideNum !== currentSlide && slideNum >= 0 && slideNum < totalSlides) {
+                        if (slideNum === 31) {
+                            showFinalScore();
+                        }
+                        goToSlide(slideNum, false);
+                    }
+                }
+            }, 2000);
+        }
     </script>
 </body>
 </html>
