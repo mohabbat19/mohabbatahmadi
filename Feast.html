@@ -2,499 +2,1494 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Feast of Qawl</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feast of Qawl | Teaching the Faith</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: Georgia, serif;
-            background: linear-gradient(135deg, #0a3d2e 0%, #062419 100%);
-            min-height: 100vh;
-            color: #faf8f0;
-            padding: 15px;
-            line-height: 1.6;
+        :root {
+            --emerald-deep: #0a3d2e;
+            --emerald-rich: #115740;
+            --emerald-mid: #1a7a5c;
+            --emerald-light: #2ecc71;
+            --gold-rich: #d4af37;
+            --gold-light: #f4d03f;
+            --cream: #faf8f0;
+            --cream-soft: rgba(250, 248, 240, 0.95);
         }
 
-        .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #2ecc71, #d4af37); z-index: 100; transition: width 0.3s; }
-        
-        .score-box { position: fixed; top: 10px; right: 10px; background: rgba(10, 61, 46, 0.95); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.4); font-size: 0.9rem; color: #d4af37; z-index: 100; display: none; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        .container { max-width: 600px; margin: 0 auto; padding-top: 40px; }
+        html {
+            font-size: 16px;
+        }
 
-        .slide { display: none; animation: fadeIn 0.4s ease; }
-        .slide.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        body {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            background: var(--emerald-deep);
+            min-height: 100vh;
+            color: var(--cream);
+            overflow-x: hidden;
+            cursor: default;
+        }
 
-        .header { text-align: center; margin-bottom: 25px; }
-        .header h1 { font-size: 1.8rem; color: #d4af37; letter-spacing: 3px; margin-bottom: 8px; }
-        .header h2 { font-size: 1rem; color: #2ecc71; font-style: italic; font-weight: normal; }
-        .icon { font-size: 3rem; margin-bottom: 15px; }
+        /* Reduce motion for users who prefer it */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
 
-        .card { background: rgba(10, 61, 46, 0.8); border-radius: 16px; padding: 25px 20px; margin-bottom: 20px; border: 1px solid rgba(212, 175, 55, 0.2); }
-        .quote-card { border-left: 3px solid #d4af37; }
-        .question-card { border-left: 3px solid #2ecc71; }
+        /* Animated Background Layers */
+        .bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-        .quote-text { font-size: 1.1rem; font-style: italic; line-height: 1.8; margin-bottom: 15px; }
-        .quote-source { font-size: 0.9rem; color: #d4af37; text-align: right; }
+        .gradient-mesh {
+            background: 
+                radial-gradient(ellipse at 20% 80%, rgba(26, 122, 92, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 50%, rgba(17, 87, 64, 0.6) 0%, transparent 70%),
+                linear-gradient(180deg, var(--emerald-deep) 0%, #062419 100%);
+            animation: gradientShift 20s ease-in-out infinite;
+        }
 
-        .context { background: rgba(212, 175, 55, 0.1); border-radius: 8px; padding: 12px; margin-bottom: 15px; font-size: 0.85rem; color: #f4d03f; font-style: italic; }
+        @keyframes gradientShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
 
-        .reflect { background: rgba(212, 175, 55, 0.08); border-radius: 10px; padding: 15px; margin-top: 20px; border: 1px solid rgba(212, 175, 55, 0.2); }
-        .reflect h3 { color: #d4af37; font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 1px; }
-        .reflect p { font-size: 0.95rem; color: rgba(250, 248, 240, 0.85); }
+        /* Starfield */
+        .starfield {
+            z-index: 1;
+        }
 
-        .q-num { display: inline-block; background: linear-gradient(135deg, #d4af37, #f4d03f); color: #0a3d2e; padding: 5px 12px; border-radius: 15px; font-size: 0.75rem; margin-bottom: 15px; font-weight: bold; }
-        .q-text { font-size: 1.1rem; margin-bottom: 20px; line-height: 1.7; }
+        .star {
+            position: absolute;
+            background: var(--cream);
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
 
-        .options { display: flex; flex-direction: column; gap: 10px; }
-        .opt { background: rgba(250, 248, 240, 0.05); border: 2px solid rgba(212, 175, 55, 0.25); border-radius: 12px; padding: 14px 16px; font-size: 1rem; color: #faf8f0; cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
-        .opt:active:not(.disabled) { background: rgba(212, 175, 55, 0.15); border-color: #d4af37; }
-        .opt.correct { border-color: #2ecc71; background: rgba(46, 204, 113, 0.2); }
-        .opt.incorrect { border-color: #e74c3c; background: rgba(231, 76, 60, 0.2); }
-        .opt.disabled { opacity: 0.6; pointer-events: none; }
+        @keyframes twinkle {
+            0%, 100% { opacity: var(--base-opacity); transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
 
-        .feedback { margin-top: 15px; padding: 15px; border-radius: 10px; font-size: 0.95rem; display: none; }
-        .feedback.show { display: block; }
-        .feedback.correct { background: rgba(46, 204, 113, 0.15); border: 1px solid rgba(46, 204, 113, 0.4); color: #a8e6cf; }
-        .feedback.incorrect { background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.4); color: #fab1a0; }
+        /* Floating Nine-Pointed Stars */
+        .floating-symbols {
+            z-index: 2;
+        }
 
-        .input-name { background: rgba(250, 248, 240, 0.08); border: 2px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 14px; font-size: 1.1rem; color: #faf8f0; width: 100%; max-width: 280px; margin: 20px auto; display: block; text-align: center; }
-        .input-name:focus { outline: none; border-color: #d4af37; }
-        .input-name::placeholder { color: rgba(250, 248, 240, 0.4); }
+        .nine-star {
+            position: absolute;
+            opacity: 0.12;
+            animation: floatStar var(--float-duration) ease-in-out infinite;
+            animation-delay: var(--float-delay);
+        }
 
-        .btn { background: linear-gradient(135deg, #d4af37, #f4d03f); color: #0a3d2e; border: none; padding: 14px 35px; font-size: 1.1rem; border-radius: 25px; cursor: pointer; display: block; margin: 20px auto; font-weight: bold; letter-spacing: 1px; -webkit-tap-highlight-color: transparent; }
-        .btn:active { transform: scale(0.98); }
+        .nine-star svg {
+            width: 100%;
+            height: 100%;
+        }
 
-        .nav { text-align: center; margin-top: 25px; color: rgba(250, 248, 240, 0.4); font-size: 0.85rem; }
+        @keyframes floatStar {
+            0%, 100% { 
+                transform: translateY(0) rotate(0deg); 
+                opacity: 0.08;
+            }
+            50% { 
+                transform: translateY(-30px) rotate(20deg); 
+                opacity: 0.15;
+            }
+        }
 
-        .final { text-align: center; }
-        .final h2 { font-size: 1.5rem; color: #d4af37; margin-bottom: 20px; letter-spacing: 2px; }
-        .final .num { font-size: 4rem; color: #f4d03f; font-weight: bold; }
-        .final .label { font-size: 1.2rem; color: #2ecc71; margin-top: 5px; }
-        .ranking { margin-top: 25px; padding: 20px; background: rgba(212, 175, 55, 0.1); border-radius: 12px; }
-        .ranking h3 { color: #d4af37; margin-bottom: 12px; font-size: 1rem; }
-        .ranking p { font-size: 1rem; line-height: 1.7; }
+        /* Light Rays */
+        .light-rays {
+            z-index: 3;
+            background: 
+                conic-gradient(from 180deg at 50% -10%, 
+                    transparent 0deg, 
+                    rgba(212, 175, 55, 0.03) 20deg, 
+                    transparent 40deg,
+                    transparent 80deg,
+                    rgba(212, 175, 55, 0.02) 100deg,
+                    transparent 120deg,
+                    transparent 160deg,
+                    rgba(212, 175, 55, 0.03) 180deg,
+                    transparent 200deg,
+                    transparent 240deg,
+                    rgba(212, 175, 55, 0.02) 260deg,
+                    transparent 280deg,
+                    transparent 320deg,
+                    rgba(212, 175, 55, 0.03) 340deg,
+                    transparent 360deg
+                );
+            animation: rayRotate 60s linear infinite;
+        }
 
-        .divider { width: 60px; height: 2px; background: #d4af37; margin: 20px auto; }
+        @keyframes rayRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
 
-        @media (min-width: 768px) {
-            body { padding: 30px; }
-            .header h1 { font-size: 2.4rem; }
-            .card { padding: 35px; }
-            .quote-text { font-size: 1.3rem; }
-            .final .num { font-size: 5rem; }
+        /* Particle Dust */
+        .particle-dust {
+            z-index: 4;
+        }
+
+        .dust {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--gold-light);
+            border-radius: 50%;
+            opacity: 0;
+            animation: dustFloat var(--dust-duration) ease-in-out infinite;
+            animation-delay: var(--dust-delay);
+        }
+
+        @keyframes dustFloat {
+            0% { 
+                opacity: 0; 
+                transform: translateY(100vh) translateX(0); 
+            }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.4; }
+            100% { 
+                opacity: 0; 
+                transform: translateY(-100px) translateX(50px); 
+            }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 70px 20px 30px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Slides */
+        .slide {
+            display: none;
+            animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(40px) scale(0.98); 
+                filter: blur(4px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+                filter: blur(0);
+            }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.2rem;
+            font-weight: 400;
+            color: var(--gold-rich);
+            text-shadow: 
+                0 0 40px rgba(212, 175, 55, 0.4),
+                0 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.15em;
+            margin-bottom: 15px;
+            animation: titleGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 40px rgba(212, 175, 55, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3); }
+            50% { text-shadow: 0 0 60px rgba(212, 175, 55, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3); }
+        }
+
+        .header h2 {
+            font-size: 1.4rem;
+            color: var(--emerald-light);
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: 0.05em;
+        }
+
+        /* Welcome Icon */
+        .welcome-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: iconFloat 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.5));
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Cards */
+        .card {
+            background: linear-gradient(
+                145deg,
+                rgba(10, 61, 46, 0.85) 0%,
+                rgba(6, 36, 25, 0.9) 100%
+            );
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 50px;
+            margin: 20px 0 25px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 
+                0 25px 80px rgba(0, 0, 0, 0.5),
+                0 0 1px rgba(212, 175, 55, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(
+                circle at center,
+                rgba(212, 175, 55, 0.03) 0%,
+                transparent 50%
+            );
+            animation: cardGlow 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes cardGlow {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(10%, 10%); }
+            50% { transform: translate(0, 20%); }
+            75% { transform: translate(-10%, 10%); }
+        }
+
+        .quote-card {
+            border-left: 4px solid var(--gold-rich);
+            padding-left: 45px;
+        }
+
+        .quote-text {
+            font-size: 1.5rem;
+            line-height: 2;
+            font-style: italic;
+            color: var(--cream);
+            margin-bottom: 25px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .quote-source {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: var(--gold-light);
+            text-align: right;
+            font-style: normal;
+            letter-spacing: 0.1em;
+        }
+
+        /* Reflection Box */
+        .reflection-prompt {
+            background: linear-gradient(
+                135deg,
+                rgba(212, 175, 55, 0.1) 0%,
+                rgba(46, 204, 113, 0.08) 100%
+            );
+            border-radius: 16px;
+            padding: 25px 30px;
+            margin-top: 30px;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            position: relative;
+        }
+
+        .reflection-prompt h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold-rich);
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+        }
+
+        .reflection-prompt p {
+            color: rgba(250, 248, 240, 0.9);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* Question Card */
+        .question-card {
+            border-left: 4px solid var(--emerald-light);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--gold-rich), var(--gold-light));
+            color: var(--emerald-deep);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            color: var(--cream);
+            line-height: 1.8;
+        }
+
+        /* Options */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background: rgba(250, 248, 240, 0.05);
+            border: 2px solid rgba(212, 175, 55, 0.25);
+            border-radius: 16px;
+            padding: 18px 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 1.1rem;
+            color: var(--cream);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(212, 175, 55, 0.1),
+                transparent
+            );
+            transition: left 0.5s ease;
+        }
+
+        .option:hover:not(.disabled) {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: var(--gold-rich);
+            transform: translateX(8px);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .option:hover:not(.disabled)::before {
+            left: 100%;
+        }
+
+        .option.correct {
+            border-color: var(--emerald-light);
+            background: rgba(46, 204, 113, 0.2);
+            box-shadow: 0 0 30px rgba(46, 204, 113, 0.3);
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.2);
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Feedback */
+        .feedback {
+            margin-top: 25px;
+            padding: 20px 25px;
+            border-radius: 16px;
+            display: none;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: feedbackIn 0.5s ease;
+        }
+
+        @keyframes feedbackIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background: rgba(46, 204, 113, 0.15);
+            border: 1px solid rgba(46, 204, 113, 0.4);
+            color: #a8e6cf;
+        }
+
+        .feedback.incorrect {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.4);
+            color: #fab1a0;
+        }
+
+        /* Score Display */
+        .score-display {
+            position: fixed;
+            top: 14px;
+            right: 25px;
+            background: linear-gradient(135deg, rgba(10, 61, 46, 0.95), rgba(6, 36, 25, 0.98));
+            padding: 10px 24px;
+            border-radius: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            z-index: 100;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            max-width: 90vw;
+            white-space: nowrap;
+        }
+
+        .score-display span {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--gold-rich);
+            letter-spacing: 0.05em;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--emerald-light), var(--gold-rich));
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 101;
+            box-shadow: 0 0 20px var(--gold-rich);
+        }
+
+        /* Nav Hint */
+        .nav-hint {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: rgba(250, 248, 240, 0.4);
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            animation: hintPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes hintPulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Input & Button */
+        .input-name {
+            background: rgba(250, 248, 240, 0.08);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 16px;
+            padding: 14px 20px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: var(--cream);
+            width: 100%;
+            max-width: 320px;
+            margin: 20px auto;
+            display: block;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .input-name:focus {
+            outline: none;
+            border-color: var(--gold-rich);
+            background: rgba(250, 248, 240, 0.12);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .input-name::placeholder {
+            color: rgba(250, 248, 240, 0.4);
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, var(--gold-rich), var(--gold-light));
+            color: var(--emerald-deep);
+            border: none;
+            padding: 14px 36px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.05rem;
+            border-radius: 40px;
+            cursor: pointer;
+            margin: 16px auto;
+            display: block;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
+            text-transform: uppercase;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 15px 50px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Context Box */
+        .context-box {
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            color: var(--gold-light);
+            font-style: italic;
+        }
+
+        /* Final Score */
+        .final-score {
+            text-align: center;
+        }
+
+        .final-score h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.3rem;
+            color: var(--gold-rich);
+            margin-bottom: 25px;
+            letter-spacing: 0.15em;
+        }
+
+        .score-number {
+            font-family: 'Cinzel', serif;
+            font-size: 5rem;
+            color: var(--gold-light);
+            font-weight: 600;
+            text-shadow: 0 0 60px rgba(212, 175, 55, 0.6);
+            animation: scoreGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes scoreGlow {
+            0%, 100% { text-shadow: 0 0 60px rgba(212, 175, 55, 0.6); }
+            50% { text-shadow: 0 0 80px rgba(212, 175, 55, 0.9); }
+        }
+
+        .score-label {
+            font-size: 1.3rem;
+            color: var(--emerald-light);
+            margin-top: 8px;
+        }
+
+        .ranking {
+            margin-top: 30px;
+            padding: 24px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+        }
+
+        .ranking h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold-rich);
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+            letter-spacing: 0.1em;
+        }
+
+        .ranking p {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: var(--cream);
+        }
+
+        .star {
+            color: var(--gold-light);
+            font-size: 2rem;
+            margin: 0 5px;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.2rem; letter-spacing: 0.12em; }
+            .header h2 { font-size: 1.1rem; }
+            .card { padding: 32px 22px; border-radius: 20px; }
+            .quote-card { padding-left: 24px; }
+            .quote-text { font-size: 1.25rem; }
+            .question-text { font-size: 1.2rem; }
+            .option { font-size: 1rem; padding: 14px 18px; }
+            .feedback { font-size: 1rem; padding: 16px 18px; }
+            .score-display {
+                top: 10px;
+                right: 50%;
+                transform: translateX(50%);
+                padding: 8px 18px;
+            }
+            .score-display span { font-size: 0.95rem; }
+            .container {
+                padding: 60px 14px 24px;
+            }
+            .welcome-icon {
+                font-size: 3.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            html {
+                font-size: 15px;
+            }
+            .card {
+                padding: 26px 16px;
+            }
+            .question-number {
+                display: block;
+                text-align: center;
+            }
+            .quote-text {
+                font-size: 1.15rem;
+                line-height: 1.8;
+            }
+            .reflection-prompt {
+                padding: 18px 16px;
+            }
+            .nav-hint {
+                font-size: 0.8rem;
+                letter-spacing: 0.08em;
+            }
+            .score-number {
+                font-size: 4rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="progress" id="prog"></div>
-    <div class="score-box" id="scoreBox">Score: <span id="score">0</span>/100</div>
-    <div class="container">
+    <!-- Background Layers -->
+    <div class="bg-layer gradient-mesh"></div>
+    <div class="bg-layer starfield" id="starfield"></div>
+    <div class="bg-layer floating-symbols" id="floatingSymbols"></div>
+    <div class="bg-layer light-rays"></div>
+    <div class="bg-layer particle-dust" id="particleDust"></div>
 
-        <!-- Welcome -->
-        <div class="slide active" id="s0">
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="score-display" id="scoreDisplay" style="display: none;">
+        <span>Score: <span id="currentScore">0</span>/100</span>
+    </div>
+
+    <div class="container">
+        <!-- Slide 0: Welcome -->
+        <div class="slide active" id="slide0">
             <div class="header">
-                <div class="icon">🕊️</div>
+                <div class="welcome-icon">🕊️</div>
                 <h1>FEAST OF QAWL</h1>
                 <h2>The Power of Speech in Teaching the Faith</h2>
             </div>
             <div class="card">
-                <p style="text-align:center; margin-bottom:20px;">Welcome to this interactive consultation on Teaching the Faith. Answer questions to earn points toward 100!</p>
-                <input type="text" class="input-name" id="name" placeholder="Enter your name">
-                <button class="btn" onclick="start()">BEGIN</button>
+                <p style="text-align: center; font-size: 1.2rem; line-height: 1.9; margin-bottom: 24px;">
+                    Welcome, dear friends, to this interactive consultation on Teaching the Faith. 
+                    Tonight we explore our sacred responsibility and privilege to share the message of Bahá'u'lláh.
+                </p>
+                <p style="text-align: center; color: var(--gold-light); margin-bottom: 26px; font-size: 1rem;">
+                    Enter your name to begin. Answer questions to earn points toward a total score of 100.
+                </p>
+                <input type="text" class="input-name" id="playerName" placeholder="Enter your name">
+                <button class="start-btn" onclick="startProgram()">Begin Journey</button>
             </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
-        <!-- Slide 1: Quote -->
-        <div class="slide" id="s1">
-            <div class="header"><h2>Feast of Qawl</h2></div>
+        <!-- Slide 1: Opening Quote -->
+        <div class="slide" id="slide1">
+            <div class="header">
+                <h2>Feast of Qawl (Speech)</h2>
+            </div>
             <div class="card quote-card">
-                <p class="quote-text">"What 'oppression' is more grievous than that a soul seeking the truth, and wishing to attain unto the knowledge of God, should know not where to go for it and from whom to seek it?"</p>
-                <p class="quote-source">— Bahá'u'lláh, Kitáb-i-Íqán</p>
-                <div class="reflect"><h3>✦ REFLECTION</h3><p>In our Davis community, who might be seeking truth? How can we become visible sources of hope?</p></div>
-            </div>
-            <p class="nav">Tap anywhere to continue →</p>
-        </div>
-
-        <!-- Q1 -->
-        <div class="slide" id="s2">
-            <div class="card question-card">
-                <span class="q-num">Q1 • 7 PTS</span>
-                <p class="q-text">In the NSA's September 2024 letter, which issue is identified as "the most vital and challenging" among the three evil tendencies?</p>
-                <div class="options">
-                    <div class="opt" onclick="ans(this,2,'a')">A) Excessive materialism</div>
-                    <div class="opt" onclick="ans(this,2,'b')">B) Political corruption</div>
-                    <div class="opt" onclick="ans(this,2,'c')">C) Racial prejudice</div>
-                    <div class="opt" onclick="ans(this,2,'d')">D) Moral laxity</div>
+                <p class="quote-text">
+                    "What 'oppression' is more grievous than that a soul seeking the truth, and wishing to attain unto the knowledge of God, should know not where to go for it and from whom to seek it?"
+                </p>
+                <p class="quote-source">- Bahá'u'lláh, The Kitáb-i-Íqán</p>
+                <div class="reflection-prompt">
+                    <h3>✦ REFLECTION</h3>
+                    <p>Consider: In our Davis community, who might be seeking truth and longing for spiritual guidance? How can we become visible sources of hope?</p>
                 </div>
-                <div class="feedback" id="f2"></div>
             </div>
-            <p class="nav">Tap to continue →</p>
+            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
-        <!-- Slide 3: Quote -->
-        <div class="slide" id="s3">
-            <div class="header"><h2>Feast of Qawl</h2></div>
+        <!-- Slide 2: Question 1 -->
+        <div class="slide" id="slide2">
+            <div class="card question-card">
+                <span class="question-number">QUESTION 1 OF 14 • 7 POINTS</span>
+                <p class="question-text">
+                    In the National Spiritual Assembly's September 30, 2024 letter "The Nine Year Plan and the Destiny of America," which issue is identified as "the most vital and challenging" among the three evil tendencies that must be eradicated from American society?
+                </p>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(this, 2, 'a')">A) Excessive materialism</div>
+                    <div class="option" onclick="selectAnswer(this, 2, 'b')">B) Political corruption</div>
+                    <div class="option" onclick="selectAnswer(this, 2, 'c')">C) Racial prejudice</div>
+                    <div class="option" onclick="selectAnswer(this, 2, 'd')">D) Moral laxity</div>
+                </div>
+                <div class="feedback" id="feedback2"></div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 3: Quote from 'Abdu'l-Bahá -->
+        <div class="slide" id="slide3">
+            <div class="header">
+                <h2>Feast of Qawl (Speech)</h2>
+            </div>
             <div class="card quote-card">
-                <p class="quote-text">"May this American democracy be the first nation to establish the foundation of international agreement. May it be the first nation to proclaim the unity of mankind..."</p>
-                <p class="quote-source">— 'Abdu'l-Bahá, Promulgation of Universal Peace</p>
-                <div class="reflect"><h3>✦ DISCUSSION</h3><p>How does understanding America's spiritual destiny change how we approach teaching?</p></div>
-            </div>
-            <p class="nav">Tap to continue →</p>
-        </div>
-
-        <!-- Q2 -->
-        <div class="slide" id="s4">
-            <div class="card question-card">
-                <span class="q-num">Q2 • 7 PTS</span>
-                <p class="q-text">According to the October 2025 letter, how many youth conferences were held in response to the September 2024 letter?</p>
-                <div class="options">
-                    <div class="opt" onclick="ans(this,4,'a')">A) 64 conferences</div>
-                    <div class="opt" onclick="ans(this,4,'b')">B) 32 conferences</div>
-                    <div class="opt" onclick="ans(this,4,'c')">C) 210 conferences</div>
-                    <div class="opt" onclick="ans(this,4,'d')">D) 100 conferences</div>
+                <p class="quote-text">
+                    "May this American democracy be the first nation to establish the foundation of international agreement. May it be the first nation to proclaim the unity of mankind. May it be the first to unfurl the standard of the 'Most Great Peace'..."
+                </p>
+                <p class="quote-source">- 'Abdu'l-Bahá, The Promulgation of Universal Peace</p>
+                <div class="reflection-prompt">
+                    <h3>✦ FOR DISCUSSION</h3>
+                    <p>How does understanding America's spiritual destiny change how we approach teaching? What confidence does it give us?</p>
                 </div>
-                <div class="feedback" id="f4"></div>
             </div>
-            <p class="nav">Tap to continue →</p>
+            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
-        <!-- Slide 5: Quote -->
-        <div class="slide" id="s5">
-            <div class="header"><h2>Feast of Qawl</h2></div>
+        <!-- Slide 4: Question 2 -->
+        <div class="slide" id="slide4">
+            <div class="card question-card">
+                <span class="question-number">QUESTION 2 OF 14 • 7 POINTS</span>
+                <p class="question-text">
+                    According to the National Spiritual Assembly's October 17, 2025 letter "Mid-Year Reflections on Progress of the Faith in the United States," how many youth conferences were held throughout the country in response to the September 2024 letter?
+                </p>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(this, 4, 'a')">A) 64 conferences</div>
+                    <div class="option" onclick="selectAnswer(this, 4, 'b')">B) 32 conferences</div>
+                    <div class="option" onclick="selectAnswer(this, 4, 'c')">C) 210 conferences</div>
+                    <div class="option" onclick="selectAnswer(this, 4, 'd')">D) 100 conferences</div>
+                </div>
+                <div class="feedback" id="feedback4"></div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 5: Quote on Building the Good -->
+        <div class="slide" id="slide5">
+            <div class="header">
+                <h2>Feast of Qawl (Speech)</h2>
+            </div>
             <div class="card quote-card">
-                <div class="context">From a 1974 message of the Universal House of Justice</div>
-                <p class="quote-text">"Their whole energy is directed towards the building of the good, a good which has such a positive strength that in the face of it the multitude of evils—which are in essence negative—will fade away and be no more."</p>
-                <p class="quote-source">— Universal House of Justice, 1974</p>
-                <div class="reflect"><h3>✦ DISCUSSION</h3><p>How radical is this approach of building toward something positive?</p></div>
-            </div>
-            <p class="nav">Tap to continue →</p>
-        </div>
-
-        <!-- Q3 -->
-        <div class="slide" id="s6">
-            <div class="card question-card">
-                <span class="q-num">Q3 • 7 PTS</span>
-                <p class="q-text">True or False: America was chosen for its role in the New World Order because of its inherent excellence and special merit.</p>
-                <div class="options">
-                    <div class="opt" onclick="ans(this,6,'a')">A) True</div>
-                    <div class="opt" onclick="ans(this,6,'b')">B) False</div>
+                <div class="context-box">
+                    From a 1974 message of the Universal House of Justice, quoted in the National Spiritual Assembly's September 30, 2024 letter
                 </div>
-                <div class="feedback" id="f6"></div>
+                <p class="quote-text">
+                    "Bahá'ís, on the other hand, know the goal they are working towards and know what they must do, step by step, to attain it. Their whole energy is directed towards the building of the good, a good which has such a positive strength that in the face of it the multitude of evils, which are in essence negative, will fade away and be no more."
+                </p>
+                <p class="quote-source">- Universal House of Justice, 1974</p>
+                <div class="reflection-prompt">
+                    <h3>✦ FOR DISCUSSION</h3>
+                    <p>In a world focused on fighting against problems, how radical is this approach of building toward something positive? How can we explain this to friends?</p>
+                </div>
             </div>
-            <p class="nav">Tap to continue →</p>
+            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
-        <!-- Slide 7: Quote -->
-        <div class="slide" id="s7">
-            <div class="header"><h2>Feast of Qawl</h2></div>
+        <!-- Slide 6: Question 3 -->
+        <div class="slide" id="slide6">
+            <div class="card question-card">
+                <span class="question-number">QUESTION 3 OF 14 • 7 POINTS</span>
+                <p class="question-text">
+                    True or False: According to the National Spiritual Assembly's September 2024 letter, America was chosen for its preponderating role in the New World Order because of its inherent excellence and special merit.
+                </p>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(this, 6, 'a')">A) True</div>
+                    <div class="option" onclick="selectAnswer(this, 6, 'b')">B) False</div>
+                </div>
+                <div class="feedback" id="feedback6"></div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 7: Quote on Spaces of Refuge -->
+        <div class="slide" id="slide7">
+            <div class="header">
+                <h2>Feast of Qawl (Speech)</h2>
+            </div>
             <div class="card quote-card">
-                <div class="context">From the NSA's September 2024 letter</div>
-                <p class="quote-text">"Every space that we create... can be seen as a place of spiritual refuge for our fellow citizens."</p>
-                <p class="quote-source">— National Spiritual Assembly</p>
-                <div class="reflect"><h3>✦ APPLY TO DAVIS</h3><p>What "spaces of spiritual refuge" exist in our community? What new ones could we create?</p></div>
-            </div>
-            <p class="nav">Tap to continue →</p>
-        </div>
-
-        <!-- Q4 -->
-        <div class="slide" id="s8">
-            <div class="card question-card">
-                <span class="q-num">Q4 • 7 PTS</span>
-                <p class="q-text">Since the beginning of 2025, how many additional clusters advanced beyond the third milestone?</p>
-                <div class="options">
-                    <div class="opt" onclick="ans(this,8,'a')">A) 7 clusters</div>
-                    <div class="opt" onclick="ans(this,8,'b')">B) 52 clusters</div>
-                    <div class="opt" onclick="ans(this,8,'c')">C) 97 clusters</div>
-                    <div class="opt" onclick="ans(this,8,'d')">D) 16 clusters</div>
+                <div class="context-box">
+                    From the National Spiritual Assembly's September 30, 2024 letter "The Nine Year Plan and the Destiny of America"
                 </div>
-                <div class="feedback" id="f8"></div>
+                <p class="quote-text">
+                    "Every space that we create, whether in a children's class, a junior youth group, a devotional gathering, a study circle, or any other, can be considered as an environment in which we are transitioning from the Old to the New World Order. Each of these, no matter how modestly it may begin, can be seen as a place of spiritual refuge for our fellow citizens."
+                </p>
+                <p class="quote-source">- National Spiritual Assembly of the United States</p>
+                <div class="reflection-prompt">
+                    <h3>✦ APPLY TO DAVIS</h3>
+                    <p>What "spaces of spiritual refuge" currently exist in our Davis community? What new ones could we create?</p>
+                </div>
             </div>
-            <p class="nav">Tap to continue →</p>
+            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
-        <!-- Slide 9: Quote -->
-        <div class="slide" id="s9">
-            <div class="header"><h2>Feast of Qawl</h2></div>
+        <!-- Slide 8: Question 4 -->
+        <div class="slide" id="slide8">
+            <div class="card question-card">
+                <span class="question-number">QUESTION 4 OF 14 • 7 POINTS</span>
+                <p class="question-text">
+                    The National Spiritual Assembly's October 17, 2025 letter reports that since the beginning of 2025, how many additional clusters advanced beyond the third milestone?
+                </p>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(this, 8, 'a')">A) 7 clusters</div>
+                    <div class="option" onclick="selectAnswer(this, 8, 'b')">B) 52 clusters</div>
+                    <div class="option" onclick="selectAnswer(this, 8, 'c')">C) 97 clusters</div>
+                    <div class="option" onclick="selectAnswer(this, 8, 'd')">D) 16 clusters</div>
+                </div>
+                <div class="feedback" id="feedback8"></div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 9: Quote on Divine Love -->
+        <div class="slide" id="slide9">
+            <div class="header">
+                <h2>Feast of Qawl (Speech)</h2>
+            </div>
             <div class="card quote-card">
-                <div class="context">From the UHJ letter of July 22, 2020</div>
-                <p class="quote-text">"You are channels for this divine love; let it flow through you to all who cross your path."</p>
-                <p class="quote-source">— Universal House of Justice</p>
-                <div class="reflect"><h3>✦ REFLECTION</h3><p>How do we cultivate this love within ourselves?</p></div>
-            </div>
-            <p class="nav">Tap to continue →</p>
-        </div>
-
-        <!-- Q5 -->
-        <div class="slide" id="s10">
-            <div class="card question-card">
-                <span class="q-num">Q5 • 7 PTS</span>
-                <p class="q-text">What fraction of the 3,100 youth conference attendees were NOT Bahá'ís?</p>
-                <div class="options">
-                    <div class="opt" onclick="ans(this,10,'a')">A) One-quarter (25%)</div>
-                    <div class="opt" onclick="ans(this,10,'b')">B) One-half (50%)</div>
-                    <div class="opt" onclick="ans(this,10,'c')">C) Two-thirds (66%)</div>
-                    <div class="opt" onclick="ans(this,10,'d')">D) One-third (33%)</div>
+                <div class="context-box">
+                    From the Universal House of Justice's letter of July 22, 2020, quoted in the National Spiritual Assembly's September 2024 letter
                 </div>
-                <div class="feedback" id="f10"></div>
-            </div>
-            <p class="nav">Tap to continue →</p>
-        </div>
-
-        <!-- Slide 11: Quote -->
-        <div class="slide" id="s11">
-            <div class="header"><h2>Feast of Qawl</h2></div>
-            <div class="card quote-card" style="text-align:center;">
-                <p style="font-size:1.5rem; color:#d4af37; margin-bottom:10px;">"All must surge,</p>
-                <p style="font-size:1.8rem; color:#2ecc71; margin-bottom:15px;">but the youth must soar."</p>
-                <div class="divider"></div>
-                <p class="quote-source">— Universal House of Justice</p>
-                <div class="reflect"><h3>✦ FOR ALL</h3><p>What does it mean for youth to "soar"?</p></div>
-            </div>
-            <p class="nav">Tap to continue →</p>
-        </div>
-
-        <!-- Q6 -->
-        <div class="slide" id="s12">
-            <div class="card question-card">
-                <span class="q-num">Q6 • 7 PTS</span>
-                <p class="q-text">Shoghi Effendi wrote that American Bahá'ís must usher in the World Order "not by their death but through _______."</p>
-                <div class="options">
-                    <div class="opt" onclick="ans(this,12,'a')">A) Living sacrifice</div>
-                    <div class="opt" onclick="ans(this,12,'b')">B) Political engagement</div>
-                    <div class="opt" onclick="ans(this,12,'c')">C) Intellectual persuasion</div>
-                    <div class="opt" onclick="ans(this,12,'d')">D) Material contribution</div>
+                <p class="quote-text">
+                    "Ultimately, the power to transform the world is effected by love, love originating from the relationship with the divine, love ablaze among members of a community, love extended without restriction to every human being... You are channels for this divine love; let it flow through you to all who cross your path."
+                </p>
+                <p class="quote-source">- Universal House of Justice</p>
+                <div class="reflection-prompt">
+                    <h3>✦ PERSONAL REFLECTION</h3>
+                    <p>How do we cultivate this love within ourselves? How does it manifest in our teaching conversations?</p>
                 </div>
-                <div class="feedback" id="f12"></div>
             </div>
-            <p class="nav">Tap to continue →</p>
+            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
-        <!-- Slide 13: Quote -->
-        <div class="slide" id="s13">
-            <div class="header"><h2>Feast of Qawl</h2></div>
+        <!-- Slide 10: Question 5 -->
+        <div class="slide" id="slide10">
+            <div class="card question-card">
+                <span class="question-number">QUESTION 5 OF 14 • 7 POINTS</span>
+                <p class="question-text">
+                    According to the National Spiritual Assembly's October 17, 2025 letter, what fraction of the 3,100 youth who attended the youth conferences were NOT members of the Bahá'í Faith?
+                </p>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(this, 10, 'a')">A) One-quarter (25%)</div>
+                    <div class="option" onclick="selectAnswer(this, 10, 'b')">B) One-half (50%)</div>
+                    <div class="option" onclick="selectAnswer(this, 10, 'c')">C) Two-thirds (66%)</div>
+                    <div class="option" onclick="selectAnswer(this, 10, 'd')">D) One-third (33%)</div>
+                </div>
+                <div class="feedback" id="feedback10"></div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 11: Quote on Youth -->
+        <div class="slide" id="slide11">
+            <div class="header">
+                <h2>Feast of Qawl (Speech)</h2>
+            </div>
             <div class="card quote-card">
-                <p class="quote-text">"Until the public sees in the Bahá'í Community a true pattern, in action, of something better than it already has, it will not respond to the Faith in large numbers."</p>
-                <p class="quote-source">— Shoghi Effendi</p>
-                <div class="reflect"><h3>✦ ASSESSMENT</h3><p>What aspects of our community demonstrate "something better"?</p></div>
-            </div>
-            <p class="nav">Tap to continue →</p>
-        </div>
-
-        <!-- Q7 -->
-        <div class="slide" id="s14">
-            <div class="card question-card">
-                <span class="q-num">Q7 • 7 PTS</span>
-                <p class="q-text">What is the cumulative goal for clusters beyond the third milestone by Ridván 2026?</p>
-                <div class="options">
-                    <div class="opt" onclick="ans(this,14,'a')">A) 97 clusters</div>
-                    <div class="opt" onclick="ans(this,14,'b')">B) 120 clusters</div>
-                    <div class="opt" onclick="ans(this,14,'c')">C) 156 clusters</div>
-                    <div class="opt" onclick="ans(this,14,'d')">D) 200 clusters</div>
+                <div class="context-box">
+                    From the National Spiritual Assembly's September 30, 2024 letter "The Nine Year Plan and the Destiny of America"
                 </div>
-                <div class="feedback" id="f14"></div>
+                <p class="quote-text">
+                    "Today, the Universal House of Justice has again reminded us of the place they must occupy in the vanguard of service: 'All must surge, but the youth must soar.'"
+                </p>
+                <p class="quote-source">- Universal House of Justice</p>
+                <div class="reflection-prompt">
+                    <h3>✦ FOR YOUTH AND ALL</h3>
+                    <p>What does it mean for youth to "soar"? How can those of us who are older support this while also "surging" ourselves?</p>
+                </div>
             </div>
-            <p class="nav">Tap to continue →</p>
+            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
-        <!-- Slide 15: Quote -->
-        <div class="slide" id="s15">
-            <div class="header"><h2>Feast of Qawl</h2></div>
+        <!-- Slide 12: Question 6 -->
+        <div class="slide" id="slide12">
+            <div class="card question-card">
+                <span class="question-number">QUESTION 6 OF 14 • 7 POINTS</span>
+                <p class="question-text">
+                    Shoghi Effendi wrote that the American Bahá'ís must usher in the promised World Order "not by their death but through _______."
+                </p>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(this, 12, 'a')">A) Living sacrifice</div>
+                    <div class="option" onclick="selectAnswer(this, 12, 'b')">B) Political engagement</div>
+                    <div class="option" onclick="selectAnswer(this, 12, 'c')">C) Intellectual persuasion</div>
+                    <div class="option" onclick="selectAnswer(this, 12, 'd')">D) Material contribution</div>
+                </div>
+                <div class="feedback" id="feedback12"></div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 13: Quote on Pattern -->
+        <div class="slide" id="slide13">
+            <div class="header">
+                <h2>Feast of Qawl (Speech)</h2>
+            </div>
             <div class="card quote-card">
-                <div class="context">From a recent UHJ message</div>
-                <p class="quote-text">"Through activities that every Bahá'í family can offer in its home, it can demonstrate a way of life that can be emulated by all..."</p>
-                <p class="quote-source">— Universal House of Justice</p>
-                <div class="reflect"><h3>✦ FAMILY TEACHING</h3><p>What activities could your family offer to attract seekers?</p></div>
-            </div>
-            <p class="nav">Tap to continue →</p>
-        </div>
-
-        <!-- Q8 -->
-        <div class="slide" id="s16">
-            <div class="card question-card">
-                <span class="q-num">Q8 • 7 PTS</span>
-                <p class="q-text">A statement is being prepared for what upcoming occasion?</p>
-                <div class="options">
-                    <div class="opt" onclick="ans(this,16,'a')">A) Bicentenary of the Báb's Declaration</div>
-                    <div class="opt" onclick="ans(this,16,'b')">B) Centenary of the Administrative Order</div>
-                    <div class="opt" onclick="ans(this,16,'c')">C) Completion of the Nine Year Plan</div>
-                    <div class="opt" onclick="ans(this,16,'d')">D) 250th anniversary of the United States</div>
+                <p class="quote-text">
+                    "Until the public sees in the Bahá'í Community a true pattern, in action, of something better than it already has, it will not respond to the Faith in large numbers."
+                </p>
+                <p class="quote-source">- Shoghi Effendi</p>
+                <div class="reflection-prompt">
+                    <h3>✦ HONEST ASSESSMENT</h3>
+                    <p>What aspects of our community life in Davis demonstrate "something better"? Where do we need to grow?</p>
                 </div>
-                <div class="feedback" id="f16"></div>
             </div>
-            <p class="nav">Tap to continue →</p>
+            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
-        <!-- Slide 17: Quote -->
-        <div class="slide" id="s17">
-            <div class="header"><h2>Feast of Qawl</h2></div>
+        <!-- Slide 14: Question 7 -->
+        <div class="slide" id="slide14">
+            <div class="card question-card">
+                <span class="question-number">QUESTION 7 OF 14 • 7 POINTS</span>
+                <p class="question-text">
+                    According to the National Spiritual Assembly's October 17, 2025 letter, what is the cumulative goal for clusters progressing beyond the third milestone by Ridván 2026?
+                </p>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(this, 14, 'a')">A) 97 clusters</div>
+                    <div class="option" onclick="selectAnswer(this, 14, 'b')">B) 120 clusters</div>
+                    <div class="option" onclick="selectAnswer(this, 14, 'c')">C) 156 clusters</div>
+                    <div class="option" onclick="selectAnswer(this, 14, 'd')">D) 200 clusters</div>
+                </div>
+                <div class="feedback" id="feedback14"></div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 15: Quote on Family -->
+        <div class="slide" id="slide15">
+            <div class="header">
+                <h2>Feast of Qawl (Speech)</h2>
+            </div>
             <div class="card quote-card">
-                <p class="quote-text">"...it is important for the friends to remain mindful that the doors of the Faith are wide open and to give encouragement to those who stand at the threshold."</p>
-                <p class="quote-source">— Universal House of Justice, Dec 2021</p>
-                <div class="reflect"><h3>✦ THE THRESHOLD</h3><p>How do we recognize when someone is ready to cross it?</p></div>
-            </div>
-            <p class="nav">Tap to continue →</p>
-        </div>
-
-        <!-- Q9 -->
-        <div class="slide" id="s18">
-            <div class="card question-card">
-                <span class="q-num">Q9 • 7 PTS</span>
-                <p class="q-text">What is described as "most promising of all" where the institute process is taking root?</p>
-                <div class="options">
-                    <div class="opt" onclick="ans(this,18,'a')">A) Growth in enrollment numbers</div>
-                    <div class="opt" onclick="ans(this,18,'b')">B) Financial contributions increasing</div>
-                    <div class="opt" onclick="ans(this,18,'c')">C) Populations taking personal initiative</div>
-                    <div class="opt" onclick="ans(this,18,'d')">D) Number of LSAs formed</div>
+                <div class="context-box">
+                    From a recent message of the Universal House of Justice, quoted in the National Spiritual Assembly's October 17, 2025 letter
                 </div>
-                <div class="feedback" id="f18"></div>
+                <p class="quote-text">
+                    "Through activities that every Bahá'í family can offer in its home, it can demonstrate a way of life that can be emulated by all those who seek to counteract the divisive forces that feed discontent, conflict, and self-interest, and to weave the bonds of trust, cooperation, and constructive action upon which a healthy community depends."
+                </p>
+                <p class="quote-source">- Universal House of Justice</p>
+                <div class="reflection-prompt">
+                    <h3>✦ FAMILY-CENTERED TEACHING</h3>
+                    <p>What activities could your family (or household) offer that would attract seekers? How can we support each other in this?</p>
+                </div>
             </div>
-            <p class="nav">Tap to continue →</p>
+            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
-        <!-- Slide 19: Quote -->
-        <div class="slide" id="s19">
-            <div class="header"><h2>Feast of Qawl</h2></div>
+        <!-- Slide 16: Question 8 -->
+        <div class="slide" id="slide16">
+            <div class="card question-card">
+                <span class="question-number">QUESTION 8 OF 14 • 7 POINTS</span>
+                <p class="question-text">
+                    The National Spiritual Assembly's October 17, 2025 letter mentions that a statement is being prepared for the American public related to what upcoming occasion?
+                </p>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(this, 16, 'a')">A) The bicentenary of the Báb's Declaration</div>
+                    <div class="option" onclick="selectAnswer(this, 16, 'b')">B) The centenary of the Administrative Order</div>
+                    <div class="option" onclick="selectAnswer(this, 16, 'c')">C) The completion of the Nine Year Plan</div>
+                    <div class="option" onclick="selectAnswer(this, 16, 'd')">D) The 250th anniversary of the United States</div>
+                </div>
+                <div class="feedback" id="feedback16"></div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 17: Quote on Threshold -->
+        <div class="slide" id="slide17">
+            <div class="header">
+                <h2>Feast of Qawl (Speech)</h2>
+            </div>
             <div class="card quote-card">
-                <p class="quote-text">"No two clusters will advance in precisely the same manner... Yet all of those that have experienced significant growth have one element in common—the capacity for learning."</p>
-                <p class="quote-source">— National Spiritual Assembly</p>
-                <div class="reflect"><h3>✦ LEARNING</h3><p>How do we cultivate this capacity in Davis?</p></div>
-            </div>
-            <p class="nav">Tap to continue →</p>
-        </div>
-
-        <!-- Q10 -->
-        <div class="slide" id="s20">
-            <div class="card question-card">
-                <span class="q-num">Q10 • 7 PTS</span>
-                <p class="q-text">'Abdu'l-Bahá declared that America will "lead all nations _______."</p>
-                <div class="options">
-                    <div class="opt" onclick="ans(this,20,'a')">A) Politically</div>
-                    <div class="opt" onclick="ans(this,20,'b')">B) Economically</div>
-                    <div class="opt" onclick="ans(this,20,'c')">C) Spiritually</div>
-                    <div class="opt" onclick="ans(this,20,'d')">D) Technologically</div>
+                <div class="context-box">
+                    From the Universal House of Justice's letter of December 30, 2021, quoted in the National Spiritual Assembly's October 17, 2025 letter
                 </div>
-                <div class="feedback" id="f20"></div>
+                <p class="quote-text">
+                    "Wherever these endeavours are under way, it is important for the friends to remain mindful that the doors of the Faith are wide open and to give encouragement to those who stand at the threshold."
+                </p>
+                <p class="quote-source">- Universal House of Justice</p>
+                <div class="reflection-prompt">
+                    <h3>✦ RECOGNIZING THE THRESHOLD</h3>
+                    <p>How do we recognize when someone is "standing at the threshold"? How do we wisely invite them to cross it?</p>
+                </div>
             </div>
-            <p class="nav">Tap to continue →</p>
+            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
-        <!-- Slide 21: Quote -->
-        <div class="slide" id="s21">
-            <div class="header"><h2>Feast of Qawl</h2></div>
+        <!-- Slide 18: Question 9 -->
+        <div class="slide" id="slide18">
+            <div class="card question-card">
+                <span class="question-number">QUESTION 9 OF 14 • 7 POINTS</span>
+                <p class="question-text">
+                    According to the National Spiritual Assembly's October 17, 2025 letter, in the diverse neighborhoods where the institute process is taking root, what is described as "most promising of all"?
+                </p>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(this, 18, 'a')">A) The growth in enrollment numbers</div>
+                    <div class="option" onclick="selectAnswer(this, 18, 'b')">B) The financial contributions increasing</div>
+                    <div class="option" onclick="selectAnswer(this, 18, 'c')">C) The way populations are taking personal initiative</div>
+                    <div class="option" onclick="selectAnswer(this, 18, 'd')">D) The number of Local Spiritual Assemblies formed</div>
+                </div>
+                <div class="feedback" id="feedback18"></div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 19: Quote on Learning -->
+        <div class="slide" id="slide19">
+            <div class="header">
+                <h2>Feast of Qawl (Speech)</h2>
+            </div>
             <div class="card quote-card">
-                <p class="quote-text">"Heartfelt concern must prompt sustained effort to build communities that offer hope in place of despair, unity in place of conflict."</p>
-                <p class="quote-source">— UHJ, Ridván 2024</p>
-                <div class="reflect"><h3>✦ HOPE</h3><p>How do our activities offer "hope in place of despair"?</p></div>
-            </div>
-            <p class="nav">Tap to continue →</p>
-        </div>
-
-        <!-- Q11 -->
-        <div class="slide" id="s22">
-            <div class="card question-card">
-                <span class="q-num">Q11 • 7 PTS</span>
-                <p class="q-text">The learning process in advanced clusters is described as:</p>
-                <div class="options">
-                    <div class="opt" onclick="ans(this,22,'a')">A) Systematic, organic, and all-embracing</div>
-                    <div class="opt" onclick="ans(this,22,'b')">B) Rigid and standardized</div>
-                    <div class="opt" onclick="ans(this,22,'c')">C) Primarily academic and theoretical</div>
-                    <div class="opt" onclick="ans(this,22,'d')">D) Competitive and goal-oriented</div>
+                <div class="context-box">
+                    From the National Spiritual Assembly's September 30, 2024 letter "The Nine Year Plan and the Destiny of America"
                 </div>
-                <div class="feedback" id="f22"></div>
+                <p class="quote-text">
+                    "No two clusters will advance in precisely the same manner, nor at the same pace. Yet all of those that have experienced significant growth have one element in common, the capacity for learning."
+                </p>
+                <p class="quote-source">- National Spiritual Assembly of the United States</p>
+                <div class="reflection-prompt">
+                    <h3>✦ A LEARNING POSTURE</h3>
+                    <p>What does it mean to have a "capacity for learning"? How do we cultivate this in our Davis community?</p>
+                </div>
             </div>
-            <p class="nav">Tap to continue →</p>
+            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
-        <!-- Slide 23: Quote -->
-        <div class="slide" id="s23">
-            <div class="header"><h2>Feast of Qawl</h2></div>
+        <!-- Slide 20: Question 10 -->
+        <div class="slide" id="slide20">
+            <div class="card question-card">
+                <span class="question-number">QUESTION 10 OF 14 • 7 POINTS</span>
+                <p class="question-text">
+                    'Abdu'l-Bahá declared that America will "lead all nations _______."
+                </p>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(this, 20, 'a')">A) Politically</div>
+                    <div class="option" onclick="selectAnswer(this, 20, 'b')">B) Economically</div>
+                    <div class="option" onclick="selectAnswer(this, 20, 'c')">C) Spiritually</div>
+                    <div class="option" onclick="selectAnswer(this, 20, 'd')">D) Technologically</div>
+                </div>
+                <div class="feedback" id="feedback20"></div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 21: Quote on Hope -->
+        <div class="slide" id="slide21">
+            <div class="header">
+                <h2>Feast of Qawl (Speech)</h2>
+            </div>
             <div class="card quote-card">
-                <div class="context">From the UHJ's Ridván 2025 message</div>
-                <p class="quote-text">"Beloved friends, and promulgators of the divine teachings, and champions of the Blessed Beauty—your efforts are needed now."</p>
-                <p class="quote-source">— Universal House of Justice</p>
-                <div class="reflect"><h3>✦ OUR RESPONSE</h3><p>What concrete steps will our Davis community take?</p></div>
-            </div>
-            <p class="nav">Tap to continue →</p>
-        </div>
-
-        <!-- Q12 -->
-        <div class="slide" id="s24">
-            <div class="card question-card">
-                <span class="q-num">Q12 • 7 PTS</span>
-                <p class="q-text">What should we avoid in addressing society's challenges?</p>
-                <div class="options">
-                    <div class="opt" onclick="ans(this,24,'a')">A) Holding devotional gatherings</div>
-                    <div class="opt" onclick="ans(this,24,'b')">B) Working with like-minded organizations</div>
-                    <div class="opt" onclick="ans(this,24,'c')">C) Political partisanship and polarization</div>
-                    <div class="opt" onclick="ans(this,24,'d')">D) Discussing social issues</div>
+                <div class="context-box">
+                    From the Universal House of Justice's Ridván 2024 message, quoted in the National Spiritual Assembly's September 2024 letter
                 </div>
-                <div class="feedback" id="f24"></div>
-            </div>
-            <p class="nav">Tap to continue →</p>
-        </div>
-
-        <!-- Q13 -->
-        <div class="slide" id="s25">
-            <div class="card question-card">
-                <span class="q-num">Q13 • 8 PTS</span>
-                <p class="q-text">True or False: Online seeker inquiries have nearly doubled since the previous year.</p>
-                <div class="options">
-                    <div class="opt" onclick="ans(this,25,'a')">A) True</div>
-                    <div class="opt" onclick="ans(this,25,'b')">B) False</div>
+                <p class="quote-text">
+                    "Heartfelt concern must prompt sustained effort to build communities that offer hope in place of despair, unity in place of conflict."
+                </p>
+                <p class="quote-source">- Universal House of Justice</p>
+                <div class="reflection-prompt">
+                    <h3>✦ PRACTICAL HOPE</h3>
+                    <p>How do our community activities concretely offer "hope in place of despair"? What stories can we share?</p>
                 </div>
-                <div class="feedback" id="f25"></div>
             </div>
-            <p class="nav">Tap to continue →</p>
+            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
-        <!-- Q14 -->
-        <div class="slide" id="s26">
+        <!-- Slide 22: Question 11 -->
+        <div class="slide" id="slide22">
             <div class="card question-card">
-                <span class="q-num">Q14 • 8 PTS</span>
-                <p class="q-text">What did Shoghi Effendi say would happen when the public sees a "true pattern" in the Bahá'í community?</p>
+                <span class="question-number">QUESTION 11 OF 14 • 7 POINTS</span>
+                <p class="question-text">
+                    The National Spiritual Assembly's October 17, 2025 letter describes the process of learning in advanced clusters as having what characteristic?
+                </p>
                 <div class="options">
-                    <div class="opt" onclick="ans(this,26,'a')">A) They will donate to the Funds</div>
-                    <div class="opt" onclick="ans(this,26,'b')">B) They will respond in large numbers</div>
-                    <div class="opt" onclick="ans(this,26,'c')">C) They will read the Writings</div>
-                    <div class="opt" onclick="ans(this,26,'d')">D) They will attend Feasts</div>
+                    <div class="option" onclick="selectAnswer(this, 22, 'a')">A) It is systematic, organic, and all-embracing</div>
+                    <div class="option" onclick="selectAnswer(this, 22, 'b')">B) It is rigid and standardized</div>
+                    <div class="option" onclick="selectAnswer(this, 22, 'c')">C) It is primarily academic and theoretical</div>
+                    <div class="option" onclick="selectAnswer(this, 22, 'd')">D) It is competitive and goal-oriented</div>
                 </div>
-                <div class="feedback" id="f26"></div>
+                <div class="feedback" id="feedback22"></div>
             </div>
-            <p class="nav">Tap to continue →</p>
+            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
-        <!-- Final -->
-        <div class="slide" id="s27">
+        <!-- Slide 23: Quote on Stirring Call -->
+        <div class="slide" id="slide23">
+            <div class="header">
+                <h2>Feast of Qawl (Speech)</h2>
+            </div>
+            <div class="card quote-card">
+                <div class="context-box">
+                    From the Universal House of Justice's Ridván 2025 message, quoted in the National Spiritual Assembly's October 17, 2025 letter
+                </div>
+                <p class="quote-text">
+                    "Against the gloom of a stormy sky, how bright the light that gleams from your devoted efforts! Even as the tempest rages in the world, the havens that will shelter humanity are being built in countries, regions, and clusters. But there is much to do... Beloved friends, and promulgators of the divine teachings, and champions of the Blessed Beauty, your efforts are needed now."
+                </p>
+                <p class="quote-source">- Universal House of Justice</p>
+                <div class="reflection-prompt">
+                    <h3>✦ OUR RESPONSE</h3>
+                    <p>How will WE respond to this call? What concrete steps will our Davis community take?</p>
+                </div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 24: Question 12 -->
+        <div class="slide" id="slide24">
+            <div class="card question-card">
+                <span class="question-number">QUESTION 12 OF 14 • 7 POINTS</span>
+                <p class="question-text">
+                    According to the National Spiritual Assembly's September 2024 letter, what should we avoid in addressing society's challenges?
+                </p>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(this, 24, 'a')">A) Holding devotional gatherings</div>
+                    <div class="option" onclick="selectAnswer(this, 24, 'b')">B) Working with like-minded organizations</div>
+                    <div class="option" onclick="selectAnswer(this, 24, 'c')">C) Engaging in political partisanship, divisiveness, and polarization</div>
+                    <div class="option" onclick="selectAnswer(this, 24, 'd')">D) Discussing social issues</div>
+                </div>
+                <div class="feedback" id="feedback24"></div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 25: Question 13 -->
+        <div class="slide" id="slide25">
+            <div class="card question-card">
+                <span class="question-number">QUESTION 13 OF 14 • 8 POINTS</span>
+                <p class="question-text">
+                    True or False: According to the National Spiritual Assembly's October 17, 2025 letter, online seeker inquiries have nearly doubled since the previous year.
+                </p>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(this, 25, 'a')">A) True</div>
+                    <div class="option" onclick="selectAnswer(this, 25, 'b')">B) False</div>
+                </div>
+                <div class="feedback" id="feedback25"></div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 26: Question 14 -->
+        <div class="slide" id="slide26">
+            <div class="card question-card">
+                <span class="question-number">QUESTION 14 OF 14 • 8 POINTS</span>
+                <p class="question-text">
+                    According to the National Spiritual Assembly's September 2024 letter, what did Shoghi Effendi say would happen when the public sees a "true pattern" in the Bahá'í community?
+                </p>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(this, 26, 'a')">A) They will donate to the Funds</div>
+                    <div class="option" onclick="selectAnswer(this, 26, 'b')">B) They will respond to the Faith in large numbers</div>
+                    <div class="option" onclick="selectAnswer(this, 26, 'c')">C) They will read the Writings</div>
+                    <div class="option" onclick="selectAnswer(this, 26, 'd')">D) They will attend Feasts</div>
+                </div>
+                <div class="feedback" id="feedback26"></div>
+            </div>
+            <p class="nav-hint">Swipe or tap → to continue</p>
+        </div>
+
+        <!-- Slide 27: Final Score -->
+        <div class="slide" id="slide27">
             <div class="card">
-                <div class="final">
-                    <h2>✦ RESULTS ✦</h2>
-                    <div class="num" id="finalNum">0</div>
-                    <div class="label">out of 100 points</div>
-                    <div class="ranking">
+                <div class="final-score">
+                    <h2>✦ YOUR RESULTS ✦</h2>
+                    <div class="score-number" id="finalScoreNumber">0</div>
+                    <div class="score-label">out of 100 points</div>
+                    <div class="ranking" id="rankingSection">
                         <h3>Your Ranking</h3>
-                        <p id="rankText"></p>
+                        <p id="rankingText"></p>
                     </div>
                 </div>
-                <div class="reflect" style="margin-top:25px;">
-                    <h3>✦ CLOSING</h3>
-                    <p>Whatever our score, we are united in this sacred mission. May we carry renewed determination to create spaces of spiritual refuge and demonstrate the transforming power of Bahá'u'lláh's Revelation.</p>
+                <div class="reflection-prompt" style="margin-top: 30px;">
+                    <h3>✦ CLOSING THOUGHT</h3>
+                    <p style="font-size: 1.05rem; line-height: 1.9;">
+                        Whatever our score, we are all united in this sacred mission. As we leave tonight, may we carry with us renewed determination to create spaces of spiritual refuge in Davis, to engage in meaningful conversations with our friends and neighbors, and to demonstrate through our lives the transforming power of Bahá'u'lláh's Revelation.
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let cur=0, pts=0, total=28, done={};
-        const A={2:{c:'c',p:7,e:'Racial prejudice was identified as "the most vital and challenging issue."'},4:{c:'a',p:7,e:'64 youth conferences were held, attended by 3,100 youth.'},6:{c:'b',p:7,e:'FALSE. America was NOT chosen for inherent excellence but due to spiritual deficiencies.'},8:{c:'d',p:7,e:'16 additional clusters advanced, bringing total to 97.'},10:{c:'d',p:7,e:'One-third of attendees were not members of the Faith.'},12:{c:'a',p:7,e:'"Not by their death but through living sacrifice."'},14:{c:'c',p:7,e:'The goal is 156 clusters by Ridván 2026.'},16:{c:'d',p:7,e:'The 250th anniversary of the United States.'},18:{c:'c',p:7,e:'"Most promising is the way populations are taking personal initiative."'},20:{c:'c',p:7,e:'"It will lead all nations spiritually."'},22:{c:'a',p:7,e:'"Systematic; it is organic; it is all embracing."'},24:{c:'c',p:7,e:'Avoid political partisanship, divisiveness, and polarization.'},25:{c:'a',p:8,e:'TRUE. Nearly twofold increase in online seeker inquiries.'},26:{c:'b',p:8,e:'"It will not respond to the Faith in large numbers."'}};
+        // Generate Background Elements
+        function createStarfield() {
+            const starfield = document.getElementById('starfield');
+            for (let i = 0; i < 120; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 2 + 1;
+                star.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    --duration: ${Math.random() * 3 + 2}s;
+                    --delay: ${Math.random() * 3}s;
+                    --base-opacity: ${Math.random() * 0.4 + 0.2};
+                `;
+                starfield.appendChild(star);
+            }
+        }
 
-        function start(){document.getElementById('scoreBox').style.display='block';go(1);}
-        function go(n){document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));document.getElementById('s'+n).classList.add('active');cur=n;document.getElementById('prog').style.width=(cur/(total-1)*100)+'%';}
-        function ans(el,n,a){if(done[n])return;done[n]=true;el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.add('disabled'));let f=document.getElementById('f'+n),cor=A[n].c;if(a===cor){el.classList.add('correct');pts+=A[n].p;f.className='feedback show correct';f.innerHTML='✓ Correct! +'+A[n].p+' pts<br><br>'+A[n].e;}else{el.classList.add('incorrect');el.parentElement.querySelectorAll('.opt').forEach(o=>{if(o.textContent.toLowerCase().startsWith(cor+')'))o.classList.add('correct');});f.className='feedback show incorrect';f.innerHTML='✗ '+A[n].e;}document.getElementById('score').textContent=pts;}
-        function showFinal(){document.getElementById('finalNum').textContent=pts;let r='',s='';if(pts>=90){r='Champion of the Blessed Beauty!';s='⭐⭐⭐⭐⭐';}else if(pts>=75){r='Promulgator of Divine Teachings!';s='⭐⭐⭐⭐';}else if(pts>=60){r='Builder of Community!';s='⭐⭐⭐';}else if(pts>=40){r='Seeker of Knowledge!';s='⭐⭐';}else{r='Beginning the Journey!';s='⭐';}document.getElementById('rankText').innerHTML=s+'<br><br>'+r;}
-        document.addEventListener('click',e=>{if(e.target.classList.contains('opt')||e.target.classList.contains('btn')||e.target.tagName==='INPUT')return;if(cur>0&&cur<total-1){if(cur===26)showFinal();go(cur+1);}});
-        let tx=0;document.addEventListener('touchstart',e=>tx=e.touches[0].clientX);document.addEventListener('touchend',e=>{if(Math.abs(tx-e.changedTouches[0].clientX)>50&&cur>0&&cur<total-1){if(cur===26)showFinal();go(cur+1);}});
+        function createFloatingSymbols() {
+            const container = document.getElementById('floatingSymbols');
+            const positions = [
+                { x: 5, y: 10, size: 80 },
+                { x: 85, y: 15, size: 60 },
+                { x: 10, y: 70, size: 100 },
+                { x: 90, y: 75, size: 70 },
+                { x: 50, y: 85, size: 90 },
+                { x: 25, y: 40, size: 50 },
+                { x: 75, y: 50, size: 55 },
+            ];
+
+            positions.forEach((pos, i) => {
+                const symbol = document.createElement('div');
+                symbol.className = 'nine-star';
+                symbol.style.cssText = `
+                    left: ${pos.x}%;
+                    top: ${pos.y}%;
+                    width: ${pos.size}px;
+                    height: ${pos.size}px;
+                    --float-duration: ${8 + i * 2}s;
+                    --float-delay: ${i * 0.5}s;
+                `;
+                symbol.innerHTML = `
+                    <svg viewBox="0 0 100 100" fill="currentColor" style="color: var(--gold-rich);">
+                        <polygon points="50,0 61,35 97,35 68,57 79,91 50,70 21,91 32,57 3,35 39,35"/>
+                    </svg>
+                `;
+                container.appendChild(symbol);
+            });
+        }
+
+        function createParticleDust() {
+            const container = document.getElementById('particleDust');
+            for (let i = 0; i < 30; i++) {
+                const dust = document.createElement('div');
+                dust.className = 'dust';
+                dust.style.cssText = `
+                    left: ${Math.random() * 100}%;
+                    --dust-duration: ${Math.random() * 10 + 15}s;
+                    --dust-delay: ${Math.random() * 15}s;
+                `;
+                container.appendChild(dust);
+            }
+        }
+
+        // Initialize backgrounds
+        createStarfield();
+        createFloatingSymbols();
+        createParticleDust();
+
+        // Quiz Logic
+        let currentSlide = 0;
+        let score = 0;
+        let playerName = '';
+        let totalSlides = 28;
+        let answeredQuestions = {};
+
+        const answers = {
+            2: { correct: 'c', points: 7, explanation: 'The September 2024 letter states that racial prejudice was identified by Shoghi Effendi as "the most vital and challenging issue" among the three evil tendencies.' },
+            4: { correct: 'a', points: 7, explanation: 'The October 17, 2025 letter reports that 64 youth conferences were held throughout the country, attended by some 3,100 youth.' },
+            6: { correct: 'b', points: 7, explanation: 'FALSE. The letter explicitly states that America was not chosen "by virtue of any inherent excellence or special merit" but rather due to its spiritual and social deficiencies.' },
+            8: { correct: 'd', points: 7, explanation: 'The letter states that since the beginning of 2025, 16 additional clusters advanced beyond the third milestone, bringing the total to 97.' },
+            10: { correct: 'd', points: 7, explanation: 'The letter reports that one-third of the 3,100 youth attendees were not members of the Faith.' },
+            12: { correct: 'a', points: 7, explanation: 'Shoghi Effendi wrote that American Bahá\'ís "must, in turn, usher in, not by their death but through living sacrifice, that promised World Order."' },
+            14: { correct: 'c', points: 7, explanation: 'The October 17, 2025 letter states that the cumulative goal for clusters to progress beyond the third milestone by Ridván 2026 is 156.' },
+            16: { correct: 'd', points: 7, explanation: 'The letter mentions the upcoming 250th anniversary of the establishment of the United States of America and states a public statement is being prepared for Ridván 2026.' },
+            18: { correct: 'c', points: 7, explanation: 'The letter states "Most promising of all is the way in which these populations are taking personal initiative."' },
+            20: { correct: 'c', points: 7, explanation: '\'Abdu\'l-Bahá declared: "It will lead all nations spiritually."' },
+            22: { correct: 'a', points: 7, explanation: 'The Ridván 2025 message describes the process as "systematic; it is organic; it is all embracing."' },
+            24: { correct: 'c', points: 7, explanation: 'The September 2024 letter states we must "avoid succumbing to the political partisanship, divisiveness, and polarization that increasingly characterize the public sphere."' },
+            25: { correct: 'a', points: 8, explanation: 'TRUE. The letter mentions "the nearly twofold increase in online seeker inquiries since last year."' },
+            26: { correct: 'b', points: 8, explanation: 'The letter quotes Shoghi Effendi: "Until the public sees in the Bahá\'í Community a true pattern, in action, of something better than it already has, it will not respond to the Faith in large numbers."' }
+        };
+
+        function startProgram() {
+            playerName = document.getElementById('playerName').value.trim() || 'Friend';
+            document.getElementById('scoreDisplay').style.display = 'block';
+            goToSlide(1);
+        }
+
+        function goToSlide(slideNum) {
+            document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
+            document.getElementById('slide' + slideNum).classList.add('active');
+            currentSlide = slideNum;
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateProgress() {
+            const progress = (currentSlide / (totalSlides - 1)) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function selectAnswer(element, slideNum, answer) {
+            if (answeredQuestions[slideNum]) return;
+
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.add('disabled'));
+
+            element.classList.add('selected');
+            answeredQuestions[slideNum] = true;
+
+            const correctAnswer = answers[slideNum].correct;
+            const pointsValue = answers[slideNum].points;
+            const feedbackDiv = document.getElementById('feedback' + slideNum);
+
+            if (answer === correctAnswer) {
+                element.classList.add('correct');
+                score += pointsValue;
+                feedbackDiv.className = 'feedback show correct';
+                feedbackDiv.innerHTML = '✓ Correct! +' + pointsValue + ' points<br><br>' + answers[slideNum].explanation;
+            } else {
+                element.classList.add('incorrect');
+                options.forEach(opt => {
+                    if (opt.textContent.toLowerCase().startsWith(correctAnswer + ')')) {
+                        opt.classList.add('correct');
+                    }
+                });
+                feedbackDiv.className = 'feedback show incorrect';
+                feedbackDiv.innerHTML = '✗ Not quite.<br><br>' + answers[slideNum].explanation;
+            }
+
+            document.getElementById('currentScore').textContent = score;
+        }
+
+        function showFinalScore() {
+            document.getElementById('finalScoreNumber').textContent = score;
+            
+            let ranking = '';
+            let stars = '';
+            
+            if (score >= 90) {
+                ranking = 'Champion of the Blessed Beauty! You have deeply absorbed the guidance for this crucial time.';
+                stars = '⭐⭐⭐⭐⭐';
+            } else if (score >= 75) {
+                ranking = 'Promulgator of Divine Teachings! Your knowledge will serve the teaching work well.';
+                stars = '⭐⭐⭐⭐';
+            } else if (score >= 60) {
+                ranking = 'Builder of Community! You understand the essentials of our sacred mission.';
+                stars = '⭐⭐⭐';
+            } else if (score >= 40) {
+                ranking = 'Seeker of Knowledge! Continue deepening in the guidance for this Plan.';
+                stars = '⭐⭐';
+            } else {
+                ranking = 'Beginning the Journey! The letters await your further study.';
+                stars = '⭐';
+            }
+            
+            document.getElementById('rankingText').innerHTML = stars + '<br><br>' + ranking;
+            
+            submitScore(playerName, score);
+        }
+        
+        function submitScore(name, finalScore) {
+            const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
+            const NAME_FIELD = 'entry.XXXXXXXXX';
+            const SCORE_FIELD = 'entry.YYYYYYYYY';
+            
+            if (GOOGLE_FORM_URL.includes('YOUR_FORM_ID')) {
+                console.log('Score tracking not configured. Name:', name, 'Score:', finalScore);
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append(NAME_FIELD, name);
+            formData.append(SCORE_FIELD, finalScore);
+            
+            fetch(GOOGLE_FORM_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            }).then(() => {
+                console.log('Score submitted successfully');
+            }).catch((error) => {
+                console.log('Score submission error:', error);
+            });
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                if (currentSlide < totalSlides - 1) {
+                    if (currentSlide === 26) {
+                        showFinalScore();
+                    }
+                    goToSlide(currentSlide + 1);
+                }
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (currentSlide > 0) {
+                    goToSlide(currentSlide - 1);
+                }
+            }
+        });
+
+        // Touch swipe
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            if (!e.touches || !e.touches.length) return;
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        document.addEventListener('touchend', function(e) {
+            if (!e.changedTouches || !e.changedTouches.length) return;
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > 50) {
+                if (diff > 0 && currentSlide < totalSlides - 1) {
+                    if (currentSlide === 26) {
+                        showFinalScore();
+                    }
+                    goToSlide(currentSlide + 1);
+                } else if (diff < 0 && currentSlide > 0) {
+                    goToSlide(currentSlide - 1);
+                }
+            }
+        }, { passive: true });
     </script>
 </body>
 </html>
