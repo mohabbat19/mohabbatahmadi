@@ -23,10 +23,6 @@
             box-sizing: border-box;
         }
 
-        html {
-            font-size: 16px;
-        }
-
         body {
             font-family: 'Cormorant Garamond', Georgia, serif;
             background: var(--emerald-deep);
@@ -34,15 +30,6 @@
             color: var(--cream);
             overflow-x: hidden;
             cursor: default;
-        }
-
-        /* Reduce motion for users who prefer it */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
         }
 
         /* Animated Background Layers */
@@ -178,11 +165,11 @@
         .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 70px 20px 30px;
+            padding: 30px 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            justify-content: center;
             position: relative;
             z-index: 10;
         }
@@ -213,7 +200,7 @@
         /* Header */
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .header h1 {
@@ -244,9 +231,9 @@
 
         /* Welcome Icon */
         .welcome-icon {
-            font-size: 4rem;
+            font-size: 5rem;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             animation: iconFloat 3s ease-in-out infinite;
             filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.5));
         }
@@ -266,7 +253,7 @@
             backdrop-filter: blur(20px);
             border-radius: 24px;
             padding: 50px;
-            margin: 20px 0 25px;
+            margin: 25px 0;
             border: 1px solid rgba(212, 175, 55, 0.2);
             box-shadow: 
                 0 25px 80px rgba(0, 0, 0, 0.5),
@@ -340,7 +327,7 @@
             font-family: 'Cinzel', serif;
             color: var(--gold-rich);
             margin-bottom: 12px;
-            font-size: 1.05rem;
+            font-size: 1.15rem;
             font-weight: 400;
             letter-spacing: 0.1em;
         }
@@ -348,7 +335,7 @@
         .reflection-prompt p {
             color: rgba(250, 248, 240, 0.9);
             line-height: 1.8;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
         }
 
         /* Question Card */
@@ -367,7 +354,6 @@
             margin-bottom: 20px;
             letter-spacing: 0.1em;
             font-weight: 600;
-            white-space: nowrap;
         }
 
         .question-text {
@@ -446,7 +432,7 @@
             padding: 20px 25px;
             border-radius: 16px;
             display: none;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             line-height: 1.7;
         }
 
@@ -475,22 +461,20 @@
         /* Score Display */
         .score-display {
             position: fixed;
-            top: 14px;
+            top: 25px;
             right: 25px;
             background: linear-gradient(135deg, rgba(10, 61, 46, 0.95), rgba(6, 36, 25, 0.98));
-            padding: 10px 24px;
+            padding: 15px 30px;
             border-radius: 40px;
             border: 1px solid rgba(212, 175, 55, 0.4);
             z-index: 100;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(10px);
-            max-width: 90vw;
-            white-space: nowrap;
         }
 
         .score-display span {
             font-family: 'Cinzel', serif;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: var(--gold-rich);
             letter-spacing: 0.05em;
         }
@@ -510,10 +494,9 @@
         /* Nav Hint */
         .nav-hint {
             text-align: center;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            margin-top: 35px;
             color: rgba(250, 248, 240, 0.4);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             letter-spacing: 0.1em;
             animation: hintPulse 2s ease-in-out infinite;
         }
@@ -528,13 +511,13 @@
             background: rgba(250, 248, 240, 0.08);
             border: 2px solid rgba(212, 175, 55, 0.3);
             border-radius: 16px;
-            padding: 14px 20px;
+            padding: 18px 25px;
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: var(--cream);
             width: 100%;
             max-width: 320px;
-            margin: 20px auto;
+            margin: 25px auto;
             display: block;
             text-align: center;
             transition: all 0.3s ease;
@@ -555,18 +538,17 @@
             background: linear-gradient(135deg, var(--gold-rich), var(--gold-light));
             color: var(--emerald-deep);
             border: none;
-            padding: 14px 36px;
+            padding: 18px 50px;
             font-family: 'Cinzel', serif;
-            font-size: 1.05rem;
+            font-size: 1.2rem;
             border-radius: 40px;
             cursor: pointer;
-            margin: 16px auto;
+            margin: 25px auto;
             display: block;
             font-weight: 600;
             letter-spacing: 0.15em;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
-            text-transform: uppercase;
         }
 
         .start-btn:hover {
@@ -593,7 +575,7 @@
 
         .final-score h2 {
             font-family: 'Cinzel', serif;
-            font-size: 2.3rem;
+            font-size: 2.5rem;
             color: var(--gold-rich);
             margin-bottom: 25px;
             letter-spacing: 0.15em;
@@ -601,7 +583,7 @@
 
         .score-number {
             font-family: 'Cinzel', serif;
-            font-size: 5rem;
+            font-size: 6rem;
             color: var(--gold-light);
             font-weight: 600;
             text-shadow: 0 0 60px rgba(212, 175, 55, 0.6);
@@ -614,14 +596,14 @@
         }
 
         .score-label {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             color: var(--emerald-light);
-            margin-top: 8px;
+            margin-top: 10px;
         }
 
         .ranking {
-            margin-top: 30px;
-            padding: 24px;
+            margin-top: 35px;
+            padding: 30px;
             background: rgba(212, 175, 55, 0.1);
             border-radius: 20px;
             border: 1px solid rgba(212, 175, 55, 0.25);
@@ -630,13 +612,13 @@
         .ranking h3 {
             font-family: 'Cinzel', serif;
             color: var(--gold-rich);
-            margin-bottom: 16px;
-            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
             letter-spacing: 0.1em;
         }
 
         .ranking p {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             line-height: 1.9;
             color: var(--cream);
         }
@@ -648,55 +630,166 @@
             filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
         }
 
-        /* Responsive tweaks */
+        /* Existing responsive tweaks */
         @media (max-width: 768px) {
-            .header h1 { font-size: 2.2rem; letter-spacing: 0.12em; }
-            .header h2 { font-size: 1.1rem; }
-            .card { padding: 32px 22px; border-radius: 20px; }
-            .quote-card { padding-left: 24px; }
+            .header h1 { font-size: 2.2rem; }
+            .card { padding: 35px 25px; }
             .quote-text { font-size: 1.25rem; }
             .question-text { font-size: 1.2rem; }
-            .option { font-size: 1rem; padding: 14px 18px; }
-            .feedback { font-size: 1rem; padding: 16px 18px; }
             .score-display {
                 top: 10px;
-                right: 50%;
-                transform: translateX(50%);
-                padding: 8px 18px;
+                right: 10px;
+                padding: 10px 20px;
             }
-            .score-display span { font-size: 0.95rem; }
-            .container {
-                padding: 60px 14px 24px;
-            }
-            .welcome-icon {
-                font-size: 3.2rem;
-            }
+            .score-display span { font-size: 1rem; }
+            .score-number { font-size: 4rem; }
         }
 
-        @media (max-width: 480px) {
-            html {
-                font-size: 15px;
+        /* MOBILE PERFORMANCE TUNING */
+        @media (max-width: 768px) {
+            /* Turn off heavy animated background layers on phones */
+            .starfield,
+            .floating-symbols,
+            .light-rays,
+            .particle-dust {
+                display: none;
             }
+
+            /* Simple static background for mobile */
+            body {
+                background: radial-gradient(circle at top, #115740 0%, #062419 55%, #03130d 100%);
+            }
+
             .card {
-                padding: 26px 16px;
+                padding: 22px 16px;
+                border-radius: 18px;
+                box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+                margin: 16px 0 18px;
             }
+
+            .quote-card {
+                padding-left: 18px;
+                border-left-width: 3px;
+            }
+
+            .header {
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 2.0rem;
+                letter-spacing: 0.1em;
+            }
+
+            .header h2 {
+                font-size: 1.05rem;
+            }
+
+            .welcome-icon {
+                font-size: 3rem;
+                margin-bottom: 14px;
+            }
+
+            .quote-text {
+                font-size: 1.1rem;
+                line-height: 1.7;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+                line-height: 1.6;
+            }
+
+            .reflection-prompt {
+                padding: 16px 14px;
+                margin-top: 20px;
+            }
+
+            .reflection-prompt p {
+                font-size: 1rem;
+            }
+
+            .options {
+                gap: 10px;
+            }
+
+            .option {
+                font-size: 0.95rem;
+                padding: 12px 14px;
+            }
+
+            .feedback {
+                font-size: 0.95rem;
+                padding: 14px 14px;
+            }
+
             .question-number {
                 display: block;
                 text-align: center;
-            }
-            .quote-text {
-                font-size: 1.15rem;
-                line-height: 1.8;
-            }
-            .reflection-prompt {
-                padding: 18px 16px;
-            }
-            .nav-hint {
                 font-size: 0.8rem;
-                letter-spacing: 0.08em;
+                padding: 6px 12px;
+                margin-bottom: 14px;
+                white-space: normal;
             }
+
+            .container {
+                padding: 56px 12px 20px;
+                justify-content: flex-start;
+            }
+
+            .nav-hint {
+                font-size: 0.75rem;
+                margin-top: 14px;
+                margin-bottom: 6px;
+            }
+
+            .score-display {
+                top: 8px;
+                right: 50%;
+                transform: translateX(50%);
+                padding: 6px 14px;
+                border-radius: 999px;
+            }
+
+            .score-display span {
+                font-size: 0.85rem;
+                letter-spacing: 0.04em;
+            }
+
             .score-number {
-                font-size: 4rem;
+                font-size: 3.4rem;
+            }
+
+            .card::before,
+            .welcome-icon,
+            .header h1,
+            .nav-hint,
+            .slide {
+                animation: none !important;
+            }
+        }
+
+        @media (max-width: 414px) {
+            .card {
+                padding: 18px 12px;
+            }
+
+            .quote-text {
+                font-size: 1.05rem;
+            }
+
+            .question-text {
+                font-size: 1.05rem;
+            }
+
+            .input-name {
+                padding: 10px 12px;
+                font-size: 1rem;
+            }
+
+            .start-btn {
+                padding: 10px 22px;
+                font-size: 0.95rem;
             }
         }
     </style>
@@ -723,17 +816,16 @@
                 <h2>The Power of Speech in Teaching the Faith</h2>
             </div>
             <div class="card">
-                <p style="text-align: center; font-size: 1.2rem; line-height: 1.9; margin-bottom: 24px;">
+                <p style="text-align: center; font-size: 1.3rem; line-height: 2; margin-bottom: 30px;">
                     Welcome, dear friends, to this interactive consultation on Teaching the Faith. 
                     Tonight we explore our sacred responsibility and privilege to share the message of Bahá'u'lláh.
                 </p>
-                <p style="text-align: center; color: var(--gold-light); margin-bottom: 26px; font-size: 1rem;">
-                    Enter your name to begin. Answer questions to earn points toward a total score of 100.
+                <p style="text-align: center; color: var(--gold-light); margin-bottom: 35px; font-size: 1.1rem;">
+                    Enter your name to begin. Answer questions to earn points toward a total score of 100!
                 </p>
                 <input type="text" class="input-name" id="playerName" placeholder="Enter your name">
-                <button class="start-btn" onclick="startProgram()">Begin Journey</button>
+                <button class="start-btn" onclick="startProgram()">BEGIN JOURNEY</button>
             </div>
-            <p class="nav-hint">Swipe or tap → to continue</p>
         </div>
 
         <!-- Slide 1: Opening Quote -->
@@ -745,7 +837,7 @@
                 <p class="quote-text">
                     "What 'oppression' is more grievous than that a soul seeking the truth, and wishing to attain unto the knowledge of God, should know not where to go for it and from whom to seek it?"
                 </p>
-                <p class="quote-source">- Bahá'u'lláh, The Kitáb-i-Íqán</p>
+                <p class="quote-source">&mdash; Bahá'u'lláh, The Kitáb-i-Íqán</p>
                 <div class="reflection-prompt">
                     <h3>✦ REFLECTION</h3>
                     <p>Consider: In our Davis community, who might be seeking truth and longing for spiritual guidance? How can we become visible sources of hope?</p>
@@ -781,7 +873,7 @@
                 <p class="quote-text">
                     "May this American democracy be the first nation to establish the foundation of international agreement. May it be the first nation to proclaim the unity of mankind. May it be the first to unfurl the standard of the 'Most Great Peace'..."
                 </p>
-                <p class="quote-source">- 'Abdu'l-Bahá, The Promulgation of Universal Peace</p>
+                <p class="quote-source">&mdash; 'Abdu'l-Bahá, The Promulgation of Universal Peace</p>
                 <div class="reflection-prompt">
                     <h3>✦ FOR DISCUSSION</h3>
                     <p>How does understanding America's spiritual destiny change how we approach teaching? What confidence does it give us?</p>
@@ -820,7 +912,7 @@
                 <p class="quote-text">
                     "Bahá'ís, on the other hand, know the goal they are working towards and know what they must do, step by step, to attain it. Their whole energy is directed towards the building of the good, a good which has such a positive strength that in the face of it the multitude of evils, which are in essence negative, will fade away and be no more."
                 </p>
-                <p class="quote-source">- Universal House of Justice, 1974</p>
+                <p class="quote-source">&mdash; Universal House of Justice, 1974</p>
                 <div class="reflection-prompt">
                     <h3>✦ FOR DISCUSSION</h3>
                     <p>In a world focused on fighting against problems, how radical is this approach of building toward something positive? How can we explain this to friends?</p>
@@ -857,7 +949,7 @@
                 <p class="quote-text">
                     "Every space that we create, whether in a children's class, a junior youth group, a devotional gathering, a study circle, or any other, can be considered as an environment in which we are transitioning from the Old to the New World Order. Each of these, no matter how modestly it may begin, can be seen as a place of spiritual refuge for our fellow citizens."
                 </p>
-                <p class="quote-source">- National Spiritual Assembly of the United States</p>
+                <p class="quote-source">&mdash; National Spiritual Assembly of the United States</p>
                 <div class="reflection-prompt">
                     <h3>✦ APPLY TO DAVIS</h3>
                     <p>What "spaces of spiritual refuge" currently exist in our Davis community? What new ones could we create?</p>
@@ -896,7 +988,7 @@
                 <p class="quote-text">
                     "Ultimately, the power to transform the world is effected by love, love originating from the relationship with the divine, love ablaze among members of a community, love extended without restriction to every human being... You are channels for this divine love; let it flow through you to all who cross your path."
                 </p>
-                <p class="quote-source">- Universal House of Justice</p>
+                <p class="quote-source">&mdash; Universal House of Justice</p>
                 <div class="reflection-prompt">
                     <h3>✦ PERSONAL REFLECTION</h3>
                     <p>How do we cultivate this love within ourselves? How does it manifest in our teaching conversations?</p>
@@ -935,7 +1027,7 @@
                 <p class="quote-text">
                     "Today, the Universal House of Justice has again reminded us of the place they must occupy in the vanguard of service: 'All must surge, but the youth must soar.'"
                 </p>
-                <p class="quote-source">- Universal House of Justice</p>
+                <p class="quote-source">&mdash; Universal House of Justice</p>
                 <div class="reflection-prompt">
                     <h3>✦ FOR YOUTH AND ALL</h3>
                     <p>What does it mean for youth to "soar"? How can those of us who are older support this while also "surging" ourselves?</p>
@@ -971,7 +1063,7 @@
                 <p class="quote-text">
                     "Until the public sees in the Bahá'í Community a true pattern, in action, of something better than it already has, it will not respond to the Faith in large numbers."
                 </p>
-                <p class="quote-source">- Shoghi Effendi</p>
+                <p class="quote-source">&mdash; Shoghi Effendi</p>
                 <div class="reflection-prompt">
                     <h3>✦ HONEST ASSESSMENT</h3>
                     <p>What aspects of our community life in Davis demonstrate "something better"? Where do we need to grow?</p>
@@ -1010,7 +1102,7 @@
                 <p class="quote-text">
                     "Through activities that every Bahá'í family can offer in its home, it can demonstrate a way of life that can be emulated by all those who seek to counteract the divisive forces that feed discontent, conflict, and self-interest, and to weave the bonds of trust, cooperation, and constructive action upon which a healthy community depends."
                 </p>
-                <p class="quote-source">- Universal House of Justice</p>
+                <p class="quote-source">&mdash; Universal House of Justice</p>
                 <div class="reflection-prompt">
                     <h3>✦ FAMILY-CENTERED TEACHING</h3>
                     <p>What activities could your family (or household) offer that would attract seekers? How can we support each other in this?</p>
@@ -1049,7 +1141,7 @@
                 <p class="quote-text">
                     "Wherever these endeavours are under way, it is important for the friends to remain mindful that the doors of the Faith are wide open and to give encouragement to those who stand at the threshold."
                 </p>
-                <p class="quote-source">- Universal House of Justice</p>
+                <p class="quote-source">&mdash; Universal House of Justice</p>
                 <div class="reflection-prompt">
                     <h3>✦ RECOGNIZING THE THRESHOLD</h3>
                     <p>How do we recognize when someone is "standing at the threshold"? How do we wisely invite them to cross it?</p>
@@ -1088,7 +1180,7 @@
                 <p class="quote-text">
                     "No two clusters will advance in precisely the same manner, nor at the same pace. Yet all of those that have experienced significant growth have one element in common, the capacity for learning."
                 </p>
-                <p class="quote-source">- National Spiritual Assembly of the United States</p>
+                <p class="quote-source">&mdash; National Spiritual Assembly of the United States</p>
                 <div class="reflection-prompt">
                     <h3>✦ A LEARNING POSTURE</h3>
                     <p>What does it mean to have a "capacity for learning"? How do we cultivate this in our Davis community?</p>
@@ -1127,7 +1219,7 @@
                 <p class="quote-text">
                     "Heartfelt concern must prompt sustained effort to build communities that offer hope in place of despair, unity in place of conflict."
                 </p>
-                <p class="quote-source">- Universal House of Justice</p>
+                <p class="quote-source">&mdash; Universal House of Justice</p>
                 <div class="reflection-prompt">
                     <h3>✦ PRACTICAL HOPE</h3>
                     <p>How do our community activities concretely offer "hope in place of despair"? What stories can we share?</p>
@@ -1164,9 +1256,9 @@
                     From the Universal House of Justice's Ridván 2025 message, quoted in the National Spiritual Assembly's October 17, 2025 letter
                 </div>
                 <p class="quote-text">
-                    "Against the gloom of a stormy sky, how bright the light that gleams from your devoted efforts! Even as the tempest rages in the world, the havens that will shelter humanity are being built in countries, regions, and clusters. But there is much to do... Beloved friends, and promulgators of the divine teachings, and champions of the Blessed Beauty, your efforts are needed now."
+                    "Against the gloom of a stormy sky, how bright the light that gleams from your devoted efforts! Even as the tempest rages in the world, the havens that will shelter humanity are being built in countries, regions, and clusters. But there is much to do... Beloved friends, and promulgators of the divine teachings, and champions of the Blessed Beauty,&mdash;your efforts are needed now."
                 </p>
-                <p class="quote-source">- Universal House of Justice</p>
+                <p class="quote-source">&mdash; Universal House of Justice</p>
                 <div class="reflection-prompt">
                     <h3>✦ OUR RESPONSE</h3>
                     <p>How will WE respond to this call? What concrete steps will our Davis community take?</p>
@@ -1239,9 +1331,9 @@
                         <p id="rankingText"></p>
                     </div>
                 </div>
-                <div class="reflection-prompt" style="margin-top: 30px;">
+                <div class="reflection-prompt" style="margin-top: 35px;">
                     <h3>✦ CLOSING THOUGHT</h3>
-                    <p style="font-size: 1.05rem; line-height: 1.9;">
+                    <p style="font-size: 1.15rem; line-height: 2;">
                         Whatever our score, we are all united in this sacred mission. As we leave tonight, may we carry with us renewed determination to create spaces of spiritual refuge in Davis, to engage in meaningful conversations with our friends and neighbors, and to demonstrate through our lives the transforming power of Bahá'u'lláh's Revelation.
                     </p>
                 </div>
@@ -1250,10 +1342,16 @@
     </div>
 
     <script>
+        // Detect mobile to keep visuals light
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+        const STAR_COUNT = isMobile ? 30 : 120;
+        const DUST_COUNT = isMobile ? 8 : 30;
+        const SYMBOL_SCALE = isMobile ? 0.7 : 1;
+
         // Generate Background Elements
         function createStarfield() {
             const starfield = document.getElementById('starfield');
-            for (let i = 0; i < 120; i++) {
+            for (let i = 0; i < STAR_COUNT; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 const size = Math.random() * 2 + 1;
@@ -1285,11 +1383,12 @@
             positions.forEach((pos, i) => {
                 const symbol = document.createElement('div');
                 symbol.className = 'nine-star';
+                const scaledSize = pos.size * SYMBOL_SCALE;
                 symbol.style.cssText = `
                     left: ${pos.x}%;
                     top: ${pos.y}%;
-                    width: ${pos.size}px;
-                    height: ${pos.size}px;
+                    width: ${scaledSize}px;
+                    height: ${scaledSize}px;
                     --float-duration: ${8 + i * 2}s;
                     --float-delay: ${i * 0.5}s;
                 `;
@@ -1304,7 +1403,7 @@
 
         function createParticleDust() {
             const container = document.getElementById('particleDust');
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < DUST_COUNT; i++) {
                 const dust = document.createElement('div');
                 dust.className = 'dust';
                 dust.style.cssText = `
@@ -1331,7 +1430,7 @@
         const answers = {
             2: { correct: 'c', points: 7, explanation: 'The September 2024 letter states that racial prejudice was identified by Shoghi Effendi as "the most vital and challenging issue" among the three evil tendencies.' },
             4: { correct: 'a', points: 7, explanation: 'The October 17, 2025 letter reports that 64 youth conferences were held throughout the country, attended by some 3,100 youth.' },
-            6: { correct: 'b', points: 7, explanation: 'FALSE. The letter explicitly states that America was not chosen "by virtue of any inherent excellence or special merit" but rather due to its spiritual and social deficiencies.' },
+            6: { correct: 'b', points: 7, explanation: 'FALSE. The letter explicitly states that America was NOT chosen "by virtue of any inherent excellence or special merit" but rather due to its spiritual and social deficiencies.' },
             8: { correct: 'd', points: 7, explanation: 'The letter states that since the beginning of 2025, 16 additional clusters advanced beyond the third milestone, bringing the total to 97.' },
             10: { correct: 'd', points: 7, explanation: 'The letter reports that one-third of the 3,100 youth attendees were not members of the Faith.' },
             12: { correct: 'a', points: 7, explanation: 'Shoghi Effendi wrote that American Bahá\'ís "must, in turn, usher in, not by their death but through living sacrifice, that promised World Order."' },
@@ -1470,12 +1569,10 @@
         // Touch swipe
         let touchStartX = 0;
         document.addEventListener('touchstart', function(e) {
-            if (!e.touches || !e.touches.length) return;
             touchStartX = e.touches[0].clientX;
-        }, { passive: true });
+        });
 
         document.addEventListener('touchend', function(e) {
-            if (!e.changedTouches || !e.changedTouches.length) return;
             const touchEndX = e.changedTouches[0].clientX;
             const diff = touchStartX - touchEndX;
             
@@ -1489,7 +1586,7 @@
                     goToSlide(currentSlide - 1);
                 }
             }
-        }, { passive: true });
+        });
     </script>
 </body>
 </html>
