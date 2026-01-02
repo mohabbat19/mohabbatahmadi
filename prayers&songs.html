@@ -286,6 +286,10 @@
             display: none;
         }
 
+        .hidden {
+            display: none !important;
+        }
+
         .prayer-header {
             margin-bottom: 20px;
             padding-bottom: 15px;
@@ -488,8 +492,8 @@
     <!-- Main Content -->
     <div class="main-content" id="mainContent">
         <div class="header">
-            <h1>Our Prayer & Song Collection</h1>
-            <p>A treasury of prayers and songs for our family</p>
+            <h1 id="mainTitle">Our Prayer Collection</h1>
+            <p id="mainSubtitle">A treasury of prayers for our family</p>
         </div>
 
         <div class="controls" id="prayerControls">
@@ -505,7 +509,7 @@
 
         <!-- Search Box -->
         <div class="search-container" id="searchContainer">
-            <input type="text" class="search-box" id="searchBox" placeholder="Search prayers, songs, authors..." onkeyup="searchPrayers()">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search prayers, authors..." onkeyup="searchPrayers()">
         </div>
 
         <!-- Prayer List -->
@@ -1017,6 +1021,9 @@
 
         function showPrayersView() {
             currentView = 'prayers';
+            document.getElementById('mainTitle').textContent = 'Our Prayer Collection';
+            document.getElementById('mainSubtitle').textContent = 'A treasury of prayers for our family';
+            document.getElementById('searchBox').placeholder = 'Search prayers, authors...';
             document.getElementById('prayerControls').classList.remove('hidden');
             document.getElementById('songsControls').classList.add('hidden');
             document.getElementById('prayersViewBtn').classList.add('active');
@@ -1031,6 +1038,9 @@
 
         function showSongsList() {
             currentView = 'songs';
+            document.getElementById('mainTitle').textContent = 'Our Song Collection';
+            document.getElementById('mainSubtitle').textContent = 'A treasury of songs for our family';
+            document.getElementById('searchBox').placeholder = 'Search songs, lessons...';
             document.getElementById('prayerControls').classList.add('hidden');
             document.getElementById('songsControls').classList.remove('hidden');
             document.getElementById('songsListBtn').classList.add('active');
@@ -1045,6 +1055,8 @@
 
         function showRandomSongView() {
             currentView = 'randomSong';
+            document.getElementById('mainTitle').textContent = 'Our Song Collection';
+            document.getElementById('mainSubtitle').textContent = 'A treasury of songs for our family';
             document.getElementById('prayerControls').classList.add('hidden');
             document.getElementById('songsControls').classList.remove('hidden');
             document.getElementById('randomSongBtn').classList.add('active');
@@ -1088,6 +1100,8 @@
 
         function showRandomView() {
             currentView = 'random';
+            document.getElementById('mainTitle').textContent = 'Our Prayer Collection';
+            document.getElementById('mainSubtitle').textContent = 'A treasury of prayers for our family';
             document.getElementById('prayerControls').classList.remove('hidden');
             document.getElementById('songsControls').classList.add('hidden');
             document.getElementById('randomViewBtn').classList.add('active');
