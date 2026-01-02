@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Family's Baha'i Prayers & Songs</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+            color: #2c2c2c;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Cover Page */
+        .cover-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 50%, #e8e8e8 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(3px);
+            animation: float 25s infinite ease-in-out;
+        }
+
+        .shape:nth-child(1) {
+            width: 150px;
+            height: 150px;
+            left: 10%;
+            top: 20%;
+            background: radial-gradient(circle, rgba(150, 150, 150, 0.15) 0%, transparent 70%);
+            animation-duration: 30s;
+        }
+
+        .shape:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            right: 15%;
+            top: 30%;
+            background: radial-gradient(circle, rgba(100, 100, 100, 0.15) 0%, transparent 70%);
+            animation-delay: 2s;
+            animation-duration: 25s;
+        }
+
+        .shape:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            left: 60%;
+            bottom: 20%;
+            background: radial-gradient(circle, rgba(120, 120, 120, 0.15) 0%, transparent 70%);
+            animation-delay: 4s;
+            animation-duration: 35s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translateY(-100px) translateX(50px) rotate(90deg) scale(1.2);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-60px) translateX(-40px) rotate(180deg) scale(0.8);
+                opacity: 0.7;
+            }
+            75% {
+                transform: translateY(-120px) translateX(60px) rotate(270deg) scale(1.4);
+                opacity: 0.4;
+            }
+        }
+
+        .cover-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .cover-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 30px;
+            color: #2c2c2c;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 4px;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .cover-subtitle {
+            font-size: 1.5rem;
+            color: #5a5a5a;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            animation: fadeInUp 1s ease forwards 0.3s;
+            opacity: 0;
+        }
+
+        .cover-description {
+            font-size: 1.2rem;
+            color: #3a3a3a;
+            margin-bottom: 50px;
+            line-height: 1.8;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease forwards 0.6s;
+            opacity: 0;
+        }
+
+        .enter-btn {
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #5a5a5a, #7a7a7a);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1s ease forwards 0.9s;
+            opacity: 0;
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #4a4a4a, #6a6a6a);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main Content */
+        .main-content {
+            display: none;
+            padding: 50px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-content.active {
+            display: block;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-family: 'Playfair Display', serif;
+            color: #2c2c2c;
+            margin-bottom: 20px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #5a5a5a;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 15px 35px;
+            background: white;
+            border: 2px solid #5a5a5a;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #2c2c2c;
+        }
+
+        .control-btn:hover,
+        .control-btn.active {
+            background: linear-gradient(135deg, #5a5a5a, #7a7a7a);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Song specific styles */
+        .song-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 10px;
+        }
+
+        /* Search Box */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #5a5a5a;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Prayer List View */
+        .prayer-list {
+            display: grid;
+            gap: 30px;
+        }
+
+        .prayer-list.hidden {
+            display: none;
+        }
+
+        .prayer-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            border-left: 4px solid #7a7a7a;
+        }
+
+        .prayer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .prayer-card.hidden {
+            display: none;
+        }
+
+        .prayer-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .prayer-author {
+            font-size: 0.9rem;
+            color: #7a7a7a;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .prayer-text {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #3a3a3a;
+            white-space: pre-wrap;
+        }
+
+        .prayer-text.arabic,
+        .prayer-text.persian {
+            font-size: 1.3rem;
+            direction: rtl;
+            text-align: right;
+            font-family: 'Traditional Arabic', 'Arabic Typesetting', 'Geeza Pro', Arial, sans-serif;
+        }
+
+        /* Random Prayer View */
+        .random-container {
+            display: none;
+            text-align: center;
+        }
+
+        .random-container.active {
+            display: block;
+        }
+
+        .random-prayer-display {
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto 40px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.5s ease;
+        }
+
+        .random-prayer-author {
+            font-size: 1rem;
+            color: #7a7a7a;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .random-prayer-text {
+            font-size: 1.3rem;
+            line-height: 2;
+            color: #2c2c2c;
+            white-space: pre-wrap;
+        }
+
+        .random-prayer-text.arabic,
+        .random-prayer-text.persian {
+            font-size: 1.5rem;
+            direction: rtl;
+            text-align: right;
+            font-family: 'Traditional Arabic', 'Arabic Typesetting', 'Geeza Pro', Arial, sans-serif;
+        }
+
+        .random-btn {
+            padding: 20px 60px;
+            background: linear-gradient(135deg, #5a5a5a, #7a7a7a);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+        }
+
+        .random-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .random-btn:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #5a5a5a, #7a7a7a);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .cover-title {
+                font-size: 2.5rem;
+                letter-spacing: 2px;
+            }
+
+            .cover-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .cover-description {
+                font-size: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .control-btn {
+                width: 100%;
+            }
+
+            .prayer-card {
+                padding: 20px;
+            }
+
+            .random-prayer-display {
+                padding: 30px 20px;
+            }
+
+            .random-prayer-text {
+                font-size: 1.1rem;
+            }
+
+            .random-btn {
+                padding: 18px 40px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cover Page -->
+    <div class="cover-page" id="coverPage">
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+        <div class="cover-content">
+            <h1 class="cover-title">Our Family's Prayer Book</h1>
+            <p class="cover-subtitle">A Collection of Baha'i Prayers</p>
+            <p class="cover-description">
+                Here we will store all the prayers we memorize as a family. We will also keep adding the songs we learn as the kids grow, building our spiritual foundation together.
+            </p>
+            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 40px; flex-wrap: wrap;">
+                <button class="enter-btn" onclick="enterPrayers()">View Prayers</button>
+                <button class="enter-btn" onclick="enterSongs()">View Songs</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="header">
+            <h1>Our Prayer & Song Collection</h1>
+            <p>A treasury of prayers and songs for our family</p>
+        </div>
+
+        <div class="controls" id="prayerControls">
+            <button class="control-btn active" id="prayersViewBtn" onclick="showPrayersView()">Prayers</button>
+            <button class="control-btn" id="randomViewBtn" onclick="showRandomView()">Random Prayer</button>
+        </div>
+
+        <!-- Songs Controls (hidden by default) -->
+        <div class="controls hidden" id="songsControls">
+            <button class="control-btn active" id="songsListBtn" onclick="showSongsList()">Songs</button>
+            <button class="control-btn" id="randomSongBtn" onclick="showRandomSongView()">Random Song</button>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-container" id="searchContainer">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search prayers, songs, authors..." onkeyup="searchPrayers()">
+        </div>
+
+        <!-- Prayer List -->
+        <div class="prayer-list" id="prayerList">
+            <!-- Prayers will be inserted here by JavaScript -->
+        </div>
+
+        <!-- Songs List -->
+        <div class="prayer-list hidden" id="songsList">
+            <!-- Songs will be inserted here by JavaScript -->
+        </div>
+
+        <!-- Random Prayer View -->
+        <div class="random-container" id="randomContainer">
+            <div class="random-prayer-display" id="randomPrayerDisplay">
+                <div class="random-prayer-author" id="randomAuthor">Click below to reveal a prayer</div>
+                <div class="random-prayer-text" id="randomText"></div>
+            </div>
+            <button class="random-btn" onclick="showRandomPrayer()">Reveal a Prayer</button>
+        </div>
+
+        <!-- Random Song Container -->
+        <div class="random-container" id="randomSongContainer">
+            <div class="random-prayer-display" id="randomSongDisplay">
+                <div class="random-prayer-author" id="randomSongTitle">Click below to reveal a song</div>
+                <div class="random-prayer-text" id="randomSongLyrics"></div>
+            </div>
+            <button class="random-btn" onclick="showRandomSong()">Reveal a Song</button>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+
+    <script>
+        const prayers = [
+            {
+                text: "Say: God sufficeth all things above all things, and nothing in the heavens or in the earth but God sufficeth. Verily, He is in Himself the Knower, the Sustainer, the Omnipotent.",
+                author: "The Báb",
+                language: "english"
+            },
+            {
+                text: "God grant that the light of unity may envelop the whole earth, and that the seal, 'the Kingdom is God's', may be stamped upon the brow of all its peoples.",
+                author: "Bahá'u'lláh",
+                language: "english"
+            },
+            {
+                text: "O God! Refresh and gladden my spirit. Purify my heart. Illumine my powers. I lay all my affairs in Thy hand. Thou art my Guide and my Refuge. I will no longer be sorrowful and grieved; I will be a happy and joyful being. O God! I will no longer be full of anxiety, nor will I let trouble harass me. I will not dwell on the unpleasant things of life.\n\nO God! Thou art more friend to me than I am to myself. I dedicate myself to Thee, O Lord.",
+                author: "'Abdu'l-Bahá",
+                language: "english"
+            },
+            {
+                text: "Strive that your actions day by day may be beautiful prayers. Turn towards God, and seek always to do that which is right and noble. Enrich the poor, raise the fallen, comfort the sorrowful, bring healing to the sick, reassure the fearful, rescue the oppressed, bring hope to the hopeless, shelter the destitute!",
+                author: "'Abdu'l-Bahá",
+                language: "english"
+            },
+            {
+                text: "O God! Educate these children. These children are the plants of Thine orchard, the flowers of Thy meadow, the roses of Thy garden. Let Thy rain fall upon them; let the Sun of Reality shine upon them with Thy love. Let Thy breeze refresh them in order that they may be trained, grow and develop, and appear in the utmost beauty. Thou art the Giver. Thou art the Compassionate.",
+                author: "'Abdu'l-Bahá",
+                language: "english"
+            },
+            {
+                text: "O God, guide me, protect me, make of me a shining lamp and a brilliant star. Thou art the Mighty and the Powerful.",
+                author: "'Abdu'l-Bahá",
+                language: "english"
+            },
+            {
+                text: "Thy name is my healing, O my God, and remembrance of Thee is my remedy. Nearness to Thee is my hope, and love for Thee is my companion. Thy mercy to me is my healing and my succor in both this world and the world to come. Thou, verily, art the All-Bountiful, the All-Knowing, the All-Wise.",
+                author: "Bahá'u'lláh",
+                language: "english"
+            },
+            {
+                text: "Blessed is the spot, and the house, and the place, and the city, and the heart, and the mountain, and the refuge, and the cave, and the valley, and the land, and the sea, and the island, and the meadow where mention of God hath been made, and His praise glorified.",
+                author: "Bahá'u'lláh",
+                language: "english"
+            },
+            {
+                text: "O my God! O my God! Unite the hearts of Thy servants, and reveal to them Thy great purpose. May they follow Thy commandments and abide in Thy law. Help them, O God, in their endeavor, and grant them strength to serve Thee. O God! Leave them not to themselves, but guide their steps by the light of Thy knowledge, and cheer their hearts by Thy love. Verily, Thou art their Helper and their Lord.",
+                author: "Bahá'u'lláh",
+                language: "english"
+            },
+            {
+                text: "O Lord! I am a child; enable me to grow beneath the shadow of Thy loving-kindness. I am a tender plant; cause me to be nurtured through the outpourings of the clouds of Thy bounty. I am a sapling of the garden of love; make me into a fruitful tree. Thou art the Mighty and the Powerful, and Thou art the All-Loving, the All-Knowing, the All-Seeing.",
+                author: "'Abdu'l-Bahá",
+                language: "english"
+            },
+            {
+                text: "May this boundless love so fill your hearts and minds that sadness may find no room to enter and may you with joyful hearts soar like birds into the Divine Radiance.",
+                author: "'Abdu'l-Bahá",
+                language: "english"
+            },
+            {
+                text: "In the love I bear to Thee, O my Lord, my heart longeth for Thee with a longing such as no heart hath known. Here am I with my body between Thy hands, and my spirit before Thy face.",
+                author: "Bahá'u'lláh",
+                language: "english"
+            },
+            {
+                text: "Remember at all times and in all places that God is faithful and do not doubt this. Be patient even though calamities may come upon thee. Yet fear not! Be firm in the path of thy Lord; as a mountain unmoved, unchanging in thy steadfastness.",
+                author: "Bahá'u'lláh",
+                language: "english"
+            },
+            {
+                text: "O Lord God! Make us as waves of the sea, as flowers of the garden, united, agreed through the bounties of Thy love.",
+                author: "'Abdu'l-Bahá",
+                language: "english"
+            },
+            {
+                text: "I beseech Thee to make my prayer a fire that will burn away the veils that have shut me out from Thy beauty. And the light that will lead me to the Ocean of Thy Presence. Allah-u-Abha",
+                author: "Bahá'u'lláh",
+                language: "english"
+            },
+            {
+                text: "O thou who art the first to believe in Me! Verily I say, I am the Bab, the Gate of God, and thou art the Babu'l-Bab, the gate of that Gate. Eighteen souls must, in the beginning, spontaneously and of their own accord, accept Me and recognise the truth of My Revelation.",
+                author: "The Báb",
+                language: "english"
+            },
+            {
+                text: "At all times do I speak of you and call you to mind. I pray unto the Lord, and with tears I implore Him to rain down all these blessings upon you, and gladden your hearts, and make blissful your souls, and grant you exceeding joy and heavenly delights.",
+                author: "'Abdu'l-Bahá",
+                language: "english"
+            },
+            {
+                text: "Pass by whatever exists in this world and find Me. I am the Sun of Perception and the Ocean of Science. I revive the withered ones and quicken the dead. I am that Light which illumines the path of Insight. I am the Falcon of the Hand of the Almighty; I bear healing in My wings and teach the knowledge of soaring to the Heaven of Truth.",
+                author: "Bahá'u'lláh",
+                language: "english"
+            },
+            {
+                text: "Rely upon God. Trust in Him. Praise Him, and call Him continually to mind. He verily turneth trouble into ease, and sorrow into solace, and toil into utter peace. He verily hath dominion over all things.",
+                author: "'Abdu'l-Bahá",
+                language: "english"
+            },
+            {
+                text: "O MY God! There is no one but Thee to allay the anguish of my soul, and Thou art my highest aspiration, O my God. My heart is wedded to none save Thee and such as Thou dost love. I solemnly declare that my life and death are both for Thee.",
+                author: "The Báb",
+                language: "english"
+            },
+            {
+                text: "سُبحانک اللهُمَّ یا الهی طهر عینی ثُم اذنی ثُم لسانی ثُم روحی ثُم قلبی ثُم نفسی ثُم جسمی ثُم جسدی عَن التوجه الی غیرِک ثُم اشرِبنی عَن کاس عِزک المختوم",
+                author: "Bahá'u'lláh",
+                language: "arabic"
+            },
+            {
+                text: "سبوح قدوس ربنا ورب الملائكة والروح",
+                author: "Traditional",
+                language: "arabic"
+            },
+            {
+                text: "هَلْ مِن مُفِّرجٍ غَيرُ اللهِ قُلْ سُبْحَانَ اللهِ هُوَ اللهُ كلٌّ عِبَادٌ لَهُ وكلٌّ بأمرِهِ قَائِمُونَ",
+                author: "The Báb",
+                language: "arabic"
+            },
+            {
+                text: "یا نور النور، یا نور فوق کل نور ، یا مظهر کل ظهور ، یا رحمن ، یا رحیم",
+                author: "Bahá'u'lláh",
+                language: "persian"
+            },
+            {
+                text: "قل الله يكفي عن كل شئ وعلى الله فليتوكل المتوكلون",
+                author: "The Báb",
+                language: "arabic"
+            },
+            {
+                text: "قل الله يكفي عن كلّ شيء ولا يكفي عن الله ربّك من شيء لا في السّموات ولا في الأرض ولا بينهما إنّه كان علاّما كافيا قديرا.",
+                author: "The Báb",
+                language: "arabic"
+            },
+            {
+                text: "سبحانک یا هو یا من هو هو یامن لیس احدا الا هو",
+                author: "The Báb",
+                language: "arabic"
+            },
+            {
+                text: "هوالمهیمن القیوم اصبحت یا الهی بفضلک و اخرج مِنَ البیت متوکلاً علیک و مفوّضاً امری اِلیک فانزِل عَلَیَّ مِن سماء رحمتک برکةٍ مِن عندک ثمّ ارجعنی الی البیت سالماً کما اَخرَجتَنی مِنهُ سالما مستقیما لا اله الا انت الفرد الواحد العلیم الحکیم",
+                author: "Bahá'u'lláh",
+                language: "persian"
+            },
+            {
+                text: "لوح احمد\nهُوَ السُّلطانُ العَليمُ الحَكيمُ\nهذِهِ وَرقَةُ الفِردَوسِ تُغَنّی علی اَفنانِ سِدرَةِ البَقاءِ بِاَلحانِ قُدسٍ مَليحٍ* وَ تُبَشّرُ المُخلِصينَ اِلی جِوارِ اَللّهِ وَ المُوَحّدينَ اِلی ساحَةِ قُربٍ كَريمٍ وَ تُخبِرُ المُنقَطِعينَ بِهذّا اَلنّبَأِ اَلّذی فُصّلَ مِن نَبَأِ اَللّهِ المَلِكِ العَزيزِ الفَريدِ* وَ تَهدِی المُحبّينَ اِلی مَقعَدِ القُدسِ ثَمَّ اِلی هذَا المَنظَرِ المُنيرِ* قُل اِنَّ هذا لَمَنظَرُ الاكبَرِ اَلّذیِ سُطِرَ في اَلواحِ المُرسَلينَ* وَ بِهِ يُفصَلُ الحَقُّ عَنِ ‌الباطِلِ وَ يُفَرقُ كُلُّ اَمرٍ حَكيمٍ* قُل اِنَّهُ لَشَجَرُ اَلرّوحِ اَلّذی اَثمَرَ بِفَواكِهِ اَللّهِ العَلِيّ المُقتَدِرِ العَظيمِ* اَن يا اَحمَدُ فَاشهَد بِاَنَّهُ هُوَ اَللّهَ لا اِلهَ اِلا هُوَ السُّلطانُ المُهَيمِنُ العَزيزَ القَديرُ* وَ اَلّذی اَرسَلَهُ بِاَسمٍ عَلِيّ هُوَ حَقُّ مِن عِندِاَللّهِ وَ اِنّا كُلُّ بِاَمرِهِ لَمِنَ العامِلينَ* قُل يا قُومِ فَاَتّبِعُوا حُدودَ اَللّهِ اَلّتی فُرِضَت فِی البيانِ مِن لَدُن عَزيزٍ حَكيمٍ* قُل اِنَّهُ لَسُلطانُ الرُّسُلِ وَ كِتابَهُ لأمُّ الكِتابِ اِن اَنتُم مِنَ العارفينَ* كَذلِكَ يُذَكّرُكُمُ الوَرقاءُ فی هَذَا اَلسّجنِ وَ ما عَلَيهِ اِلّا البَلاغُ المُبينُ* فَمَن شاءَ فَليُعرِض عَن هَذَا النُّصحِ وَ مَن شاءَ فَليَتّخِذ اِلی رَبّهِ سَبيلاً* قُل يا قُومِ اِن تَكفُرُوا بِهذِهِ الآياتِ فَبِاَيّ حُجّةٍ آمَنتُم بِاللّهِ مِن قَبلُ هاتُوا بِها يا مَلأ الكاذِبينَ* لا فَوَاَلّذي نَفسی بِيَدهِ لَن يَقدِرُوا وَ لَن يَستَطيعُوا وَ لَو يَكُونُ بَعضُهُم لِبَعضٍ ظَهيراً*\nاَن يا اَحمَدُ لا تَنسَ فَضلی في غَيبَتي ثُمّ ذكَّر اَيّامی في اَيّامِكَ ثُمَّ كُربَتی وَ غُربَتي في هذَا اَلسّجنِ البَعيدِ* وَ كَن مُستَقيماً في حُبّي بِحَيثُ لَن يُحَوَّلَ قَلبُكَ وَ لَو تُضرَبُ بِسُيُوفِ الأعداءِ وَ يَمنَعُكَ كُلُّ مَن فِي السَّمواتِ وَالارَضينَ* وَ كَن كَشُعلَةِ اَلنّار لاَعدائی وَ كَوثَرِ البَقاءِ لاحِبّائي وَ لا تَكُنُ مِنَ المُمتَرينَ* وَ اِن يَمَسّكَ الحُزنُ فی سَبيلی اَوِ الذّلّةُ لأَجلِ اَسمی لا تَضطَرِب فَتَوَكَّل عَلَی اَللّهِ رَبّكَ وَ رَبّ آبائِكَ الأَوَّلينَ* لأنَّ اَلنّاسَ يَمشُونَ فی سُبُلِ الوَهمِ وَ لَيسَ لَهُم مِن بَصَرٍ لِيَعرفُوا اَللّهَ بِعُيُونِهِم اَويَسمَعُوا نَغَماتِهِ بِآذانِهِم وَكَذلِك اَشهَدناهُم اِن اَنتَ مِنَ اَلشّاهِدينَ* كَذلِكَ حالَتِ الظُّنُونُ بَينَهُم وَ قُلُوبِهِم وَ تَمنَعَهُم عَن سُبُلِ اَللّهِ العَلِيّ العَظيمِ* وَ اِنَّكَ اَنتَ اَيقِن في ذاتِكَ بِاَنّ اَلَّذي اَعرَضَ عَن هذَا الجَمالِ فَقَد اَعرَضَ عَنِ الرُّسُلِ مِن قَبلُ ثّمَّ اَستَكبَرَ عَلَی اَللّهِ في اَزَلِ الآزالِ اِلی اَبّدِ الآبِدينَ*\nفَاحفَظ يا اَحمَدُ هذَا اَللَّوحَ ثُمَّ اَقرَاَهُ في اَيّامِكَ وَ لا تَكُن مِنَ اَلصّابِرينَ* فَاِنَّ اَللّهَ قَد قَدَّرَ لِقارِئِه اَجرَ مِاَئَةِ شَهيدٍ ثُمَّ عِبادَةِ اَلثّقَلَينِ* كَذلِكَ مَنَنّا عَلَيكَ بِفَضلٍ مِن عِندِنا وَ رَحمَةٍ مِن لَدُنّا لِتَكُونَ مِنَ اَلشّاكِرينَ* فَوَ اَللّهِ مَن كانَ فی شِدَّةٍ اَو حُزنٍ وَ يَقرَأُ هَذا اَللّوحَ بِصِدقٍ مُبينٍ يَرفَعُ اَللّهُ حُزنَهُ وَ يَكشِفُ ضُرَّهُ وَ يُفَرَّجُ كَربَهُ وَ اِنَّهُ لَهُوَ اَلرَّحمنُ اَلرّحيمُ* وَ الحَمدُ لِلّهِ رَبّ العالَمينَ* ثُمَّ ذكّر مِن لَدُنّا كُلَّ مَن سَكَنَ في مَدينَةِ اَللّهِ المَلِكِ العَزِيزِ الجَميلِ مِنَ اَلّذينَ هُم آمَنُوا بِاللّهِ وَ بِالّذي يَبعَثُهُ اَللّهُ في يَومِ القِيمَةِ وَ كانُوا عَلی مَناهِجِ الحَقَّ لَمِنَ اَلسّالِكينَ*",
+                author: "Bahá'u'lláh - Tablet of Ahmad",
+                language: "arabic"
+            },
+            {
+                text: "هو الله\nای رحمان ای رحیم دلی چون مرات لطیف صافی عطا کن تا به انوار محبتت روشن و منیر گردد و به الهامات روحانیه و معنویه ملهم فرما تا عالم وجود بهشت بر گردد.",
+                author: "Bahá'u'lláh",
+                language: "persian"
+            },
+            {
+                text: "هو الله\nای خدای پر عطای ذوالمنن\nواقف جان و دل و اسرار من\nدرسحرها مونس جانم توئی\nمطلع بر سوز و حرمانم توئی\nهر دلی پیوست با ذکرت دمی\nجز غم تو می نجوید محرمی\nخون شود آن دل که بریان تو نیست\nکور به چشمی که گریان تو نیست\nدر شبان تیره و تار ای قدیر\nیاد تو در دل چو مصباح منیر\nاز عنایاتت بدل روحی بدم\nتا عدم گردد ز لطف تو قدم\nدر لیاقت منگر و در قدرها\nبنگر اندر فضل خود ای ذوالعطا\nاین طیور بال و پر اشکسته را\nاز کرم بال و پری احسان نما",
+                author: "Bahá'u'lláh",
+                language: "persian"
+            },
+            {
+                text: "هُواللّه\nخدايا، شکر تو را که اين دل و جان به جانان رساندی و اين بـی‌بهره را نصيبِ بی پايان بخشيدی، اين گمگشته را به کوی خويش خواندی و اين سر گشته را در پناهِ خود سر و سامان دادی. توئی دهنده و بخشنده و پاينده و مهربان.",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "الله ابهی\nای متوجه الی الله، چشم از جمیع ماسوی بربند و به ملکوت ابهی برگشا. آنچه خواهی از او خواه و آنچه طلبی از او طلب. به نظری صد هزار حاجات روا نماید و به التفاتی صد هزار درد بیدرمان دوا کند و به انعطافی زخمها را مرهم نهد و به نگاهی دلها را از قید غم برهاند. آنچه کند او کند. ما چه توانیم کرد، یفعل ما یشاء و یحکم ما یرید است. پس سر تسلیم نه و توکل بر رب رحیم به. والبهآء علیک.",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "الها کریما رحیما\nتوئی آن سلطانی كه بيك كلمه‌ات وجود موجود گشت و توئی آن كريمی كه اعمال بندگان بخششت را منع ننمود و ظهورات جودت را باز نداشت . از تو سؤال مينمايم اين عبد را فائز فرمائی بآنچه سبب نجاتست در جميع عوالم تو. توئی مقتدر و توانا و توئی عالم و دانا.",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "هوالله\nخدایا هدایت نما حفظ فرما سراج روشن کن ستاره درخشنده نما توئی مقتدر وتوانا",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "اِلهَا مَعبُودا مَلِكا مَقصُودا\nبه چه لسان تو را شكر نمايم؟ غافل بودم آگاهم فرمودی، مُعرض بودم بر اِقبال تأييد نمودی، مُرده بودم از آبِ حيات زندگی بخشيدی، پژمرده بودم از كوثرِ بيان كه از قلمِ رحمن جاری شده تازگی عطا كردی. پروردگارا، وجودِ كُلّ از جودت موجود، از بحرِ كَرَمَت محروم مفرما و از دريایِ رحمتت منع مكن. در هر حال توفيق و تأييد می‌طلبم و از سماءِ فضل بخششِ قديمت را سائلم. توئی مالِكِ عطا و سُلطان ملكوتِ بقا.",
+                author: "Bahá'u'lláh",
+                language: "persian"
+            },
+            {
+                text: "هوالابهی\nای خدای مهربان، این نوگل گلستان محبتت را از شبنم عنایت تر و تازه بفرما...",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "هوالله\nنور محبت الله از پرتو شمس روشن تر است، هر رخی که به آن نور روشن رشک آفتاب است و غبطه مه تابان.",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "هوالله\nالهی الهی توکلت علیک و فوضت امری الیک، انک انت الفضال الکریم و ارحم الراحمین",
+                author: "Bahá'u'lláh",
+                language: "persian"
+            },
+            {
+                text: "هوالله\nای یزدان مهربان، این شمع نو افروز را در ذجاجه عنایت از گردباد حوادث امکان حفظ فرما و این پروانه پر اشتیاق را حول سراج آفاق پرواز ده. توئی مقتدر و توانا.",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "هوالله\nای متوجه الی الله\nحمد کن که پدری داری، رخ به نار محبت الله افروخته و مادر دیده از غیر حق دوخته و خویشان و دودمانی گریبان به عشق بهاء چاک نموده. والبهاءعلیک.",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "هوالله\nخدایا! هدایت نما، حفظ فرما، سراج روشن کن، ستاره درخشنده نما. توئی مقتدر و توانا.",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "هوالله\nای نهال بوستان الهی، شکر کن حضرت بی چون را که در جویبار هدایت کبری روئیدی و برشحات سحاب عنایت نش و نما نمودی. حال وقت آن است که بر و شگوفه نمائی و بار و ثمر بخشی و در شاخسار حقیقت به کمال تزئین جلوه نمائی.",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "هوالله\nپرودگارا، پرتوی از شمس حقیقت بر این انجمن زن تا نورانی گردد.",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "هوالله\nخدایا طفلم در ظل عنایتت پرورش ده. نهال تازه ام به رشحات سحاب عنایت پرورش فرما. گیاه حدیقه محبتم درخت بارور کن. توئی مقتدر و توانا و توئی مهربان و دانا و بینا.",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "هوالابهی\nای دردانه بحر محبت الله، هر بحری مرجانی دارد و هر صدفی لولو غلتانی، دریای عشق الهی دردانه اش قلوب دوستان حقیقی و یاران معنوی است. پس بکوش که در دره مکنون گردی و لولو متلعلع مخزون. ولبهاءعلیک.",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "هوالله\nای سبزه نو خیز باغ عنایت، باغبان احدیت ترا نهال دستنشان موهبت فرمود و بوستانی قدرت ترا تربیت کرد و از جویبار فضل آب داد و جان از محبوب ابهی داری که در نهایت سبزی و خرمی در این چمنستان حقیقی جلوه نمائی. ولبهاء علیک.",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "هوالابهی\nاي جانفشان يار بي نشان. هزار عارفان در جستجوی او ولی محروم و مهجور از روی او، اما تو يافتی،تو شناختی، تو نرد خدمت باختی و كار خود ساختی و علم فوز و فنا افراختی. طرفه حكايتی است و غريب بشارتی است. آنانكه جستند نيافتند و آنانكه نشستند يافتند. استغفرالله جستجويشان جستجوی سیراب بود نه تشنگان و طلبشان طلب عاقلان بود نه عاشقان.\nعاقلان خوشه چين از سر ليلی غافلند کاين كرامت نيست جز مجنون خرمن سوز را\nعاشق نشسته به از عاقل متحرك. والبهاء عليك",
+                author: "'Abdu'l-Bahá",
+                language: "persian"
+            },
+            {
+                text: "لوحِ مریم\nهو\nمریما، عیسی جان بلا مکان عُروج نمود قفس وجود از طیرِ محمود خالی ماند و بلبلِ قِدَم به‌صحرای عَدم رو نمود و عَندَلیبِ اِلهی بَر سِدرۀ رَبانی به‌خُروش آمد، سُرادقِ عِزت بَر دَرید و هُمای رَفعَت از شاخسارِ بِهجت بَر پَرید، افلاک‌های بلند بر خاکِ‌ تیره بنشست و نَعره‌ها از دلِ پُر درد بَرخاست، آبِ گُوارا به‌خون تبدیل شد و صَحنِ فِردوسِ بَرین به‌خون آمیخته، بلی تیرِ قَضای اِلهی را سینۀ مُنیر دوستان لایق و کَمَندِ بلای نا متناهی را گَرَدنِ عاشقان شائق، هرکجا خَدنگی است بَر صَدرِ احباب وارد آید و هر جا غمی است بَر دلِ اَصحاب نازل گردد، عاشِقان را چَشم تَر باید و معشوقان را ناز وکِرِشمه شاید، حَبیب اگر صد ناله سراید محبوب بر جفا بیافزاید. اگر شربتِ وصال خواهی تَن به‌زوال دَر دِه و اگر خَمرِ جمال طلبی در وادی حِرمان پا نه. مَریما، حُزن را به سُرور بچش و غم را از جامِ فَرَح دَر کش، اگر خواهی قَدَم درکویِ طَلب گُذاری صابر باش و رُخ را مَخَراش و آب از دیده مَپاش و از بی‌صبران مَباش، پیراهنِ تسلیم پوش و از بادۀ رضا بنوش و عالَمی را به دِرهَمی بِفروش، دل به قَضا دربند و به حُکمِ قَدَر پیوند، چشمِ عِبرت برگُشا و از غیر دوست دَرپوش که عَنقَریب در مَحضرِ قُدس حلقه زنیم و به حضرتِ اُنس رو آریم و از بَربَطَ عَراق نغمه حِجازی بشنویم و با دوست مُلحَق شویم، ناگفتنی بگوئیم و نادیدنی ببینیم و ناشنیدنی بشنویم و به آهنگِ نـور هیکلِ روح را به رقص آوریم و در حَریمِ جان بـزمِ خوشی بیارائیم و از ساقیِ جلال ساغَرِ جَمال برگیریم و به‌یـادِ رُخِ ذوالجلال خَمرِ بی‌مثال درنـوشیم، چشم را ازآب پـاک کن و دل را از حُزن بِـروب و قلب را از غم فـارغ نما و به آهنگ ملیح بـرخوان:\nگر تیغ بارد در کوی آن ماه\nگردن نهادیم الحُکمُ ‌للّه",
+                author: "Bahá'u'lláh - Tablet of Maryam",
+                language: "persian"
+            }
+        ];
+
+        const songs = [
+            {
+                title: "My First Counsel",
+                lesson: "Lesson 1",
+                lyrics: "O Son of Spirit!\nO Son of Spirit!\nMy first counsel is this\nMy first counsel is this\nPossess a pure, kindly and radiant heart\nThat thine may be a sovereignty\nAncient, imperishable and everlasting\nAncient, imperishable",
+                type: "song"
+            },
+            {
+                title: "A Noble Way",
+                lesson: "Lesson 2",
+                lyrics: "Justice is a noble way\nJustice brings a brighter day\nA light to those in need\nShining through good deeds\nOh, justice is the way\n\nWe know 'Abdu'l-Bahá would share\nShowing love and showing care\nHe was content with less\nIn order to bring happiness\nHe was content with less\n\nTo be just we have to give\nShare our love and joy to live\nSharing blessings we receive\nA better world we will achieve\nOh, justice is the way",
+                type: "song"
+            },
+            {
+                title: "Love, Love, Love",
+                lesson: "Lesson 3",
+                lyrics: "Love, love, love, love\nLove your fellow man\nLove, love, love is\nHow the world began\nGod loved creation\nSo He created thee to\nLove, love, love Him\nAnd humanity\n\nLove, love, love the\nEverlasting good\nLove, love, love the\nSeed of brotherhood\nLove all creation\nFor He created thee to\nLove, love, love Him\nAnd humanity\n\nLove God's creatures\nBe they near or far\nSee each human\nAs a shining star\nLove all creation\nFor He created thee to\nLove, love, love Him\nAnd humanity",
+                type: "song"
+            },
+            {
+                title: "Truthful Words",
+                lesson: "Lesson 4",
+                lyrics: "A mirror that's covered up in dust\nCannot reflect the sun's bright light\nA bird with wings all full of mud\nIs unable to take flight\n\nCHORUS:\nWhen all of our words are truthful\nOur souls are able to progress\nThe foundation of all human virtues\nWe know is truthfulness\n\nA ship cannot catch the wind\nIf it is using a torn sail\nEyes can't see the path ahead\nIf they are covered up in veils\n\nCHORUS (with last line repeated)",
+                type: "song"
+            },
+            {
+                title: "Fountain of Generosity",
+                lesson: "Lesson 5",
+                lyrics: "Be a fountain, be a spring\nBe an ever-flowing thing\nIt is true that if you do\nHappiness will come to you\n\nSearch your heart every day\nIs there something you can give away\nHappiness should be your goal\nGive your heart, and give your soul\nIt is true that if you do\nGod will always be with you\n\nSearch your heart every day\nIs there something you can give away\nHappiness should be your goal\nGive your heart, and give your soul\nIt is true that if you do\nGod will always be with you",
+                type: "song"
+            },
+            {
+                title: "Prefer Your Brother",
+                lesson: "Lesson 6",
+                lyrics: "I am thirsty, I am thirsty\nBut my brother, he comes first\nSo I offer him the water\nThat will quench his thirst\n\nCHORUS:\nIt is a blessing to prefer your brother\nThis is a way to show you care\nIt is a blessing to prefer your sister\nYou are richer, the more you share\n\nI am hungry, I am hungry\nAnd my sister, she is too\nSo I give her some of my food\nThat's what's best to do\n\nCHORUS",
+                type: "song"
+            },
+            {
+                title: "Joy Gives Us Wings",
+                lesson: "Lesson 7",
+                lyrics: "Joy gives us wings to fly, joy gives us wings\nJoy gives us wings to fly, joy gives us wings\nIn times of joy, our strength grows in might\nIn times of joy, our intellect takes flight\nIn times of joy, our understanding is bright\nJoy gives us wings to fly, joy gives us wings\n\nBut when sadness visits us, when sadness visits us\nWe become weak, our strength goes away\nOur insights are dim, our thoughts become gray\nHow-ev-er\n\nJoy gives us wings to fly, joy gives us wings\nJoy gives us wings to fly, joy gives us wings\nIn times of joy, our strength grows in might\nIn times of joy, our intellect takes flight\nIn times of joy, our understanding is bright\nJoy gives us wings to fly, joy gives us wings",
+                type: "song"
+            },
+            {
+                title: "At All Times",
+                lesson: "Lesson 8",
+                lyrics: "CHORUS:\nWe should at all times manifest\nOur truthfulness and sincerity\nWe should at all times manifest\nOur truthfulness and sincerity (repeat)\n\nWhen I speak, I share from the bottom of my heart\nI let kind and true words be my art\nOh what a treasure is sincerity\nA beautiful mix of honesty and purity\nOh what a treasure is sincerity\n\nWhen I serve, I give from the bottom of my heart\nI purify my thoughts and pray before I start\nThis way my actions can build true unity\nOh what a treasure is sincerity\nOh what a treasure is sincerity\n\nWhen I pray, I pray from the bottom of my heart\nI close my eyes and think of God\nI don't think of my desire, I don't think of what I need\nI think of how sincerity can shine through my deeds\nOh what a treasure is sincerity\n\nCHORUS (repeat twice)",
+                type: "song"
+            },
+            {
+                title: "Be Like the Earth",
+                lesson: "Lesson 9",
+                lyrics: "See the earth\nIt's so humble\nHas all God's wealth to give\nEverything we need to live\nLets us walk on it every day\nBut have you ever heard it say\n\"I am richer\nGreater than you\"\n\nSee the tree\nIt's so humble\nThe more its fruits abound\nIt bows closer to the ground\nAnd shares the fruit that way\nBut have you ever heard it say\n\"I am richer\nGreater than you\"\n\nBe like the earth\nBe like the tree\nRise to the heaven of glory\nOn the wings of humility\nRise to the heaven of glory\nOn the wings of humility",
+                type: "song"
+            },
+            {
+                title: "I Thank and Praise Thee Lord",
+                lesson: "Lesson 10",
+                lyrics: "I thank and praise Thee Lord\nFor the crown of mercy\nSet upon my head\nIt will forever glow\nThe more gratitude I show\nI thank and praise Thee Lord\n\nI thank and praise Thee Lord\nFor the love and knowledge\nImplanted in my heart\nThey will grow and grow\nThe more gratitude I show\nI thank and praise Thee Lord\n\nI thank and praise Thee Lord\nFor the light of truth\nThat illumines my eyes\nI will see Thy bounties flow\nThe more gratitude I show\nI thank and praise Thee Lord\nI thank and praise Thee Lord",
+                type: "song"
+            },
+            {
+                title: "Looking for Good",
+                lesson: "Lesson 11",
+                lyrics: "I've got excellence as my goal\nBut I've got a long, long way to go\nAnd I know it helps me on my way\nWhen I see the good in every day\n\nSo if I see something you do wrong\nI won't sing about it in this song\nI won't talk about it with my friends\nI won't even think about it again\n\nCHORUS:\nI'll look at the good in you\nI'll look at the good in you\nI know that you'd want me to\n'Cause that's what I'd want you to do\n\nAnd God looks for the good in me\nHe looks for the good in me\nAnd when I put a cover\nOn those little faults of others\nI hope God will put a cover on my faults too\n\n'Abdu'l-Bahá was very wise\nHe saw your heart inside your eyes\nAnd when He noticed something wrong\nHe'd find some way to make you strong\n\nSo if I find some fault in you\nI know just what I have to do\nI won't go tell anybody else\nNo, I won't even tell myself\n\nCHORUS",
+                type: "song"
+            },
+            {
+                title: "Brighter Than the Sun",
+                lesson: "Lesson 12",
+                lyrics: "Truthfulness is brighter than the light of the sun\nTruthfulness is brighter than the light of the sun\nWith truthfulness, O people, beautify your tongues\nWith truthfulness, O people, beautify your tongues\n\nHonesty adorns the soul of everyone\nHonesty adorns the soul of everyone\nHonesty is brighter than the light of the sun\nHonesty is brighter than the light of the sun",
+                type: "song"
+            },
+            {
+                title: "Be Fair",
+                lesson: "Lesson 13",
+                lyrics: "CHORUS:\nBe fair, be fair\nAnd strive to provide for the comfort of all\nBe fair, be fair\nAnd strive to provide for the comfort of all\n\nWhen we are fair in our dealings with others\nWe gain the trust of our sisters and brothers\nWhen things are divided equitably\nJustice will shine for the world to see\n\nCHORUS\n\nWhen you give true comfort and aid\nYou'll follow the path that the Master laid\nWhen wise and just in what you say and do\nYou'll bring joy to hearts around you\n\nCHORUS",
+                type: "song"
+            },
+            {
+                title: "On the Wings of Detachment",
+                lesson: "Lesson 14",
+                lyrics: "CHORUS:\nOne day a bird was flying in the sky above\nFull of joy and confidence\nSoaring in this Paradise, his home\n\nAs he flew, his hunger began to grow\nSo he turned to the water and clay below\nDown below\nHe was trapped\nBy his desire\nAnd his wings got covered in mud\nToo heavy to fly\nHe could not return to his home\n\nCHORUS\n\nLike that bird I belong to the heavens\nSo I will not cling to the earth below\nI will not cling to riches\nI will not cling to my wishes\nI will not cling to anything but God\n\nSo I will walk on the feet of detachment\nI will soar on the wings of detachment\nI will free myself of all attachment\nTo anything but God (repeat)",
+                type: "song"
+            },
+            {
+                title: "Bestow Upon Me My Portion",
+                lesson: "Lesson 15",
+                lyrics: "CHORUS:\nBestow upon me my portion\nO Lord, O Lord\nBestow upon me my portion\nAs it pleaseth Thee\n\nIt's easy to be content\nWhen things are going well\nIt's easy to be content\nWhen you're feeling swell\n\nBut what is really more challenging\nIs to be content when things go wrong\nTo be patient in times of difficulty\nPerhaps even sing a song\n\nCHORUS\n\nFrom the time He was a boy\nThe Master suffered indignities\nFrom early in His life\nHe hardly had any comfort or ease\n\nBut He remained content and calm\nNever full of anxiety\nHe trusted in God and accepted His Will\nContinued on ever patiently\n\nCHORUS",
+                type: "song"
+            },
+            {
+                title: "We Are Drops",
+                lesson: "Lesson 16",
+                lyrics: "We are drops\nWe are drops (echo voice)\nOf one ocean\nOf one ocean\nWe are waves\nWe are waves\nOf one sea\nOf one sea\n\nCHORUS:\nCome and join us, come and join us\nIn our quest for unity\nIt's a way of life for you and me\n\nWe are flowers (echo voice)\nOf one garden\nWe are leaves\nOf one tree\n\nCHORUS\n\nAll the earth is (echo voice)\nBut one country\nMan is one\nCan't you see\n\nCHORUS (with last line repeated)",
+                type: "song"
+            },
+            {
+                title: "Source of Courage",
+                lesson: "Lesson 17",
+                lyrics: "CHORUS:\nThe source of courage and power\nIs the promotion of the Word of God\nThe source of courage and power\nIs steadfastness in His love\n\nForget about yourself\nStand up for what is right\nDefend those in need\nRely upon His might\n\nTeach the Word of God\nBe courageous in your deeds\nFollow His path\nTo happiness it leads\n\nCHORUS",
+                type: "song"
+            },
+            {
+                title: "Be Hopeful",
+                lesson: "Lesson 18",
+                lyrics: "The future we can never know\nWhat will happen the next day\nYet bounties never cease to flow\nTrust in God and make your way\n\nCHORUS:\nBe hopeful, be hopeful\nAnd find God's bounties everywhere\nThe sun will rise\nAnd fill the skies\nLook up with expectant eyes\nLook to Him with hopeful eyes\n\nBe ever hopeful, strive to grow\nAnd winter will give way to spring\nHis bounties never cease to flow\nThey're bringing life to everything\n\nCHORUS\n\nBe a source of joy and peace\nServe and let the spirit glow\nRemember bounties never cease\nBe hopeful for tomorrow\n\nCHORUS",
+                type: "song"
+            },
+            {
+                title: "Busy Hands",
+                lesson: "Lesson 19",
+                lyrics: "CHORUS:\nBusy hands make happy children\nHappy children can be found\nMaking other people happy\nSpreading peace and love around\n\nWorking hands to build a new world\nEverybody has a role\nAll of us can be so thankful\nFor we soon shall reach our goal\n\nCHORUS\n\nGod will help us build a new world\nWhere we all help someone else\nAll of us will love our neighbor\nMore than we love our own selves\n\nCHORUS (with last line repeated)",
+                type: "song"
+            },
+            {
+                title: "Kindling the Fire of God's Love",
+                lesson: "Lesson 20",
+                lyrics: "In my heart\nThere is a flame\nThat God has placed\nA special flame\nThis is the fire\nThe fire\nOf His love\n\nCHORUS:\nI will pray\nI will pray (echo voice)\nTo God\nTo kindle in my heart\nTo kindle in my heart (echo voice)\nThat flame\nThe fire of His love\nAnd I will strive\nThat its light illumines all hearts\n\nDay by day\nI will feed this flame\nAs I pray\nAnd do good unto others\nThis flame will grow\nAs I pray\nAnd serve mankind\n\nAnd as this flame burns\nAs it grows\nIt will be felt\nBy all who come its way\nIt will bring warmth\nto all\nWho come its way\n\nCHORUS",
+                type: "song"
+            },
+            {
+                title: "Radiance",
+                lesson: "Lesson 21",
+                lyrics: "As we reflect the light that shines from above\nOur hearts will radiate with kindness and love\nAs we are joyful, illumined and bright\nAll those around will feel the warmth of His light\n\nCHORUS:\nO Son! O Son of Being!\nThou art My lamp and My light is in thee!\nO Son! O Son of Being!\nThou art My lamp and My light is in thee!\n\nThe love of God never ceases to flow\nAs we arise to serve its brightness will grow\nDon't hesitate! Just radiate! With all of your might\nTill each and every heart is filled with His light\n\nCHORUS (with last line repeated)",
+                type: "song"
+            },
+            {
+                title: "I Want to be Happy",
+                lesson: "Lesson 22",
+                lyrics: "There is something you must know\nIn this Faith we have to show\nWe are men of deeds, not of words\nOur very life should show our Faith to friend and foe\n\nCHORUS:\nI want to be happy\nI want to be strong\nTo be His servant\nMy whole life long\nSo, I must obey the laws of God\nYes, I must obey the laws of God\n\nThere is something you must know\nIn this world of pomp and show\nPeople are tired of empty speech\nThey want to see you practice what you teach\n\nCHORUS",
+                type: "song"
+            },
+            {
+                title: "Patience",
+                lesson: "Lesson 23",
+                lyrics: "Your legs are getting tired\nAnd the road is very long, long, long\nYou want to give up trying\nAnd the sun is beating strong\n\nNo sense gettin' impatient\nIt's useless if you cry\nIf you take it step by step\nThe time goes rushing by\n\nCHORUS:\nPatience is the answer\nWhen you're sad and blue\nPatience is rewarded\nIt brings happiness to you\n\nYour brother doesn't understand\nBut you've explained it more than twice\nYou really ought to try again\nAnd do your best to be nice\n\nNo sense gettin' impatient\nIt's useless to be stern\nIf you show him kindness\nIt's the way to help him learn\n\nCHORUS\n\nYou want to do much better\nBut still you don't succeed\nYou wonder why make an effort\nAnd where it all will lead\n\nNo sense gettin' impatient\nIt's silly to do less\nIf you keep on striving\nYou'll eventually progress\n\nCHORUS",
+                type: "song"
+            },
+            {
+                title: "Firm in the Love of God",
+                lesson: "Lesson 24",
+                lyrics: "We walk, we walk\nWe walk the path of God\nWe're firm, we're firm\nFirm in our love of God\n\nWe walk the path of God\nWhen troubles come our way\nWe're firm in our love of God\nAnd on His path we stay\n\nWe serve, we serve\nWe serve the Cause of God\nWe're firm, we're firm\nFirm in our love of God\n\nWe serve the Cause of God\nAlways doing our part\nWe're firm in our love of God\nAnd serve with a joyful heart\n\nWe stand, we stand\nWe stand, hearts turned towards God\nWe're firm, we're firm\nFirm in our love of God\n\nWe stand, hearts turned towards God\nNever doubting His aid\nWe're firm in our love of God\nAnd all our sorrows fade",
+                type: "song"
+            }
+        ];
+
+        let currentView = 'prayers';
+        let lastRandomIndex = -1;
+        let lastRandomSongIndex = -1;
+
+        function enterPrayers() {
+            document.getElementById('coverPage').style.display = 'none';
+            document.getElementById('mainContent').classList.add('active');
+            showPrayersView();
+        }
+
+        function enterSongs() {
+            document.getElementById('coverPage').style.display = 'none';
+            document.getElementById('mainContent').classList.add('active');
+            showSongsList();
+        }
+
+        function displayPrayers() {
+            const prayerList = document.getElementById('prayerList');
+            prayerList.innerHTML = '';
+            
+            prayers.forEach((prayer, index) => {
+                const card = document.createElement('div');
+                card.className = 'prayer-card';
+                card.dataset.index = index;
+                card.dataset.type = 'prayer';
+                
+                const header = document.createElement('div');
+                header.className = 'prayer-header';
+                
+                const author = document.createElement('div');
+                author.className = 'prayer-author';
+                author.textContent = prayer.author;
+                
+                header.appendChild(author);
+                
+                const text = document.createElement('div');
+                text.className = `prayer-text ${prayer.language}`;
+                text.textContent = prayer.text;
+                
+                card.appendChild(header);
+                card.appendChild(text);
+                prayerList.appendChild(card);
+            });
+        }
+
+        function displaySongs() {
+            const songsList = document.getElementById('songsList');
+            songsList.innerHTML = '';
+            
+            songs.forEach((song, index) => {
+                const card = document.createElement('div');
+                card.className = 'prayer-card';
+                card.dataset.index = index;
+                card.dataset.type = 'song';
+                
+                const header = document.createElement('div');
+                header.className = 'prayer-header';
+                
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'song-title';
+                titleDiv.textContent = song.title;
+                
+                const lessonDiv = document.createElement('div');
+                lessonDiv.className = 'prayer-author';
+                lessonDiv.textContent = song.lesson;
+                
+                header.appendChild(titleDiv);
+                header.appendChild(lessonDiv);
+                
+                const lyrics = document.createElement('div');
+                lyrics.className = 'prayer-text';
+                lyrics.textContent = song.lyrics;
+                
+                card.appendChild(header);
+                card.appendChild(lyrics);
+                songsList.appendChild(card);
+            });
+        }
+
+        function showPrayersView() {
+            currentView = 'prayers';
+            document.getElementById('prayerControls').classList.remove('hidden');
+            document.getElementById('songsControls').classList.add('hidden');
+            document.getElementById('prayersViewBtn').classList.add('active');
+            document.getElementById('randomViewBtn').classList.remove('active');
+            document.getElementById('prayerList').classList.remove('hidden');
+            document.getElementById('songsList').classList.add('hidden');
+            document.getElementById('randomContainer').classList.remove('active');
+            document.getElementById('randomSongContainer').classList.remove('active');
+            document.getElementById('searchContainer').style.display = 'block';
+            displayPrayers();
+        }
+
+        function showSongsList() {
+            currentView = 'songs';
+            document.getElementById('prayerControls').classList.add('hidden');
+            document.getElementById('songsControls').classList.remove('hidden');
+            document.getElementById('songsListBtn').classList.add('active');
+            document.getElementById('randomSongBtn').classList.remove('active');
+            document.getElementById('prayerList').classList.add('hidden');
+            document.getElementById('songsList').classList.remove('hidden');
+            document.getElementById('randomContainer').classList.remove('active');
+            document.getElementById('randomSongContainer').classList.remove('active');
+            document.getElementById('searchContainer').style.display = 'block';
+            displaySongs();
+        }
+
+        function showRandomSongView() {
+            currentView = 'randomSong';
+            document.getElementById('prayerControls').classList.add('hidden');
+            document.getElementById('songsControls').classList.remove('hidden');
+            document.getElementById('randomSongBtn').classList.add('active');
+            document.getElementById('songsListBtn').classList.remove('active');
+            document.getElementById('prayerList').classList.add('hidden');
+            document.getElementById('songsList').classList.add('hidden');
+            document.getElementById('randomContainer').classList.remove('active');
+            document.getElementById('randomSongContainer').classList.add('active');
+            document.getElementById('searchContainer').style.display = 'none';
+            
+            // Reset random song display
+            document.getElementById('randomSongTitle').textContent = 'Click below to reveal a song';
+            document.getElementById('randomSongLyrics').textContent = '';
+        }
+
+        function showRandomSong() {
+            let randomIndex;
+            
+            // Ensure we don't show the same song twice in a row
+            do {
+                randomIndex = Math.floor(Math.random() * songs.length);
+            } while (randomIndex === lastRandomSongIndex && songs.length > 1);
+            
+            lastRandomSongIndex = randomIndex;
+            const song = songs[randomIndex];
+            
+            const display = document.getElementById('randomSongDisplay');
+            display.style.opacity = '0';
+            display.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                document.getElementById('randomSongTitle').textContent = song.title + ' - ' + song.lesson;
+                const textEl = document.getElementById('randomSongLyrics');
+                textEl.textContent = song.lyrics;
+                textEl.className = 'random-prayer-text';
+                
+                display.style.opacity = '1';
+                display.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        function showRandomView() {
+            currentView = 'random';
+            document.getElementById('prayerControls').classList.remove('hidden');
+            document.getElementById('songsControls').classList.add('hidden');
+            document.getElementById('randomViewBtn').classList.add('active');
+            document.getElementById('prayersViewBtn').classList.remove('active');
+            document.getElementById('prayerList').classList.add('hidden');
+            document.getElementById('songsList').classList.add('hidden');
+            document.getElementById('randomContainer').classList.add('active');
+            document.getElementById('randomSongContainer').classList.remove('active');
+            document.getElementById('searchContainer').style.display = 'none';
+            
+            // Reset random display
+            document.getElementById('randomAuthor').textContent = 'Click below to reveal a prayer';
+            document.getElementById('randomText').textContent = '';
+        }
+
+        function showRandomPrayer() {
+            let randomIndex;
+            
+            // Ensure we don't show the same prayer twice in a row
+            do {
+                randomIndex = Math.floor(Math.random() * prayers.length);
+            } while (randomIndex === lastRandomIndex && prayers.length > 1);
+            
+            lastRandomIndex = randomIndex;
+            const prayer = prayers[randomIndex];
+            
+            const display = document.getElementById('randomPrayerDisplay');
+            display.style.opacity = '0';
+            display.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                document.getElementById('randomAuthor').textContent = prayer.author;
+                const textEl = document.getElementById('randomText');
+                textEl.textContent = prayer.text;
+                textEl.className = `random-prayer-text ${prayer.language}`;
+                
+                display.style.opacity = '1';
+                display.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        function searchPrayers() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            
+            if (currentView === 'prayers') {
+                const cards = document.querySelectorAll('#prayerList .prayer-card');
+                cards.forEach(card => {
+                    const text = card.querySelector('.prayer-text').textContent.toLowerCase();
+                    const author = card.querySelector('.prayer-author').textContent.toLowerCase();
+                    
+                    if (text.includes(searchTerm) || author.includes(searchTerm)) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            } else if (currentView === 'songs') {
+                const cards = document.querySelectorAll('#songsList .prayer-card');
+                cards.forEach(card => {
+                    const title = card.querySelector('.song-title').textContent.toLowerCase();
+                    const lesson = card.querySelector('.prayer-author').textContent.toLowerCase();
+                    const lyrics = card.querySelector('.prayer-text').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || lesson.includes(searchTerm) || lyrics.includes(searchTerm)) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Show/hide back to top button
+        window.addEventListener('scroll', () => {
+            const backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+    </script>
+</body>
+</html>
