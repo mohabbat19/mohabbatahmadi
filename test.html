@@ -1168,6 +1168,9 @@ function validateFile(file) {
 /**
  * Handle file upload with chunked reading and progress
  */
+/**
+ * Handle file upload with chunked reading and progress
+ */
 async function handleFileUpload(type, input) {
     const file = input.files[0];
     if (!file) return;
@@ -1192,18 +1195,45 @@ async function handleFileUpload(type, input) {
             loadingText.textContent = `Reading ${sanitizeText(file.name)}: ${progress}%`;
         });
         
-        loadingText.textContent = `Processing ${sanitizeText(file.name)}...`;
+        loadingText.textContent = `Processing ${sanitizeText(file.name)}... This may take up to 60 seconds for large files.`;
         
         // Process in next tick to update UI
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise(resolve => setTimeout(resolve, 100));
         
-        // Parse Excel file
-        const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
+        let workbook;
+        try {
+            // Parse Excel file with memory-efficient options
+            workbook = XLSX.read(new Uint8Array(arrayBuffer), { 
+                type: 'array',
+                cellDates: true,
+                cellNF: false,
+                cellStyles: false,
+                sheetStubs: false,
+                dense: true  // Use dense mode for large files
+            });
+        } catch (xlsxError) {
+            // Check if it's a memory error
+            if (xlsxError.message && xlsxError.message.includes('array length')) {
+                throw new Error(
+                    `File is too large for browser memory (${(file.size / 1024 / 1024).toFixed(1)}MB).\n\n` +
+                    `Solutions:\n` +
+                    `1. RECOMMENDED: Export your data as CSV instead of Excel\n` +
+                    `2. Split the Excel file into 2-3 smaller files (by date range)\n` +
+                    `3. Filter the data in Oracle before exporting\n` +
+                    `4. Try using a different browser (Chrome handles large files better)`
+                );
+            }
+            throw xlsxError;
+        }
         
         if (type === 'portfolio') {
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
-            const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            
+            loadingText.textContent = `Converting portfolio data to JSON...`;
+            await new Promise(resolve => setTimeout(resolve, 50));
+            
+            const json = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: null });
             const headers = json[18];
             const dataRows = json.slice(19);
             
@@ -1223,7 +1253,25 @@ async function handleFileUpload(type, input) {
         } else if (type === 'export') {
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
-            exportData = XLSX.utils.sheet_to_json(worksheet);
+            
+            loadingText.textContent = `Converting export data to JSON... This may take a while for ${(file.size / 1024 / 1024).toFixed(0)}MB files.`;
+            await new Promise(resolve => setTimeout(resolve, 50));
+            
+            try {
+                exportData = XLSX.utils.sheet_to_json(worksheet, { defval: null });
+            } catch (jsonError) {
+                if (jsonError.message && jsonError.message.includes('array length')) {
+                    throw new Error(
+                        `Too many rows to process (file size: ${(file.size / 1024 / 1024).toFixed(1)}MB).\n\n` +
+                        `Solutions:\n` +
+                        `1. RECOMMENDED: Export as CSV instead\n` +
+                        `2. Split data into smaller date ranges (e.g., 6 months per file)\n` +
+                        `3. Reduce columns in your Oracle export\n` +
+                        `4. Filter to active projects only before exporting`
+                    );
+                }
+                throw jsonError;
+            }
             
             uploadedFiles.export = true;
             document.getElementById('exportBox').classList.add('uploaded');
