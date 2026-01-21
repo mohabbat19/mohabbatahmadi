@@ -1174,79 +1174,134 @@
          * Handle file upload with security validation
          * SECURITY: Validates file before processing, sanitizes all output
          */
-        function handleFileUpload(type, input) {
-            const file = input.files[0];
-            if (!file) return;
+/**
+ * Handle file upload with chunked reading and progress
+ */
+async function handleFileUpload(type, input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    try {
+        validateFile(file);
+    } catch (error) {
+        handleFileError(error, file.name);
+        input.value = '';
+        return;
+    }
+    
+    // Show loading immediately
+    const loadingDiv = document.getElementById('loading');
+    const loadingText = loadingDiv.querySelector('p');
+    loadingDiv.classList.add('active');
+    loadingText.textContent = `Reading ${sanitizeText(file.name)} (${(file.size / 1024 / 1024).toFixed(1)}MB)...`;
+    
+    try {
+        // Read file in chunks with progress
+        const arrayBuffer = await readFileInChunks(file, (progress) => {
+            loadingText.textContent = `Reading ${sanitizeText(file.name)}: ${progress}%`;
+        });
+        
+        loadingText.textContent = `Processing ${sanitizeText(file.name)}...`;
+        
+        // Process in next tick to update UI
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        // Parse Excel file
+        const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
+        
+        if (type === 'portfolio') {
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            const headers = json[18];
+            const dataRows = json.slice(19);
             
-            try {
-                // SECURITY: Validate file before processing
-                validateFile(file);
-            } catch (error) {
-                handleFileError(error, file.name);
-                input.value = ''; // Clear invalid file
+            portfolioData = dataRows.map(row => {
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = row[index];
+                });
+                return obj;
+            }).filter(row => row['Award Number'] || row['Project Number']);
+            
+            uploadedFiles.portfolio = true;
+            document.getElementById('portfolioBox').classList.add('uploaded');
+            document.getElementById('portfolioStatus').textContent = `✓ Uploaded: ${sanitizeText(file.name)}`;
+            
+            console.log('[DATA] Portfolio data loaded:', portfolioData.length, 'records');
+        } else if (type === 'export') {
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            exportData = XLSX.utils.sheet_to_json(worksheet);
+            
+            uploadedFiles.export = true;
+            document.getElementById('exportBox').classList.add('uploaded');
+            document.getElementById('exportStatus').textContent = `✓ Uploaded: ${sanitizeText(file.name)}`;
+            
+            console.log('[DATA] Export data loaded:', exportData.length, 'records');
+        }
+        
+        loadingDiv.classList.remove('active');
+        
+        if (uploadedFiles.portfolio && uploadedFiles.export) {
+            document.getElementById('generateBtn').disabled = false;
+            document.getElementById('resetSessionBtn').style.display = 'block';
+        }
+    } catch (error) {
+        loadingDiv.classList.remove('active');
+        handleFileError(error, file.name);
+        input.value = '';
+    }
+}
+
+/**
+ * Read file in chunks with progress callback
+ * Prevents browser freeze on large files
+ */
+function readFileInChunks(file, onProgress) {
+    return new Promise((resolve, reject) => {
+        const chunkSize = 2 * 1024 * 1024; // 2MB chunks
+        const chunks = Math.ceil(file.size / chunkSize);
+        const arrayBuffers = [];
+        let currentChunk = 0;
+        
+        function readNextChunk() {
+            if (currentChunk >= chunks) {
+                // Combine all chunks
+                const totalLength = arrayBuffers.reduce((acc, buf) => acc + buf.byteLength, 0);
+                const combined = new Uint8Array(totalLength);
+                let offset = 0;
+                arrayBuffers.forEach(buf => {
+                    combined.set(new Uint8Array(buf), offset);
+                    offset += buf.byteLength;
+                });
+                resolve(combined.buffer);
                 return;
             }
             
+            const start = currentChunk * chunkSize;
+            const end = Math.min(start + chunkSize, file.size);
+            const chunk = file.slice(start, end);
+            
             const reader = new FileReader();
-            
-            // SECURITY: Handle read errors safely
-            reader.onerror = () => {
-                handleFileError(new Error('Could not read file. Please try again.'), file.name);
-                input.value = '';
+            reader.onerror = () => reject(new Error('File read error'));
+            reader.onload = (e) => {
+                arrayBuffers.push(e.target.result);
+                currentChunk++;
+                
+                const progress = Math.round((currentChunk / chunks) * 100);
+                if (onProgress) onProgress(progress);
+                
+                // Read next chunk in next tick (allows UI updates)
+                setTimeout(readNextChunk, 0);
             };
             
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    
-                    if (type === 'portfolio') {
-                        const sheetName = workbook.SheetNames[0];
-                        const worksheet = workbook.Sheets[sheetName];
-                        const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                        const headers = json[18];
-                        const dataRows = json.slice(19);
-                        
-                        portfolioData = dataRows.map(row => {
-                            const obj = {};
-                            headers.forEach((header, index) => {
-                                obj[header] = row[index];
-                            });
-                            return obj;
-                        }).filter(row => row['Award Number'] || row['Project Number']);
-                        
-                        uploadedFiles.portfolio = true;
-                        document.getElementById('portfolioBox').classList.add('uploaded');
-                        // SECURITY: Sanitize filename before display
-                        document.getElementById('portfolioStatus').textContent = `✓ Uploaded: ${sanitizeText(file.name)}`;
-                        
-                        console.log('[DATA] Portfolio data loaded:', portfolioData.length, 'records');
-                    } else if (type === 'export') {
-                        const sheetName = workbook.SheetNames[0];
-                        const worksheet = workbook.Sheets[sheetName];
-                        exportData = XLSX.utils.sheet_to_json(worksheet);
-                        
-                        uploadedFiles.export = true;
-                        document.getElementById('exportBox').classList.add('uploaded');
-                        // SECURITY: Sanitize filename before display
-                        document.getElementById('exportStatus').textContent = `✓ Uploaded: ${sanitizeText(file.name)}`;
-                        
-                        console.log('[DATA] Export data loaded:', exportData.length, 'records');
-                    }
-                    
-                    if (uploadedFiles.portfolio && uploadedFiles.export) {
-                        document.getElementById('generateBtn').disabled = false;
-                        // Show reset button once data is loaded
-                        document.getElementById('resetSessionBtn').style.display = 'block';
-                    }
-                } catch (error) {
-                    handleFileError(error, file.name);
-                    input.value = '';
-                }
-            };
-            
-            reader.readAsArrayBuffer(file);
+            reader.readAsArrayBuffer(chunk);
         }
+        
+        readNextChunk();
+    });
+}
         
         // Generate dashboard
         function generateDashboard() {
