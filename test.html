@@ -1167,8 +1167,117 @@ function validateFile(file) {
          * SECURITY: Validates file before processing, sanitizes all output
          */
 /**
- * Handle file upload with chunked reading and progress
+ * Parse CSV file (much more memory-efficient than Excel)
  */
+async function parseCSV(file, onProgress) {
+    return new Promise((resolve, reject) => {
+        const chunkSize = 5 * 1024 * 1024; // 5MB chunks
+        const chunks = Math.ceil(file.size / chunkSize);
+        let currentChunk = 0;
+        let buffer = '';
+        const rows = [];
+        let headers = null;
+        
+        function readNextChunk() {
+            if (currentChunk >= chunks) {
+                // Process final buffer
+                if (buffer.trim()) {
+                    const finalRows = buffer.split('\n').filter(line => line.trim());
+                    finalRows.forEach(line => {
+                        if (!headers) {
+                            headers = parseCSVLine(line);
+                        } else {
+                            const values = parseCSVLine(line);
+                            if (values.length > 0) {
+                                const obj = {};
+                                headers.forEach((header, i) => {
+                                    obj[header] = values[i] || null;
+                                });
+                                rows.push(obj);
+                            }
+                        }
+                    });
+                }
+                resolve(rows);
+                return;
+            }
+            
+            const start = currentChunk * chunkSize;
+            const end = Math.min(start + chunkSize, file.size);
+            const chunk = file.slice(start, end);
+            
+            const reader = new FileReader();
+            reader.onerror = () => reject(new Error('File read error'));
+            reader.onload = (e) => {
+                buffer += e.target.result;
+                
+                // Process complete lines
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || ''; // Keep incomplete line for next chunk
+                
+                lines.forEach(line => {
+                    if (!line.trim()) return;
+                    
+                    if (!headers) {
+                        headers = parseCSVLine(line);
+                    } else {
+                        const values = parseCSVLine(line);
+                        if (values.length > 0) {
+                            const obj = {};
+                            headers.forEach((header, i) => {
+                                obj[header] = values[i] || null;
+                            });
+                            rows.push(obj);
+                        }
+                    }
+                });
+                
+                currentChunk++;
+                const progress = Math.round((currentChunk / chunks) * 100);
+                if (onProgress) onProgress(progress);
+                
+                setTimeout(readNextChunk, 0);
+            };
+            
+            reader.readAsText(chunk);
+        }
+        
+        readNextChunk();
+    });
+}
+
+/**
+ * Parse a single CSV line (handles quoted values with commas)
+ */
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        const nextChar = line[i + 1];
+        
+        if (char === '"') {
+            if (inQuotes && nextChar === '"') {
+                current += '"';
+                i++; // Skip next quote
+            } else {
+                inQuotes = !inQuotes;
+            }
+        } else if (char === ',' && !inQuotes) {
+            result.push(current.trim());
+            current = '';
+        } else {
+            current += char;
+        }
+    }
+    
+    result.push(current.trim());
+    return result;
+}
+        
+        
 /**
  * Handle file upload with chunked reading and progress
  */
@@ -1184,6 +1293,8 @@ async function handleFileUpload(type, input) {
         return;
     }
     
+    const isCSV = file.name.toLowerCase().endsWith('.csv');
+    
     // Show loading immediately
     const loadingDiv = document.getElementById('loading');
     const loadingText = loadingDiv.querySelector('p');
@@ -1191,94 +1302,118 @@ async function handleFileUpload(type, input) {
     loadingText.textContent = `Reading ${sanitizeText(file.name)} (${(file.size / 1024 / 1024).toFixed(1)}MB)...`;
     
     try {
-        // Read file in chunks with progress
-        const arrayBuffer = await readFileInChunks(file, (progress) => {
-            loadingText.textContent = `Reading ${sanitizeText(file.name)}: ${progress}%`;
-        });
-        
-        loadingText.textContent = `Processing ${sanitizeText(file.name)}... This may take up to 60 seconds for large files.`;
-        
-        // Process in next tick to update UI
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
-        let workbook;
-        try {
-            // Parse Excel file with memory-efficient options
-            workbook = XLSX.read(new Uint8Array(arrayBuffer), { 
-                type: 'array',
-                cellDates: true,
-                cellNF: false,
-                cellStyles: false,
-                sheetStubs: false,
-                dense: true  // Use dense mode for large files
+        if (isCSV) {
+            // CSV parsing - much more memory efficient
+            loadingText.textContent = `Processing CSV: ${sanitizeText(file.name)}...`;
+            
+            const data = await parseCSV(file, (progress) => {
+                loadingText.textContent = `Processing CSV: ${progress}%`;
             });
-        } catch (xlsxError) {
-            // Check if it's a memory error
-            if (xlsxError.message && xlsxError.message.includes('array length')) {
-                throw new Error(
-                    `File is too large for browser memory (${(file.size / 1024 / 1024).toFixed(1)}MB).\n\n` +
-                    `Solutions:\n` +
-                    `1. RECOMMENDED: Export your data as CSV instead of Excel\n` +
-                    `2. Split the Excel file into 2-3 smaller files (by date range)\n` +
-                    `3. Filter the data in Oracle before exporting\n` +
-                    `4. Try using a different browser (Chrome handles large files better)`
-                );
+            
+            if (type === 'portfolio') {
+                // Portfolio CSV should have headers on row 19 (adjust if needed)
+                portfolioData = data.filter(row => row['Award Number'] || row['Project Number']);
+                
+                uploadedFiles.portfolio = true;
+                document.getElementById('portfolioBox').classList.add('uploaded');
+                document.getElementById('portfolioStatus').textContent = `✓ Uploaded: ${sanitizeText(file.name)}`;
+                
+                console.log('[DATA] Portfolio data loaded:', portfolioData.length, 'records');
+            } else if (type === 'export') {
+                exportData = data;
+                
+                uploadedFiles.export = true;
+                document.getElementById('exportBox').classList.add('uploaded');
+                document.getElementById('exportStatus').textContent = `✓ Uploaded: ${sanitizeText(file.name)}`;
+                
+                console.log('[DATA] Export data loaded:', exportData.length, 'records');
             }
-            throw xlsxError;
-        }
-        
-        if (type === 'portfolio') {
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
+        } else {
+            // Excel parsing
+            const arrayBuffer = await readFileInChunks(file, (progress) => {
+                loadingText.textContent = `Reading ${sanitizeText(file.name)}: ${progress}%`;
+            });
             
-            loadingText.textContent = `Converting portfolio data to JSON...`;
-            await new Promise(resolve => setTimeout(resolve, 50));
+            loadingText.textContent = `Processing Excel file... This may take up to 60 seconds for large files.`;
+            await new Promise(resolve => setTimeout(resolve, 100));
             
-            const json = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: null });
-            const headers = json[18];
-            const dataRows = json.slice(19);
-            
-            portfolioData = dataRows.map(row => {
-                const obj = {};
-                headers.forEach((header, index) => {
-                    obj[header] = row[index];
-                });
-                return obj;
-            }).filter(row => row['Award Number'] || row['Project Number']);
-            
-            uploadedFiles.portfolio = true;
-            document.getElementById('portfolioBox').classList.add('uploaded');
-            document.getElementById('portfolioStatus').textContent = `✓ Uploaded: ${sanitizeText(file.name)}`;
-            
-            console.log('[DATA] Portfolio data loaded:', portfolioData.length, 'records');
-        } else if (type === 'export') {
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            
-            loadingText.textContent = `Converting export data to JSON... This may take a while for ${(file.size / 1024 / 1024).toFixed(0)}MB files.`;
-            await new Promise(resolve => setTimeout(resolve, 50));
-            
+            let workbook;
             try {
-                exportData = XLSX.utils.sheet_to_json(worksheet, { defval: null });
-            } catch (jsonError) {
-                if (jsonError.message && jsonError.message.includes('array length')) {
+                workbook = XLSX.read(new Uint8Array(arrayBuffer), { 
+                    type: 'array',
+                    cellDates: true,
+                    cellNF: false,
+                    cellStyles: false,
+                    sheetStubs: false,
+                    dense: true
+                });
+            } catch (xlsxError) {
+                if (xlsxError.message && xlsxError.message.includes('array length')) {
                     throw new Error(
-                        `Too many rows to process (file size: ${(file.size / 1024 / 1024).toFixed(1)}MB).\n\n` +
+                        `File is too large for browser memory (${(file.size / 1024 / 1024).toFixed(1)}MB).\n\n` +
                         `Solutions:\n` +
-                        `1. RECOMMENDED: Export as CSV instead\n` +
-                        `2. Split data into smaller date ranges (e.g., 6 months per file)\n` +
-                        `3. Reduce columns in your Oracle export\n` +
-                        `4. Filter to active projects only before exporting`
+                        `1. RECOMMENDED: Export your data as CSV instead of Excel\n` +
+                        `2. Split the Excel file into 2-3 smaller files (by date range)\n` +
+                        `3. Filter the data in Oracle before exporting\n` +
+                        `4. Try using a different browser (Chrome handles large files better)`
                     );
                 }
-                throw jsonError;
+                throw xlsxError;
             }
             
-            uploadedFiles.export = true;
-            document.getElementById('exportBox').classList.add('uploaded');
-            document.getElementById('exportStatus').textContent = `✓ Uploaded: ${sanitizeText(file.name)}`;
-            
-            console.log('[DATA] Export data loaded:', exportData.length, 'records');
+            if (type === 'portfolio') {
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                
+                loadingText.textContent = `Converting portfolio data to JSON...`;
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                const json = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: null });
+                const headers = json[18];
+                const dataRows = json.slice(19);
+                
+                portfolioData = dataRows.map(row => {
+                    const obj = {};
+                    headers.forEach((header, index) => {
+                        obj[header] = row[index];
+                    });
+                    return obj;
+                }).filter(row => row['Award Number'] || row['Project Number']);
+                
+                uploadedFiles.portfolio = true;
+                document.getElementById('portfolioBox').classList.add('uploaded');
+                document.getElementById('portfolioStatus').textContent = `✓ Uploaded: ${sanitizeText(file.name)}`;
+                
+                console.log('[DATA] Portfolio data loaded:', portfolioData.length, 'records');
+            } else if (type === 'export') {
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                
+                loadingText.textContent = `Converting export data to JSON...`;
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                try {
+                    exportData = XLSX.utils.sheet_to_json(worksheet, { defval: null });
+                } catch (jsonError) {
+                    if (jsonError.message && jsonError.message.includes('array length')) {
+                        throw new Error(
+                            `Too many rows to process (file size: ${(file.size / 1024 / 1024).toFixed(1)}MB).\n\n` +
+                            `Solutions:\n` +
+                            `1. RECOMMENDED: Export as CSV instead\n` +
+                            `2. Split data into smaller date ranges (e.g., 6 months per file)\n` +
+                            `3. Reduce columns in your Oracle export\n` +
+                            `4. Filter to active projects only before exporting`
+                        );
+                    }
+                    throw jsonError;
+                }
+                
+                uploadedFiles.export = true;
+                document.getElementById('exportBox').classList.add('uploaded');
+                document.getElementById('exportStatus').textContent = `✓ Uploaded: ${sanitizeText(file.name)}`;
+                
+                console.log('[DATA] Export data loaded:', exportData.length, 'records');
+            }
         }
         
         loadingDiv.classList.remove('active');
