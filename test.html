@@ -830,12 +830,13 @@
                     <p id="portfolioStatus" style="margin-top: 1rem; font-size: 0.875rem; color: var(--gray-600);">Click to upload</p>
                     <input type="file" id="portfolioFile" class="file-input" accept=".xlsx,.xls" onchange="handleFileUpload('portfolio', this)">
                 </div>
-                <div class="upload-box" id="exportBox" onclick="document.getElementById('exportFile').click()">
-                    <div class="upload-icon">💰</div>
-                    <h3>Export File</h3>
-                    <p id="exportStatus" style="margin-top: 1rem; font-size: 0.875rem; color: var(--gray-600);">Click to upload</p>
-                    <input type="file" id="exportFile" class="file-input" accept=".xlsx,.xls" onchange="handleFileUpload('export', this)">
-                </div>
+<div class="upload-box" id="exportBox" onclick="document.getElementById('exportFile').click()">
+    <div class="upload-icon">💰</div>
+    <h3>Export File</h3>
+    <p id="exportStatus" style="margin-top: 1rem; font-size: 0.875rem; color: var(--gray-600);">Click to upload</p>
+    <input type="file" id="exportFile" class="file-input" accept=".xlsx,.xls,.csv" onchange="handleFileUpload('export', this)">
+    <p style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--gray-500);">💡 For files >100MB, export as CSV for better performance</p>
+</div>
             </div>
             <div class="text-center mt-2">
                 <button class="btn btn-primary" id="generateBtn" onclick="generateDashboard()" disabled>
