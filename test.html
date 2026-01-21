@@ -942,49 +942,40 @@
          * SECURITY: Validate uploaded file before processing
          * Checks file type, extension, and size to prevent malicious uploads
          */
-        function validateFile(file) {
-            const ALLOWED_TYPES = [
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
-                'application/vnd.ms-excel', // .xls
-                'text/csv',
-                'text/tab-separated-values',
-                '' // Some browsers don't set MIME type
-            ];
-            
-            const ALLOWED_EXTENSIONS = ['.xlsx', '.xls', '.csv', '.tsv'];
-            const MAX_SIZE = 50 * 1024 * 1024; // 50MB
-            
-            // Check file exists
-            if (!file) {
-                throw new Error('No file selected');
-            }
-            
-            // Check extension
-            const fileName = file.name.toLowerCase();
-            const ext = fileName.substring(fileName.lastIndexOf('.'));
-            if (!ALLOWED_EXTENSIONS.includes(ext)) {
-                throw new Error(`Invalid file type: ${ext}. Please upload Excel (.xlsx, .xls) or CSV files only.`);
-            }
-            
-            // Check MIME type (if browser provides it)
-            if (file.type && !ALLOWED_TYPES.includes(file.type)) {
-                console.warn('[SECURITY] MIME type check:', file.type);
-                // Don't throw - some browsers don't set MIME correctly
-            }
-            
-            // Check size
-            if (file.size > MAX_SIZE) {
-                throw new Error(`File too large: ${(file.size / 1024 / 1024).toFixed(1)}MB. Maximum size: 50MB`);
-            }
-            
-            // Check if empty
-            if (file.size === 0) {
-                throw new Error('File is empty');
-            }
-            
-            console.log('[SECURITY] File validated:', fileName, `${(file.size / 1024).toFixed(1)}KB`);
-            return true;
-        }
+function validateFile(file) {
+    const ALLOWED_TYPES = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-excel',
+        'text/csv',
+        'text/tab-separated-values',
+        ''
+    ];
+    
+    const ALLOWED_EXTENSIONS = ['.xlsx', '.xls', '.csv', '.tsv'];
+    const MAX_SIZE = 400 * 1024 * 1024; // 400MB
+    
+    if (!file) throw new Error('No file selected');
+    
+    const fileName = file.name.toLowerCase();
+    const ext = fileName.substring(fileName.lastIndexOf('.'));
+    if (!ALLOWED_EXTENSIONS.includes(ext)) {
+        throw new Error(`Invalid file type: ${ext}. Please upload Excel (.xlsx, .xls) or CSV files only.`);
+    }
+    
+    if (file.size > MAX_SIZE) {
+        throw new Error(`File too large: ${(file.size / 1024 / 1024).toFixed(1)}MB. Maximum size: 400MB`);
+    }
+    
+    if (file.size === 0) throw new Error('File is empty');
+    
+    // Warn for very large files
+    if (file.size > 100 * 1024 * 1024) {
+        console.warn(`[LARGE FILE] ${fileName}: ${(file.size / 1024 / 1024).toFixed(1)}MB - processing may take 30-60 seconds`);
+    }
+    
+    console.log('[SECURITY] File validated:', fileName, `${(file.size / 1024).toFixed(1)}KB`);
+    return true;
+}
         
         /**
          * SECURITY: Reset entire session and clear all data
