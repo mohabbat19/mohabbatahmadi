@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Advent of Divine Justice — Study Guide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --ink: #1e1e1e;
+            --mid: #5a5a5a;
+            --light: #7a7a7a;
+            --rule: #e0e0e0;
+            --bg: #f8f8f8;
+            --card: #ffffff;
+            --accent: #3a3a3a;
+            --quote-bg: #f4f4f4;
+            --complete: #4a7c59;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+            color: var(--ink);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ── Cover ── */
+        .cover-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 50%, #e8e8e8 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating-shapes { position: absolute; width: 100%; height: 100%; overflow: hidden; z-index: 1; }
+        .shape { position: absolute; border-radius: 50%; filter: blur(3px); animation: float 25s infinite ease-in-out; }
+        .shape:nth-child(1) { width: 150px; height: 150px; left: 10%; top: 20%; background: radial-gradient(circle, rgba(150,150,150,0.15) 0%, transparent 70%); animation-duration: 30s; }
+        .shape:nth-child(2) { width: 200px; height: 200px; right: 15%; top: 30%; background: radial-gradient(circle, rgba(100,100,100,0.15) 0%, transparent 70%); animation-delay: 2s; animation-duration: 25s; }
+        .shape:nth-child(3) { width: 100px; height: 100px; left: 60%; bottom: 20%; background: radial-gradient(circle, rgba(120,120,120,0.15) 0%, transparent 70%); animation-delay: 4s; animation-duration: 35s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0) rotate(0deg) scale(1); opacity: 0.3; }
+            25% { transform: translateY(-100px) translateX(50px) rotate(90deg) scale(1.2); opacity: 0.5; }
+            50% { transform: translateY(-60px) translateX(-40px) rotate(180deg) scale(0.8); opacity: 0.7; }
+            75% { transform: translateY(-120px) translateX(60px) rotate(270deg) scale(1.4); opacity: 0.4; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cover-content { position: relative; z-index: 2; max-width: 800px; }
+
+        .cover-eyebrow {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--light);
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .cover-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.8rem;
+            font-weight: 900;
+            color: var(--ink);
+            line-height: 1.1;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+            animation: fadeInUp 1s ease forwards 0.2s;
+            opacity: 0;
+        }
+
+        .cover-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.3rem;
+            color: var(--mid);
+            margin-bottom: 32px;
+            animation: fadeInUp 1s ease forwards 0.4s;
+            opacity: 0;
+        }
+
+        .cover-rule {
+            width: 80px;
+            height: 2px;
+            background: var(--mid);
+            margin: 0 auto 30px;
+            animation: fadeInUp 1s ease forwards 0.5s;
+            opacity: 0;
+        }
+
+        .cover-description {
+            font-size: 1.1rem;
+            color: var(--accent);
+            line-height: 1.9;
+            max-width: 600px;
+            margin: 0 auto 50px;
+            animation: fadeInUp 1s ease forwards 0.6s;
+            opacity: 0;
+        }
+
+        .cover-meta {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 50px;
+            animation: fadeInUp 1s ease forwards 0.75s;
+            opacity: 0;
+        }
+
+        .cover-meta-item { text-align: center; }
+        .cover-meta-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--ink); }
+        .cover-meta-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--light); margin-top: 4px; }
+
+        .enter-btn {
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #5a5a5a, #7a7a7a);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeInUp 1s ease forwards 0.9s;
+            opacity: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .enter-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); background: linear-gradient(135deg, #4a4a4a, #6a6a6a); }
+
+        /* ── Main ── */
+        .main-content { display: none; padding: 50px 20px; max-width: 1000px; margin: 0 auto; }
+        .main-content.active { display: block; }
+
+        .page-header { text-align: center; margin-bottom: 50px; }
+        .page-header h1 { font-family: 'Playfair Display', serif; font-size: 2.8rem; color: var(--ink); margin-bottom: 12px; }
+        .page-header p { color: var(--mid); font-size: 1.05rem; }
+
+        /* ── Progress Bar ── */
+        .progress-section {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 36px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+            margin-bottom: 40px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .progress-label span { font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--mid); }
+        .progress-label strong { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--ink); }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: var(--rule);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5a5a5a, #7a7a7a);
+            border-radius: 10px;
+            transition: width 0.6s ease;
+        }
+
+        .progress-dots { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+        .prog-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--rule);
+            border: 2px solid var(--rule);
+            transition: all 0.3s;
+            cursor: pointer;
+            title: attr(data-title);
+        }
+        .prog-dot.done { background: var(--complete); border-color: var(--complete); }
+        .prog-dot.current { background: var(--accent); border-color: var(--accent); transform: scale(1.3); }
+
+        /* ── Controls ── */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 12px 28px;
+            background: white;
+            border: 2px solid #5a5a5a;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .control-btn:hover, .control-btn.active {
+            background: linear-gradient(135deg, #5a5a5a, #7a7a7a);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        /* ── Session Cards ── */
+        .sessions-list { display: grid; gap: 36px; }
+
+        .session-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            border-left: 4px solid #7a7a7a;
+            overflow: hidden;
+        }
+
+        .session-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.14); }
+        .session-card.completed { border-left-color: var(--complete); }
+
+        .session-header {
+            padding: 28px 32px 20px;
+            border-bottom: 2px solid #f4f4f4;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .session-header-left { flex: 1; }
+
+        .session-num {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--light);
+            margin-bottom: 8px;
+        }
+
+        .session-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .session-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+
+        .tag {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: #f0f0f0;
+            color: var(--mid);
+        }
+
+        .tag.time { background: #f0f0f0; }
+        .tag.complete { background: #e6f2ea; color: var(--complete); }
+
+        .session-toggle-icon {
+            font-size: 1.4rem;
+            color: var(--light);
+            transition: transform 0.3s;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .session-card.open .session-toggle-icon { transform: rotate(180deg); }
+
+        .session-body { display: none; padding: 0 32px 32px; }
+        .session-card.open .session-body { display: block; }
+
+        /* ── Overview ── */
+        .session-overview {
+            padding: 22px 0 0;
+            font-size: 1.05rem;
+            color: var(--accent);
+            line-height: 1.85;
+        }
+
+        /* ── Key Passages ── */
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--light);
+            margin: 28px 0 16px;
+        }
+
+        .passage {
+            background: var(--quote-bg);
+            border-left: 3px solid #aaa;
+            border-radius: 0 12px 12px 0;
+            padding: 18px 22px;
+            margin-bottom: 16px;
+        }
+
+        .passage p {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            line-height: 1.85;
+            color: #2a2a2a;
+        }
+
+        .passage-source {
+            font-size: 0.78rem;
+            color: var(--light);
+            font-style: normal;
+            font-family: 'Inter', sans-serif;
+            margin-top: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Reflection Questions ── */
+        .question-list { display: grid; gap: 14px; }
+
+        .question-item {
+            background: white;
+            border: 2px solid var(--rule);
+            border-radius: 14px;
+            padding: 18px 22px;
+            transition: border-color 0.3s;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .question-item:hover { border-color: #aaa; }
+
+        .question-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--light);
+            flex-shrink: 0;
+            min-width: 28px;
+        }
+
+        .question-text { font-size: 1.0rem; color: var(--accent); line-height: 1.7; }
+
+        /* ── Notes Area ── */
+        .notes-area {
+            width: 100%;
+            min-height: 100px;
+            border: 2px solid var(--rule);
+            border-radius: 14px;
+            padding: 16px 18px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--ink);
+            resize: vertical;
+            transition: border-color 0.3s;
+            background: white;
+        }
+
+        .notes-area:focus { outline: none; border-color: #5a5a5a; box-shadow: 0 4px 14px rgba(0,0,0,0.07); }
+
+        /* ── Complete Button ── */
+        .session-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 28px;
+            padding-top: 22px;
+            border-top: 2px solid #f0f0f0;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .complete-btn {
+            padding: 13px 32px;
+            background: white;
+            border: 2px solid #5a5a5a;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            color: var(--ink);
+        }
+
+        .complete-btn:hover { background: linear-gradient(135deg, #5a5a5a, #7a7a7a); color: white; border-color: transparent; }
+        .complete-btn.done { background: var(--complete); color: white; border-color: var(--complete); }
+
+        .source-link {
+            font-size: 0.82rem;
+            color: var(--light);
+            text-decoration: none;
+        }
+
+        .source-link:hover { color: var(--ink); text-decoration: underline; }
+
+        /* ── Random Reflection View ── */
+        .random-container { display: none; text-align: center; }
+        .random-container.active { display: block; }
+
+        .random-display {
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            max-width: 780px;
+            margin: 0 auto 40px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.5s ease;
+        }
+
+        .random-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--light);
+            margin-bottom: 24px;
+        }
+
+        .random-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-style: italic;
+            line-height: 1.9;
+            color: var(--ink);
+        }
+
+        .random-btn {
+            padding: 18px 55px;
+            background: linear-gradient(135deg, #5a5a5a, #7a7a7a);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            letter-spacing: 0.5px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .random-btn:hover { transform: translateY(-5px) scale(1.04); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+
+        /* ── Back to Top ── */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #5a5a5a, #7a7a7a);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.4rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .back-to-top.visible { opacity: 1; visibility: visible; }
+        .back-to-top:hover { transform: translateY(-4px); }
+
+        /* ── Divider ── */
+        .divider { width: 60px; height: 2px; background: var(--rule); margin: 24px 0; }
+
+        @media (max-width: 768px) {
+            .cover-title { font-size: 2.5rem; }
+            .cover-meta { gap: 24px; }
+            .session-header { flex-direction: column; }
+            .session-body { padding: 0 20px 24px; }
+            .session-header { padding: 22px 20px 16px; }
+            .random-display { padding: 30px 20px; }
+            .random-text { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Cover Page -->
+<div class="cover-page" id="coverPage">
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <div class="cover-content">
+        <p class="cover-eyebrow">Study Guide</p>
+        <h1 class="cover-title">The Advent of Divine Justice</h1>
+        <p class="cover-subtitle">Shoghi Effendi · December 25, 1938</p>
+        <div class="cover-rule"></div>
+        <p class="cover-description">
+            A letter addressed to the Bahá'ís of the United States and Canada, calling them to a spiritual and moral reckoning in the face of a world in crisis — and to their unique, God-given destiny as builders of a new civilization.
+        </p>
+        <div class="cover-meta">
+            <div class="cover-meta-item">
+                <div class="cover-meta-num">5</div>
+                <div class="cover-meta-label">Sessions</div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="cover-meta-num">45</div>
+                <div class="cover-meta-label">Min Each</div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="cover-meta-num">25</div>
+                <div class="cover-meta-label">Questions</div>
+            </div>
+        </div>
+        <button class="enter-btn" onclick="enterStudy()">Begin Study</button>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+    <div class="page-header">
+        <h1>The Advent of Divine Justice</h1>
+        <p>Five 45-minute study sessions with reflection questions</p>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-section">
+        <div class="progress-label">
+            <span>Progress</span>
+            <strong id="progressText">0 of 5 sessions complete</strong>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <div class="progress-dots" id="progressDots"></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button class="control-btn active" id="sessionsBtn" onclick="showSessions()">All Sessions</button>
+        <button class="control-btn" id="randomBtn" onclick="showRandom()">Random Passage</button>
+    </div>
+
+    <!-- Sessions List -->
+    <div class="sessions-list" id="sessionsList"></div>
+
+    <!-- Random View -->
+    <div class="random-container" id="randomContainer">
+        <div class="random-display" id="randomDisplay">
+            <div class="random-label" id="randomLabel">Click below to reveal a passage</div>
+            <div class="random-text" id="randomText"></div>
+        </div>
+        <button class="random-btn" onclick="showRandomPassage()">Reveal a Passage</button>
+    </div>
+</div>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const SOURCE_URL = 'https://www.bahai.org/library/authoritative-texts/shoghi-effendi/advent-divine-justice/';
+
+const sessions = [
+    {
+        num: 1,
+        title: "The World Crisis & America's Destiny",
+        tags: ["Opening Context", "Mission & Responsibility"],
+        overview: `Written on Christmas Day, 1938, as Europe descended toward war, Shoghi Effendi opens by surveying a world "in the throes of a catastrophic convulsion." Against this backdrop, he turns to the American Bahá'í community — not to comfort them, but to charge them. He identifies America as possessing a unique spiritual capacity and a "three-fold" responsibility: to apply the healing principles of the Faith to its own society, to serve as a model to the rest of the world, and to initiate and lead a global teaching plan.\n\nThis session establishes the entire tone of the letter: urgent, elevated, and uncompromising. Students should come away understanding that Shoghi Effendi does not address the community as ordinary citizens — he addresses them as instruments of a divine plan at a pivotal moment in history.`,
+        passages: [
+            { text: "The plight of a sorely-tried continent in the East, the confusion that has, with varying degrees of intensity, seized the greater part of the rest of the world — these are the signs and tokens that must needs herald the advent of that City of God, that New World Order, that Kingdom of Heaven on earth, which the Prophets of all ages have foretold.", source: "Shoghi Effendi, Advent of Divine Justice, opening section" },
+            { text: "A world, dimmed by the steadily dying light of religion, heaving with the explosive forces of a blind and triumphant nationalism; scorched with the fires of pitiless persecution, with no sign of an abatement of their intensity; torn by the agonizing throes of a blind and violent struggle between contending sects, races, nations, and classes... such is the spectacle presented to men's eyes.", source: "Shoghi Effendi, Advent of Divine Justice" },
+            { text: "Theirs is the paramount duty to kindle the spark of divine unity in the heart of a troubled world... Theirs the distinction of demonstrating, in an age of decadence and disruption, the capacity of a divinely-conceived and God-directed Order to be the source of a perennial renovation, the unfailing instrument for the spiritual and social regeneration of their nation.", source: "Shoghi Effendi, Advent of Divine Justice" }
+        ],
+        questions: [
+            "Shoghi Effendi portrays the world crisis of 1938 as a precondition for a new order — not merely a catastrophe. How does this framing change how you relate to periods of upheaval in your own time?",
+            "He assigns the American Bahá'í community a unique and weighty destiny. What does it mean for a community to be entrusted with a divine mission? What obligations does it create?",
+            "Shoghi Effendi makes clear that external conditions cannot excuse inaction. How does the community's calling relate to — or transcend — political circumstances?",
+            "Consider the distinction between serving as a \"model\" versus simply doing good work. Why might Shoghi Effendi emphasize the former for this community in this moment?",
+            "How does this opening section set the emotional register of the rest of the letter? What does his tone communicate about the stakes?"
+        ]
+    },
+    {
+        num: 2,
+        title: "Spiritual Prerequisites — Moral Rectitude & Chastity",
+        tags: ["Moral Rectitude", "Chastity", "Spiritual Fitness"],
+        overview: `Before the American Bahá'í community can undertake its global mission, Shoghi Effendi insists, it must attend to the condition of its own soul. He names three "essential prerequisites" for any worthy service: moral rectitude of conduct, absolute chastity of life, and complete freedom from racial prejudice. This session focuses on the first two.\n\nMoral rectitude encompasses integrity in every domain — business dealings, civic behavior, personal honesty. "No moral laxity," Shoghi Effendi writes, can be tolerated. Chastity is not merely the avoidance of specific acts; it is an entire orientation toward purity of heart, freedom from the pull of a hypersexualized culture, and a relationship to the body and spirit as a trust from God. These are not peripheral requirements. Shoghi Effendi places them as prerequisites — without them, no external service can be spiritually effective.`,
+        passages: [
+            { text: "A rectitude of conduct which, in all its strictness and vigilance, will serve to deter them from straying even a hair's breadth from the high standards of integrity and justice which the Faith demands from its followers; a chastity which will refuse to be perverted by the wildest aberrations of a wayward age, and will be preserved from contamination by the moral corruption and laxity of a decadent civilization.", source: "Shoghi Effendi, Advent of Divine Justice" },
+            { text: "They must so discipline their conduct as to avoid all manner of deception, falsehood, hypocrisy, and strife... Such is the standard of rectitude that the followers of Bahá'u'lláh must uphold.", source: "Shoghi Effendi, Advent of Divine Justice" },
+            { text: "The exponents of this way of life must be impervious to the ridicule of those who... allow themselves to be carried away by the flood of worldly fashions and habits. They must so bear themselves as to leave no room for the calumny of the adversary and the enemy.", source: "Shoghi Effendi, Advent of Divine Justice" }
+        ],
+        questions: [
+            "Shoghi Effendi frames moral rectitude as a prerequisite rather than a side virtue. What is the relationship between personal integrity and the effectiveness of collective service?",
+            "How does he distinguish chastity from mere restraint? What positive vision of human dignity does his description of chastity imply?",
+            "He warns against being \"carried away by the flood of worldly fashions.\" How does a believer maintain discernment without becoming rigid or disconnected from their community?",
+            "Shoghi Effendi treats business and civic honesty with the same gravity as personal virtue. What does this say about the integration of spiritual and material life in the Bahá'í framework?",
+            "These standards are set against \"a decadent civilization.\" Without falling into self-righteousness, how does a community embody high standards while remaining welcoming and nonjudgmental toward others?"
+        ]
+    },
+    {
+        num: 3,
+        title: "Freedom from Racial Prejudice",
+        tags: ["Racial Unity", "The Cardinal Issue", "Teaching"],
+        overview: `This is arguably the most urgent and penetrating section of the entire letter. Shoghi Effendi calls racial prejudice "the most vital and challenging issue confronting the Bahá'í community" in America — and among the most "challenging and vital issues of the present world." He is unsparing: prejudice is a "corrosion" that, if left unaddressed, will nullify every other spiritual achievement.\n\nHe does not speak abstractly. He gives concrete guidance: Bahá'ís of the white majority must be willing to make social and sometimes material sacrifices in order to build genuine fellowship. He calls for deliberate, persistent effort to bring African Americans into the community and into positions of leadership. And he places this charge not as a social justice afterthought but as a core spiritual test — one that will determine the credibility of the American community before God and before history.\n\nThis session requires honest, personal engagement. It is not a historical artifact — the dynamics Shoghi Effendi names remain present.`,
+        passages: [
+            { text: "As to racial prejudice, the corrosion of which, for well nigh a century, has bitten into the fiber, and attacked the whole social structure of American society, it should be regarded as constituting the most vital and challenging issue confronting the Bahá'í community at the present stage of its evolution.", source: "Shoghi Effendi, Advent of Divine Justice" },
+            { text: "Freedom from racial prejudice, in any of its forms, should, indeed must, if we are to be faithful to the spirit that animates our Faith, be adopted as the watchword of the entire body of the American believers, in whichever state they reside, in whatever circles they move, whatever their age, sex, occupation, origin or condition.", source: "Shoghi Effendi, Advent of Divine Justice" },
+            { text: "White and Negro, veteran and young convert, whether in the north or in the south, in the east or in the west, whether in the home, the gathering place, the assembly hall... must, together with the spirit of joy and of hope that animates these gatherings, offer tangible, irrefutable evidence of the way in which the Faith is able to achieve... a union of such depth, intensity, and quality as to remain unexampled in the religious annals of the entire world.", source: "Shoghi Effendi, Advent of Divine Justice" },
+            { text: "Let the white make a supreme effort in their resolve to contribute their share to the solution of this problem, to abandon once and for all their usually inherent and at times subconscious sense of superiority, to correct their tendency towards revealing a patronizing attitude towards the members of the other race...", source: "Shoghi Effendi, Advent of Divine Justice" }
+        ],
+        questions: [
+            "Shoghi Effendi frames racial prejudice as a specifically \"American\" issue that the community must confront in order to fulfill its global mission. What is the relationship between this local challenge and the universal claims of the Faith?",
+            "He speaks of prejudice as something that can be \"inherent\" and \"subconscious\" in white members of the community. What practices — personal and collective — support the ongoing work of recognition and transformation?",
+            "He charges both races with responsibilities, but acknowledges they are not symmetrical. What does asymmetrical responsibility look like in practice within a community?",
+            "Shoghi Effendi says that unity achieved here would be \"unexampled in the religious annals of the entire world.\" What does this suggest about the spiritual stakes of racial reconciliation as a Bahá'í concern?",
+            "How do you assess the American Bahá'í community's progress on this charge, from Shoghi Effendi's time to today? What does honest accountability require?"
+        ]
+    },
+    {
+        num: 4,
+        title: "The Teaching Charge & The Seven Year Plan",
+        tags: ["Teaching", "Seven Year Plan", "Pioneering"],
+        overview: `Having established the spiritual prerequisites, Shoghi Effendi turns to the active work: teaching the Faith, consolidating communities, and extending the Cause across the Western Hemisphere. He introduced the first Seven Year Plan (1937–1944) in this letter, laying out specific goals: establishing at least one local spiritual assembly in every state of the United States and every province of Canada, and opening new countries across Latin America to the Faith.\n\nBut the teaching charge is more than logistical. Shoghi Effendi's vision of teaching is deeply spiritual — it requires an alignment between inner life and outward action, between the purity of the messenger and the power of the message. He invokes the stories of the Dawn-Breakers, Bahá'u'lláh's early followers in Iran, as a model of sacrificial consecration. He calls individual believers — not just institutions — to personal acts of courage: moving to new places, persisting in the face of rejection, seeing the teaching work as a form of devotion.`,
+        passages: [
+            { text: "To the states of the North American continent, already established or yet unborn, to the Central American Republics, and to the island communities of the Western Hemisphere, the Bahá'ís of the United States and Canada, fired with the spirit that animated the heroes of the primitive Faith of Bahá'u'lláh, must carry the Message of the new Day.", source: "Shoghi Effendi, Advent of Divine Justice" },
+            { text: "What greater reward can there be for one who has chosen to dedicate himself to the service of God, than to be enabled, in this Day of Days, to arise and serve that Divine Cause, and to sacrifice all for its sake, in the same spirit as those heroes whose deeds shine so brilliantly on the pages of Bahá'í history?", source: "Shoghi Effendi, Advent of Divine Justice" },
+            { text: "Let him who is a pioneer in the teaching field... arise, and, with his whole heart, consecrate himself to the service of his Faith... Let him remember the example of those heroic souls who, in the early days of the Faith, chose to forsake home and kindred, to wander from city to city, to brave every peril and hardship, and to shed their blood in the path of God.", source: "Shoghi Effendi, Advent of Divine Justice" }
+        ],
+        questions: [
+            "Shoghi Effendi invokes the Dawn-Breakers repeatedly as a standard of sacrificial action. Is this standard meant to be taken literally — as an example of physical sacrifice — or is something deeper being communicated? How do you understand this call in your own life?",
+            "He describes the Seven Year Plan as a historically unique opportunity. What is it about institutionally-set plans and goals that transforms individual motivation and creates collective momentum?",
+            "Teaching, in this vision, is not primarily about rhetoric or argument — it is about the spirit of the teacher. What does it mean to teach from a place of spiritual fitness rather than institutional obligation?",
+            "Shoghi Effendi asks for geographic movement — pioneers willing to relocate for the sake of the Cause. What modern equivalents exist for this form of dedicated service?",
+            "How does the teaching charge connect back to the prerequisites outlined earlier? Is it possible to be an effective teacher without first addressing the internal conditions Shoghi Effendi names?"
+        ]
+    },
+    {
+        num: 5,
+        title: "America's Spiritual Destiny & The Closing Appeal",
+        tags: ["Destiny", "Dual Mission", "Closing Call"],
+        overview: `In the final section, Shoghi Effendi draws together all the threads of the letter into a sweeping vision of America's spiritual destiny. He does not minimize the country's contradictions — its racial wounds, its materialism, its spiritual vacuity — but he insists that these do not disqualify it. On the contrary: America's challenges are precisely what make its potential contribution so extraordinary. A community that confronts its own faults honestly, that labors to transcend them in the spirit of Bahá'u'lláh's teachings, becomes uniquely equipped to serve the rest of humanity.\n\nShoghi Effendi closes with a soaring appeal: he urges the community to see itself as standing at the hinge of history, called not to comfort or success but to consecration. The letter ends not with a formula but with a challenge — and an unmistakable love for the community he is addressing. Students should read this session in close dialogue with the opening, noticing how the full arc of the letter moves from crisis to mission to destiny.`,
+        passages: [
+            { text: "America and her sister nations of the Western Hemisphere are facing a crux in their destiny... America's spiritual, her social and administrative, her moral and intellectual capacities, are now being tested in a manner and to a degree that has no parallel in the annals of the Faith in the Western world.", source: "Shoghi Effendi, Advent of Divine Justice" },
+            { text: "How great, how very great, is the Cause! How very demanding the task! I am moved to assure them, in words that but inadequately reflect the emotions that stir within me, of my prayers, my unceasing prayers, on their behalf... that they may worthily fulfill their high destiny.", source: "Shoghi Effendi, Advent of Divine Justice" },
+            { text: "The glowing tributes, so repeatedly and deservedly paid to the capacity, the spirit, the conduct, and the accomplishments of the American believers, constitute the most eloquent refutation of those who have expressed doubts as to the future of our Faith and the possibility of its ever influencing the lives of the people of the West.", source: "Shoghi Effendi, Advent of Divine Justice" },
+            { text: "Let them call to mind... the trials and tribulations which the founders of the Faith, the heroes and the heroines of its Golden Age have so willingly endured... Let them, conscious of their high calling, arise and demonstrate what the Faith of Bahá'u'lláh can, in their capable hands, accomplish.", source: "Shoghi Effendi, Advent of Divine Justice" }
+        ],
+        questions: [
+            "Shoghi Effendi states that America's failings are not disqualifying — they are, in a sense, the very terrain on which its destiny will be worked out. How does this understanding change the way you hold both the promise and the failures of a community you love?",
+            "He expresses deep personal emotion — \"inadequate words\" for what he feels — at the close. What is the significance of this pastoral intimacy within what is otherwise a highly formal letter?",
+            "Looking back across all five sessions: what is the through-line? Is there a single claim or challenge that Shoghi Effendi keeps returning to, in different forms?",
+            "The letter was written in 1938. Nearly ninety years later, what has been fulfilled? What remains? What has become more urgent?",
+            "Shoghi Effendi does not ask the community to be successful — he asks it to arise and demonstrate the Faith's capacity. What is the difference? How does that distinction affect how you measure your own service?"
+        ]
+    }
+];
+
+const allPassages = sessions.flatMap(s => s.passages);
+let completedSessions = JSON.parse(localStorage.getItem('adj-completed') || '[]');
+let lastRandomIdx = -1;
+let currentView = 'sessions';
+
+function saveCompleted() {
+    localStorage.setItem('adj-completed', JSON.stringify(completedSessions));
+}
+
+function updateProgress() {
+    const count = completedSessions.length;
+    const pct = (count / sessions.length) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = `${count} of ${sessions.length} sessions complete`;
+
+    const dots = document.getElementById('progressDots');
+    dots.innerHTML = '';
+    sessions.forEach((s, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'prog-dot' + (completedSessions.includes(i) ? ' done' : '');
+        dot.title = s.title;
+        dot.onclick = () => { showSessions(); setTimeout(() => { document.getElementById('session-card-' + i).scrollIntoView({behavior:'smooth', block:'start'}); }, 200); };
+        dots.appendChild(dot);
+    });
+}
+
+function renderSessions() {
+    const list = document.getElementById('sessionsList');
+    list.innerHTML = '';
+    sessions.forEach((session, i) => {
+        const isDone = completedSessions.includes(i);
+        const card = document.createElement('div');
+        card.className = 'session-card' + (isDone ? ' completed' : '');
+        card.id = 'session-card-' + i;
+
+        // Header
+        const header = document.createElement('div');
+        header.className = 'session-header';
+        header.onclick = () => toggleSession(i);
+
+        const left = document.createElement('div');
+        left.className = 'session-header-left';
+
+        const num = document.createElement('div');
+        num.className = 'session-num';
+        num.textContent = `Session ${session.num} of ${sessions.length}`;
+
+        const title = document.createElement('div');
+        title.className = 'session-title';
+        title.textContent = session.title;
+
+        const tags = document.createElement('div');
+        tags.className = 'session-tags';
+        session.tags.forEach(t => {
+            const tag = document.createElement('span');
+            tag.className = 'tag';
+            tag.textContent = t;
+            tags.appendChild(tag);
+        });
+        const timeTag = document.createElement('span');
+        timeTag.className = 'tag time';
+        timeTag.textContent = '45 min';
+        tags.appendChild(timeTag);
+        if (isDone) {
+            const doneTag = document.createElement('span');
+            doneTag.className = 'tag complete';
+            doneTag.textContent = '✓ Complete';
+            tags.appendChild(doneTag);
+        }
+
+        left.appendChild(num);
+        left.appendChild(title);
+        left.appendChild(tags);
+
+        const icon = document.createElement('div');
+        icon.className = 'session-toggle-icon';
+        icon.textContent = '↓';
+
+        header.appendChild(left);
+        header.appendChild(icon);
+
+        // Body
+        const body = document.createElement('div');
+        body.className = 'session-body';
+
+        const overview = document.createElement('div');
+        overview.className = 'session-overview';
+        overview.textContent = session.overview;
+        body.appendChild(overview);
+
+        const divider1 = document.createElement('div');
+        divider1.className = 'divider';
+        body.appendChild(divider1);
+
+        // Passages
+        const passLabel = document.createElement('div');
+        passLabel.className = 'section-label';
+        passLabel.textContent = 'Key Passages';
+        body.appendChild(passLabel);
+
+        session.passages.forEach(p => {
+            const passage = document.createElement('div');
+            passage.className = 'passage';
+            const pText = document.createElement('p');
+            pText.textContent = '"' + p.text + '"';
+            const pSource = document.createElement('div');
+            pSource.className = 'passage-source';
+            pSource.textContent = '— ' + p.source;
+            passage.appendChild(pText);
+            passage.appendChild(pSource);
+            body.appendChild(passage);
+        });
+
+        // Questions
+        const qLabel = document.createElement('div');
+        qLabel.className = 'section-label';
+        qLabel.style.marginTop = '28px';
+        qLabel.textContent = 'Reflection Questions';
+        body.appendChild(qLabel);
+
+        const qList = document.createElement('div');
+        qList.className = 'question-list';
+        session.questions.forEach((q, qi) => {
+            const item = document.createElement('div');
+            item.className = 'question-item';
+            const qNum = document.createElement('div');
+            qNum.className = 'question-num';
+            qNum.textContent = qi + 1;
+            const qText = document.createElement('div');
+            qText.className = 'question-text';
+            qText.textContent = q;
+            item.appendChild(qNum);
+            item.appendChild(qText);
+            qList.appendChild(item);
+        });
+        body.appendChild(qList);
+
+        // Notes
+        const notesLabel = document.createElement('div');
+        notesLabel.className = 'section-label';
+        notesLabel.style.marginTop = '28px';
+        notesLabel.textContent = 'Your Notes';
+        body.appendChild(notesLabel);
+
+        const notes = document.createElement('textarea');
+        notes.className = 'notes-area';
+        notes.placeholder = 'Record your reflections, insights, or questions here…';
+        const savedNote = localStorage.getItem('adj-notes-' + i);
+        if (savedNote) notes.value = savedNote;
+        notes.oninput = () => localStorage.setItem('adj-notes-' + i, notes.value);
+        body.appendChild(notes);
+
+        // Footer
+        const footer = document.createElement('div');
+        footer.className = 'session-footer';
+
+        const completeBtn = document.createElement('button');
+        completeBtn.className = 'complete-btn' + (isDone ? ' done' : '');
+        completeBtn.id = 'complete-btn-' + i;
+        completeBtn.textContent = isDone ? '✓ Completed' : 'Mark as Complete';
+        completeBtn.onclick = (e) => { e.stopPropagation(); toggleComplete(i); };
+
+        const link = document.createElement('a');
+        link.className = 'source-link';
+        link.href = SOURCE_URL;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.textContent = '↗ Read full text on bahai.org';
+
+        footer.appendChild(completeBtn);
+        footer.appendChild(link);
+        body.appendChild(footer);
+
+        card.appendChild(header);
+        card.appendChild(body);
+        list.appendChild(card);
+    });
+
+    updateProgress();
+}
+
+function toggleSession(i) {
+    const card = document.getElementById('session-card-' + i);
+    const isOpen = card.classList.contains('open');
+    document.querySelectorAll('.session-card').forEach(c => c.classList.remove('open'));
+    if (!isOpen) card.classList.add('open');
+}
+
+function toggleComplete(i) {
+    const idx = completedSessions.indexOf(i);
+    if (idx === -1) {
+        completedSessions.push(i);
+    } else {
+        completedSessions.splice(idx, 1);
+    }
+    saveCompleted();
+    renderSessions();
+}
+
+function showSessions() {
+    currentView = 'sessions';
+    document.getElementById('sessionsList').style.display = 'grid';
+    document.getElementById('randomContainer').classList.remove('active');
+    document.getElementById('sessionsBtn').classList.add('active');
+    document.getElementById('randomBtn').classList.remove('active');
+}
+
+function showRandom() {
+    currentView = 'random';
+    document.getElementById('sessionsList').style.display = 'none';
+    document.getElementById('randomContainer').classList.add('active');
+    document.getElementById('randomBtn').classList.add('active');
+    document.getElementById('sessionsBtn').classList.remove('active');
+    document.getElementById('randomLabel').textContent = 'Click below to reveal a passage';
+    document.getElementById('randomText').textContent = '';
+}
+
+function showRandomPassage() {
+    let idx;
+    do { idx = Math.floor(Math.random() * allPassages.length); }
+    while (idx === lastRandomIdx && allPassages.length > 1);
+    lastRandomIdx = idx;
+    const p = allPassages[idx];
+
+    const display = document.getElementById('randomDisplay');
+    display.style.opacity = '0';
+    display.style.transform = 'scale(0.95)';
+
+    setTimeout(() => {
+        document.getElementById('randomLabel').textContent = p.source;
+        document.getElementById('randomText').textContent = '"' + p.text + '"';
+        display.style.opacity = '1';
+        display.style.transform = 'scale(1)';
+    }, 300);
+}
+
+function enterStudy() {
+    document.getElementById('coverPage').style.display = 'none';
+    document.getElementById('mainContent').classList.add('active');
+    renderSessions();
+}
+
+window.addEventListener('scroll', () => {
+    document.getElementById('backToTop').classList.toggle('visible', window.pageYOffset > 300);
+});
+</script>
+</body>
+</html>
