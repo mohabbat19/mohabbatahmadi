@@ -308,12 +308,140 @@
         .session-body { display: none; padding: 0 32px 32px; }
         .session-card.open .session-body { display: block; }
 
-        /* ── Overview ── */
-        .session-overview {
-            padding: 22px 0 0;
-            font-size: 1.05rem;
-            color: var(--accent);
-            line-height: 1.85;
+        /* ── Full Session Text ── */
+        .full-text {
+            margin-top: 28px;
+            padding: 32px 36px;
+            background: #fdfcfa;
+            border-radius: 12px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .full-text p {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.04rem;
+            line-height: 2;
+            color: var(--ink);
+            margin-bottom: 1.6rem;
+            text-align: justify;
+        }
+
+        .full-text p:last-child { margin-bottom: 0; }
+
+        /* ── Reading Block ── */
+        .reading-block {
+            margin-top: 24px;
+            padding: 28px 28px;
+            background: linear-gradient(135deg, #f4f4f4 0%, #efefef 100%);
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .reading-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--mid);
+            margin-bottom: 10px;
+        }
+
+        .reading-desc {
+            font-size: 1rem;
+            color: var(--ink);
+            line-height: 1.65;
+            margin-bottom: 20px;
+        }
+
+        .landmarks {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .landmark {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.55;
+        }
+
+        .start-landmark {
+            background: #eaf2ee;
+            border-left: 3px solid #5a9e72;
+        }
+
+        .stop-landmark {
+            background: #f2eaea;
+            border-left: 3px solid #9e5a5a;
+        }
+
+        .landmark-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+            width: 36px;
+        }
+
+        .start-landmark .landmark-label { color: #3a7a52; }
+        .stop-landmark .landmark-label { color: #7a3a3a; }
+
+        .landmark-text {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--ink);
+        }
+
+        .open-text-btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: var(--ink);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .open-text-btn:hover {
+            background: #3a3a3a;
+            transform: translateY(-1px);
+        }
+
+        /* ── Homework Block ── */
+        .homework-block {
+            margin-top: 4px;
+            margin-bottom: 20px;
+            padding: 14px 20px;
+            background: #fafaf6;
+            border-radius: 8px;
+            border-left: 3px solid #c5b97a;
+            font-size: 0.92rem;
+            color: var(--mid);
+            line-height: 1.6;
+        }
+
+        .hw-label {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: #9a8a40;
+            background: #f0ead0;
+            padding: 2px 10px;
+            border-radius: 10px;
+            margin-right: 10px;
+            vertical-align: middle;
         }
 
         /* ── Key Passages ── */
@@ -323,7 +451,14 @@
             letter-spacing: 3px;
             text-transform: uppercase;
             color: var(--light);
-            margin: 28px 0 16px;
+            margin: 28px 0 6px;
+        }
+
+        .section-note {
+            font-size: 0.85rem;
+            color: var(--light);
+            margin-bottom: 16px;
+            font-style: italic;
         }
 
         .passage {
@@ -547,7 +682,7 @@
                 <div class="cover-meta-label">Min Each</div>
             </div>
             <div class="cover-meta-item">
-                <div class="cover-meta-num">25</div>
+                <div class="cover-meta-num">42</div>
                 <div class="cover-meta-label">Questions</div>
             </div>
         </div>
@@ -601,94 +736,126 @@ const SOURCE_URL = 'https://www.bahai.org/library/authoritative-texts/shoghi-eff
 const sessions = [
     {
         num: 1,
-        title: "The World Crisis & America's Destiny",
-        tags: ["Opening Context", "Mission & Responsibility"],
-        overview: `Written on Christmas Day, 1938, as Europe descended toward war, Shoghi Effendi opens by surveying a world "in the throes of a catastrophic convulsion." Against this backdrop, he turns to the American Bahá'í community — not to comfort them, but to charge them. He identifies America as possessing a unique spiritual capacity and a "three-fold" responsibility: to apply the healing principles of the Faith to its own society, to serve as a model to the rest of the world, and to initiate and lead a global teaching plan.\n\nThis session establishes the entire tone of the letter: urgent, elevated, and uncompromising. Students should come away understanding that Shoghi Effendi does not address the community as ordinary citizens — he addresses them as instruments of a divine plan at a pivotal moment in history.`,
+        title: "The World in Crisis & America's Unique Station",
+        url: "https://www.bahai.org/library/authoritative-texts/shoghi-effendi/advent-divine-justice/advent-divine-justice.xhtml#013000001",
+        startAt: "It would be difficult indeed to adequately express the feelings of irrepressible joy…",
+        stopAt: "…if the duties and responsibilities with which the Author of the Divine Plan has invested them are to be honorably and entirely fulfilled.",
+        tags: ["World Crisis", "America's Station", "Community Achievements"],
         passages: [
-            { text: "The plight of a sorely-tried continent in the East, the confusion that has, with varying degrees of intensity, seized the greater part of the rest of the world — these are the signs and tokens that must needs herald the advent of that City of God, that New World Order, that Kingdom of Heaven on earth, which the Prophets of all ages have foretold.", source: "Shoghi Effendi, Advent of Divine Justice, opening section" },
-            { text: "A world, dimmed by the steadily dying light of religion, heaving with the explosive forces of a blind and triumphant nationalism; scorched with the fires of pitiless persecution, with no sign of an abatement of their intensity; torn by the agonizing throes of a blind and violent struggle between contending sects, races, nations, and classes... such is the spectacle presented to men's eyes.", source: "Shoghi Effendi, Advent of Divine Justice" },
-            { text: "Theirs is the paramount duty to kindle the spark of divine unity in the heart of a troubled world... Theirs the distinction of demonstrating, in an age of decadence and disruption, the capacity of a divinely-conceived and God-directed Order to be the source of a perennial renovation, the unfailing instrument for the spiritual and social regeneration of their nation.", source: "Shoghi Effendi, Advent of Divine Justice" }
+            { text: "The one chief remaining citadel, the mighty arm which still raises aloft the standard of an unconquerable Faith, is none other than the blessed community of the followers of the Most Great Name in the North American continent.", source: "p. 4" },
+            { text: "The community of the organized promoters of the Faith of Bahá'u'lláh in the American continent — the spiritual descendants of the dawn-breakers of an heroic Age, who by their death proclaimed the birth of that Faith — must, in turn, usher in, not by their death but through living sacrifice, that promised World Order.", source: "p. 5" },
+            { text: "What the American believers have, within the space of almost fifty years, achieved is infinitesimal when compared to the magnitude of the tasks ahead of them. The rumblings of that catastrophic upheaval, which is to proclaim, at one and the same time, the death-pangs of the old order and the birth-pangs of the new, indicate both the steady approach, as well as the awe-inspiring character, of those tasks.", source: "p. 7" },
+            { text: "Though small in numbers, and circumscribed as yet in your experiences, powers, and resources, yet the Force which energizes your mission is limitless in its range and incalculable in its potency.", source: "p. 8" }
         ],
         questions: [
-            "Shoghi Effendi portrays the world crisis of 1938 as a precondition for a new order — not merely a catastrophe. How does this framing change how you relate to periods of upheaval in your own time?",
-            "He assigns the American Bahá'í community a unique and weighty destiny. What does it mean for a community to be entrusted with a divine mission? What obligations does it create?",
-            "Shoghi Effendi makes clear that external conditions cannot excuse inaction. How does the community's calling relate to — or transcend — political circumstances?",
-            "Consider the distinction between serving as a \"model\" versus simply doing good work. Why might Shoghi Effendi emphasize the former for this community in this moment?",
-            "How does this opening section set the emotional register of the rest of the letter? What does his tone communicate about the stakes?"
+            "Shoghi Effendi opens by documenting the suppression of Bahá'í communities around the world — in Germany, Central Asia, Persia, and the Holy Land. Why does he begin with crisis rather than inspiration? What does this framing do for the reader before he ever addresses the American community directly?",
+            "He describes the American community as the \"spiritual descendants of the dawn-breakers\" — those early Iranian Bahá'ís who died for their faith. What is the significance of this lineage? What does it demand of those who claim it?",
+            "Shoghi Effendi catalogs the community's achievements across several pages with visible admiration. Then he says those achievements are \"infinitesimal\" compared to what lies ahead. How do you hold those two statements together? Is this a rhetorical technique, a spiritual reality, or both?",
+            "He describes the Seven Year Plan as a \"mere beginning\" and a \"stepping-stone.\" What is the spiritual purpose of institutional plans and goals beyond their material objectives? Why does collective commitment to a shared goal matter?",
+            "The letter was written at a moment of genuine global danger — armies mobilizing, Bahá'í institutions being dissolved, the world contracting under nationalist fury. How does reading it in its original context change how you receive its urgency? What changes if you read it as addressed to you, today?",
+            "Shoghi Effendi says the community has been preserved by \"immutable decrees\" and \"an ever-watchful Providence.\" How does the concept of divine protection interact with the call to strenuous human effort throughout this section?",
+            "He distinguishes between the Bahá'í community and the American nation, insisting a \"sharp distinction\" must be made. Why is this distinction so important to him? What does it guard against?"
         ]
     },
     {
         num: 2,
-        title: "Spiritual Prerequisites — Moral Rectitude & Chastity",
-        tags: ["Moral Rectitude", "Chastity", "Spiritual Fitness"],
-        overview: `Before the American Bahá'í community can undertake its global mission, Shoghi Effendi insists, it must attend to the condition of its own soul. He names three "essential prerequisites" for any worthy service: moral rectitude of conduct, absolute chastity of life, and complete freedom from racial prejudice. This session focuses on the first two.\n\nMoral rectitude encompasses integrity in every domain — business dealings, civic behavior, personal honesty. "No moral laxity," Shoghi Effendi writes, can be tolerated. Chastity is not merely the avoidance of specific acts; it is an entire orientation toward purity of heart, freedom from the pull of a hypersexualized culture, and a relationship to the body and spirit as a trust from God. These are not peripheral requirements. Shoghi Effendi places them as prerequisites — without them, no external service can be spiritually effective.`,
+        title: "Warning, National Character & Rectitude of Conduct",
+        url: "https://www.bahai.org/library/authoritative-texts/shoghi-effendi/advent-divine-justice/advent-divine-justice.xhtml#013000001",
+        startAt: "For the consummation of the present Plan can result in no more than the formation of at least one center…",
+        stopAt: "…God hath ordained every good thing… for such of His servants as truly believe in Him.",
+        tags: ["National Flaws", "Three Prerequisites", "Moral Rectitude"],
         passages: [
-            { text: "A rectitude of conduct which, in all its strictness and vigilance, will serve to deter them from straying even a hair's breadth from the high standards of integrity and justice which the Faith demands from its followers; a chastity which will refuse to be perverted by the wildest aberrations of a wayward age, and will be preserved from contamination by the moral corruption and laxity of a decadent civilization.", source: "Shoghi Effendi, Advent of Divine Justice" },
-            { text: "They must so discipline their conduct as to avoid all manner of deception, falsehood, hypocrisy, and strife... Such is the standard of rectitude that the followers of Bahá'u'lláh must uphold.", source: "Shoghi Effendi, Advent of Divine Justice" },
-            { text: "The exponents of this way of life must be impervious to the ridicule of those who... allow themselves to be carried away by the flood of worldly fashions and habits. They must so bear themselves as to leave no room for the calumny of the adversary and the enemy.", source: "Shoghi Effendi, Advent of Divine Justice" }
+            { text: "A sharp distinction between that community and that people must be made, and resolutely and fearlessly upheld, if we wish to give due recognition to the transmuting power of the Faith of Bahá'u'lláh, in its impact on the lives and standards of those who have chosen to enlist under His banner.", source: "p. 9" },
+            { text: "It is precisely by reason of the patent evils which, notwithstanding its other admittedly great characteristics and achievements, an excessive and binding materialism has unfortunately engendered within it that the Author of their Faith and the Center of His Covenant have singled it out to become the standard-bearer of the New World Order envisaged in their writings.", source: "p. 10" },
+            { text: "These requirements are none other than a high sense of moral rectitude in their social and administrative activities, absolute chastity in their individual lives, and complete freedom from prejudice in their dealings with peoples of a different race, class, creed, or color.", source: "p. 11" },
+            { text: "The companions of God are, in this day, the lump that must leaven the peoples of the world. They must show forth such trustworthiness, such truthfulness and perseverance, such deeds and character that all mankind may profit by their example.", source: "Bahá'u'lláh, quoted p. 12" },
+            { text: "Truthfulness is the foundation of all human virtues. Without truthfulness progress and success, in all the worlds of God, are impossible for any soul.", source: "'Abdu'l-Bahá, quoted p. 13" }
         ],
         questions: [
-            "Shoghi Effendi frames moral rectitude as a prerequisite rather than a side virtue. What is the relationship between personal integrity and the effectiveness of collective service?",
-            "How does he distinguish chastity from mere restraint? What positive vision of human dignity does his description of chastity imply?",
-            "He warns against being \"carried away by the flood of worldly fashions.\" How does a believer maintain discernment without becoming rigid or disconnected from their community?",
-            "Shoghi Effendi treats business and civic honesty with the same gravity as personal virtue. What does this say about the integration of spiritual and material life in the Bahá'í framework?",
-            "These standards are set against \"a decadent civilization.\" Without falling into self-righteousness, how does a community embody high standards while remaining welcoming and nonjudgmental toward others?"
+            "Shoghi Effendi insists that a community's greatness does not derive from the nation that produced it, but from the transforming power of the Revelation it has embraced. What does this mean practically for how Bahá'ís relate to national identity, patriotism, and civic pride?",
+            "He argues that God has historically chosen to appear among peoples at their lowest point — not their most virtuous — precisely to demonstrate the power of transformation. How does this principle reframe how we think about difficult communities, nations, or individuals who are far from their potential?",
+            "Shoghi Effendi says moral rectitude must manifest in \"every verdict,\" \"every business dealing,\" \"the conduct of Bahá'í electors,\" and \"nonparticipation in political controversies.\" What does it look like in practice to bring this integrated standard into professional and civic life?",
+            "He places rectitude of conduct as \"specially, though not exclusively\" directed at elected representatives and administrators. Why does institutional authority carry a higher burden of moral accountability? What happens when it does not?",
+            "Bahá'u'lláh declares that \"one righteous act is endowed with a potency that can so elevate the dust as to cause it to pass beyond the heaven of heavens.\" How does this metaphysical claim about the power of righteous action connect to the very practical standards Shoghi Effendi is setting?",
+            "The section on chastity addresses not just sexual conduct but moderation in dress, language, amusements, and artistic expression. What is the unifying principle behind all of these? Is Shoghi Effendi asking for austerity, or something more nuanced?",
+            "He explicitly clarifies that chastity is not asceticism: \"God hath ordained every good thing... for such of His servants as truly believe in Him.\" How do you hold together the call to detachment from worldly things with the affirmation that the world's beauties and pleasures are lawful and intended?",
+            "Shoghi Effendi says these prerequisites are the \"bedrock\" on which all plans and enterprises must rest. What does it suggest about the Bahá'í approach to social change that inner transformation is treated as structurally prior to outward action?"
         ]
     },
     {
         num: 3,
-        title: "Freedom from Racial Prejudice",
-        tags: ["Racial Unity", "The Cardinal Issue", "Teaching"],
-        overview: `This is arguably the most urgent and penetrating section of the entire letter. Shoghi Effendi calls racial prejudice "the most vital and challenging issue confronting the Bahá'í community" in America — and among the most "challenging and vital issues of the present world." He is unsparing: prejudice is a "corrosion" that, if left unaddressed, will nullify every other spiritual achievement.\n\nHe does not speak abstractly. He gives concrete guidance: Bahá'ís of the white majority must be willing to make social and sometimes material sacrifices in order to build genuine fellowship. He calls for deliberate, persistent effort to bring African Americans into the community and into positions of leadership. And he places this charge not as a social justice afterthought but as a core spiritual test — one that will determine the credibility of the American community before God and before history.\n\nThis session requires honest, personal engagement. It is not a historical artifact — the dynamics Shoghi Effendi names remain present.`,
+        title: "Freedom from Racial Prejudice & The Weapons of Transformation",
+        url: "https://www.bahai.org/library/authoritative-texts/shoghi-effendi/advent-divine-justice/advent-divine-justice.xhtml#013000001",
+        startAt: "As to racial prejudice, the corrosion of which, for well-nigh a century, has bitten into the fiber…",
+        stopAt: "…the perfection of such weapons… can prepare them for the time when the Hand of Destiny will have directed them.",
+        tags: ["Racial Prejudice", "The Most Vital Issue", "Transformation"],
         passages: [
-            { text: "As to racial prejudice, the corrosion of which, for well nigh a century, has bitten into the fiber, and attacked the whole social structure of American society, it should be regarded as constituting the most vital and challenging issue confronting the Bahá'í community at the present stage of its evolution.", source: "Shoghi Effendi, Advent of Divine Justice" },
-            { text: "Freedom from racial prejudice, in any of its forms, should, indeed must, if we are to be faithful to the spirit that animates our Faith, be adopted as the watchword of the entire body of the American believers, in whichever state they reside, in whatever circles they move, whatever their age, sex, occupation, origin or condition.", source: "Shoghi Effendi, Advent of Divine Justice" },
-            { text: "White and Negro, veteran and young convert, whether in the north or in the south, in the east or in the west, whether in the home, the gathering place, the assembly hall... must, together with the spirit of joy and of hope that animates these gatherings, offer tangible, irrefutable evidence of the way in which the Faith is able to achieve... a union of such depth, intensity, and quality as to remain unexampled in the religious annals of the entire world.", source: "Shoghi Effendi, Advent of Divine Justice" },
-            { text: "Let the white make a supreme effort in their resolve to contribute their share to the solution of this problem, to abandon once and for all their usually inherent and at times subconscious sense of superiority, to correct their tendency towards revealing a patronizing attitude towards the members of the other race...", source: "Shoghi Effendi, Advent of Divine Justice" }
+            { text: "As to racial prejudice, the corrosion of which, for well-nigh a century, has bitten into the fiber, and attacked the whole social structure of American society, it should be regarded as constituting the most vital and challenging issue confronting the Bahá'í community at the present stage of its evolution.", source: "p. 16" },
+            { text: "If any discrimination is at all to be tolerated, it should be a discrimination not against, but rather in favor of the minority, be it racial or otherwise.", source: "p. 17" },
+            { text: "Let the white make a supreme effort in their resolve to contribute their share to the solution of this problem, to abandon once for all their usually inherent and at times subconscious sense of superiority, to correct their tendency towards revealing a patronizing attitude towards the members of the other race, to persuade them through their intimate, spontaneous and informal association with them of the genuineness of their friendship.", source: "p. 19" },
+            { text: "A rectitude of conduct which, in all its manifestations, offers a striking contrast to the deceitfulness and corruption that characterize the political life of the nation... a holiness and chastity that are diametrically opposed to the moral laxity... an interracial fellowship completely purged from the curse of racial prejudice... these are the weapons which the American believers can and must wield in their double crusade.", source: "p. 20" }
         ],
         questions: [
-            "Shoghi Effendi frames racial prejudice as a specifically \"American\" issue that the community must confront in order to fulfill its global mission. What is the relationship between this local challenge and the universal claims of the Faith?",
-            "He speaks of prejudice as something that can be \"inherent\" and \"subconscious\" in white members of the community. What practices — personal and collective — support the ongoing work of recognition and transformation?",
-            "He charges both races with responsibilities, but acknowledges they are not symmetrical. What does asymmetrical responsibility look like in practice within a community?",
-            "Shoghi Effendi says that unity achieved here would be \"unexampled in the religious annals of the entire world.\" What does this suggest about the spiritual stakes of racial reconciliation as a Bahá'í concern?",
-            "How do you assess the American Bahá'í community's progress on this charge, from Shoghi Effendi's time to today? What does honest accountability require?"
+            "Shoghi Effendi calls racial prejudice the \"most vital\" issue — not one among several. Why does he single it out above all other social challenges? What does its centrality say about the nature of the Bahá'í project of building unity?",
+            "He describes prejudice as something that can be \"inherent\" and \"subconscious.\" This suggests it can be present even in people of goodwill who have not examined themselves. What practices — personal and communal — does honest self-examination on this issue require?",
+            "Shoghi Effendi specifies that both races bear responsibilities, but they are not symmetrical: white believers must make a \"supreme effort\" while Black believers are asked to respond and extend trust. What makes asymmetrical responsibility both just and necessary in situations created by historical injustice?",
+            "He calls 'Abdu'l-Bahá's example the primary model: His \"courage, genuine love, informal and indiscriminating fellowship, contempt for and impatience of criticism.\" What does it mean to make a historical figure's embodied example — rather than abstract principles — the standard?",
+            "The structural provision that minority candidates should receive priority when qualifications are equal is unusually specific for a spiritual document. What does it reveal about Shoghi Effendi's understanding of the relationship between spiritual principles and institutional design?",
+            "He closes this section with the \"weapons\" paragraph — naming rectitude, chastity, and interracial fellowship as the instruments for a \"twofold crusade\": regenerating the community and assailing the nation's long-standing evils. What is the logic of this sequence? Why must inner transformation precede social action?",
+            "This letter was written in 1938. The racial dynamics Shoghi Effendi describes have evolved but not disappeared. How do you assess the relevance and adequacy of his guidance for addressing racial prejudice in Bahá'í communities today?",
+            "'Abdu'l-Bahá declares that when white and Black believers gather in genuine unity, \"the angels of the Kingdom praise them.\" What is the spiritual significance of racial reconciliation — not just its social importance but its cosmic dimension within the Bahá'í framework?"
         ]
     },
     {
         num: 4,
-        title: "The Teaching Charge & The Seven Year Plan",
-        tags: ["Teaching", "Seven Year Plan", "Pioneering"],
-        overview: `Having established the spiritual prerequisites, Shoghi Effendi turns to the active work: teaching the Faith, consolidating communities, and extending the Cause across the Western Hemisphere. He introduced the first Seven Year Plan (1937–1944) in this letter, laying out specific goals: establishing at least one local spiritual assembly in every state of the United States and every province of Canada, and opening new countries across Latin America to the Faith.\n\nBut the teaching charge is more than logistical. Shoghi Effendi's vision of teaching is deeply spiritual — it requires an alignment between inner life and outward action, between the purity of the messenger and the power of the message. He invokes the stories of the Dawn-Breakers, Bahá'u'lláh's early followers in Iran, as a model of sacrificial consecration. He calls individual believers — not just institutions — to personal acts of courage: moving to new places, persisting in the face of rejection, seeing the teaching work as a form of devotion.`,
+        title: "The Teaching Imperative & The Seven Year Plan in Action",
+        url: "https://www.bahai.org/library/authoritative-texts/shoghi-effendi/advent-divine-justice/advent-divine-justice.xhtml#013000001",
+        startAt: "In the conduct of this twofold crusade the valiant warriors struggling in the name and for the Cause of Bahá'u'lláh…",
+        stopAt: "…into lands and among peoples where that community's noblest acts of heroism are to be performed.",
+        tags: ["Teaching", "Seven Year Plan", "Pioneers", "Latin America"],
         passages: [
-            { text: "To the states of the North American continent, already established or yet unborn, to the Central American Republics, and to the island communities of the Western Hemisphere, the Bahá'ís of the United States and Canada, fired with the spirit that animated the heroes of the primitive Faith of Bahá'u'lláh, must carry the Message of the new Day.", source: "Shoghi Effendi, Advent of Divine Justice" },
-            { text: "What greater reward can there be for one who has chosen to dedicate himself to the service of God, than to be enabled, in this Day of Days, to arise and serve that Divine Cause, and to sacrifice all for its sake, in the same spirit as those heroes whose deeds shine so brilliantly on the pages of Bahá'í history?", source: "Shoghi Effendi, Advent of Divine Justice" },
-            { text: "Let him who is a pioneer in the teaching field... arise, and, with his whole heart, consecrate himself to the service of his Faith... Let him remember the example of those heroic souls who, in the early days of the Faith, chose to forsake home and kindred, to wander from city to city, to brave every peril and hardship, and to shed their blood in the path of God.", source: "Shoghi Effendi, Advent of Divine Justice" }
+            { text: "All must participate, however humble their origin, however limited their experience, however restricted their means, however deficient their education, however pressing their cares and preoccupations, however unfavorable the environment in which they live. God hath prescribed unto everyone the duty of teaching His Cause.", source: "p. 21" },
+            { text: "Be unrestrained as the wind, while carrying the Message of Him Who hath caused the dawn of Divine Guidance to break. Consider how the wind, faithful to that which God hath ordained, bloweth upon all regions of the earth, be they inhabited or desolate.", source: "Bahá'u'lláh, quoted p. 24" },
+            { text: "No participator in this inter-American campaign of teaching must feel that the initiative for any particular activity connected with this work must rest solely with those agencies, whether Assemblies or committees, whose special concern is to promote and facilitate the attainment of this vital objective.", source: "p. 24" },
+            { text: "Among the miracles which distinguish this sacred Dispensation is this, that women have evinced a greater boldness than men when enlisted in the ranks of the Faith.", source: "'Abdu'l-Bahá, quoted p. 32" },
+            { text: "The field is indeed so immense, the period so critical, the Cause so great, the workers so few, the time so short, the privilege so priceless, that no follower of the Faith of Bahá'u'lláh, worthy to bear His name, can afford a moment's hesitation.", source: "p. 22" }
         ],
         questions: [
-            "Shoghi Effendi invokes the Dawn-Breakers repeatedly as a standard of sacrificial action. Is this standard meant to be taken literally — as an example of physical sacrifice — or is something deeper being communicated? How do you understand this call in your own life?",
-            "He describes the Seven Year Plan as a historically unique opportunity. What is it about institutionally-set plans and goals that transforms individual motivation and creates collective momentum?",
-            "Teaching, in this vision, is not primarily about rhetoric or argument — it is about the spirit of the teacher. What does it mean to teach from a place of spiritual fitness rather than institutional obligation?",
-            "Shoghi Effendi asks for geographic movement — pioneers willing to relocate for the sake of the Cause. What modern equivalents exist for this form of dedicated service?",
-            "How does the teaching charge connect back to the prerequisites outlined earlier? Is it possible to be an effective teacher without first addressing the internal conditions Shoghi Effendi names?"
+            "Shoghi Effendi invokes the example of Peter — described as so unschooled he counted days by food parcels — to argue that apparent inadequacy is no barrier to transformative service. How does this principle challenge the tendency to wait until one feels \"ready\" before engaging in teaching or service?",
+            "He insists that individual initiative in teaching must not wait for institutional direction or encouragement. At the same time, he emphasizes constant coordination with administrative bodies. How do you hold together these two equally strong imperatives: personal initiative and institutional accountability?",
+            "The prerequisites for teachers include thorough knowledge of the Faith, its history, the Qur'an, and the languages of those they hope to reach. What does this level of preparation say about the relationship between spiritual zeal and intellectual seriousness in Bahá'í service?",
+            "Shoghi Effendi describes both direct and indirect teaching methods — through associations, lectures on social topics, charitable organizations — as legitimate approaches. What determines which method is appropriate in a given context? What safeguards does he suggest?",
+            "He devotes unusual attention to self-supporting pioneers: those who settle permanently, earn their own living, and build the Faith from within a community rather than visiting it. What is spiritually significant about this model of service compared to itinerant or deputized teaching?",
+            "The tribute to women pioneers is striking in its specificity and its force. 'Abdu'l-Bahá says women have shown \"greater boldness\" in the Faith. What does this historical reality suggest about the relationship between marginalized position and spiritual courage?",
+            "The appeal to Bahá'í youth emphasizes their \"adventurous spirit\" and \"vibrant power\" as uniquely suited to this moment. What is the relationship between youth and institutional credibility in Shoghi Effendi's argument — why does youth participation matter not just for the work itself but as a demonstration to the watching world?",
+            "Bahá'u'lláh's promise that \"should a man, all alone, arise in the name of Bahá, and put on the armor of His love, him will the Almighty cause to be victorious\" is quoted in the context of pioneer work in difficult conditions. What does this promise require of the believer who claims it? What does \"armor of His love\" actually mean in practice?",
+            "Shoghi Effendi describes Latin America as comprising approximately one-third of the world's sovereign states and destined for increasing global importance. This geopolitical insight comes embedded in a spiritual letter. What does his integration of geopolitical awareness and spiritual vision reveal about his understanding of the Cause's work in history?"
         ]
     },
     {
         num: 5,
-        title: "America's Spiritual Destiny & The Closing Appeal",
-        tags: ["Destiny", "Dual Mission", "Closing Call"],
-        overview: `In the final section, Shoghi Effendi draws together all the threads of the letter into a sweeping vision of America's spiritual destiny. He does not minimize the country's contradictions — its racial wounds, its materialism, its spiritual vacuity — but he insists that these do not disqualify it. On the contrary: America's challenges are precisely what make its potential contribution so extraordinary. A community that confronts its own faults honestly, that labors to transcend them in the spirit of Bahá'u'lláh's teachings, becomes uniquely equipped to serve the rest of humanity.\n\nShoghi Effendi closes with a soaring appeal: he urges the community to see itself as standing at the hinge of history, called not to comfort or success but to consecration. The letter ends not with a formula but with a challenge — and an unmistakable love for the community he is addressing. Students should read this session in close dialogue with the opening, noticing how the full arc of the letter moves from crisis to mission to destiny.`,
+        title: "The Greatness of the Day, America's Destiny & The Closing Call",
+        url: "https://www.bahai.org/library/authoritative-texts/shoghi-effendi/advent-divine-justice/advent-divine-justice.xhtml#013000001",
+        startAt: "Dearly beloved friends! I can do no better, eager as I am to extend to every one of you any assistance…",
+        stopAt: "End of letter — closes with: ‘…become the envy of the world and be blest in both the East and the West.’ (December 25, 1938)",
+        tags: ["Greatness of the Day", "America's Destiny", "Closing Appeal"],
         passages: [
-            { text: "America and her sister nations of the Western Hemisphere are facing a crux in their destiny... America's spiritual, her social and administrative, her moral and intellectual capacities, are now being tested in a manner and to a degree that has no parallel in the annals of the Faith in the Western world.", source: "Shoghi Effendi, Advent of Divine Justice" },
-            { text: "How great, how very great, is the Cause! How very demanding the task! I am moved to assure them, in words that but inadequately reflect the emotions that stir within me, of my prayers, my unceasing prayers, on their behalf... that they may worthily fulfill their high destiny.", source: "Shoghi Effendi, Advent of Divine Justice" },
-            { text: "The glowing tributes, so repeatedly and deservedly paid to the capacity, the spirit, the conduct, and the accomplishments of the American believers, constitute the most eloquent refutation of those who have expressed doubts as to the future of our Faith and the possibility of its ever influencing the lives of the people of the West.", source: "Shoghi Effendi, Advent of Divine Justice" },
-            { text: "Let them call to mind... the trials and tribulations which the founders of the Faith, the heroes and the heroines of its Golden Age have so willingly endured... Let them, conscious of their high calling, arise and demonstrate what the Faith of Bahá'u'lláh can, in their capable hands, accomplish.", source: "Shoghi Effendi, Advent of Divine Justice" }
+            { text: "O friends! Be not careless of the virtues with which ye have been endowed, neither be neglectful of your high destiny.… Ye are the stars of the heaven of understanding, the breeze that stirreth at the break of day, the soft-flowing waters upon which must depend the very life of all men.", source: "Bahá'u'lláh, quoted p. 35" },
+            { text: "A fleeting moment, in this Day, excelleth centuries of a bygone age.… Neither sun nor moon hath witnessed a day such as this Day.", source: "Bahá'u'lláh, quoted p. 36" },
+            { text: "Then, and only then, will the American nation, molded and purified in the crucible of a common war, inured to its rigors, and disciplined by its lessons, be in a position to raise its voice in the councils of the nations, itself lay the cornerstone of a universal and enduring peace, proclaim the solidarity, the unity, and maturity of mankind.", source: "p. 41" },
+            { text: "The full measure of your success is as yet unrevealed, its significance still unapprehended. Erelong ye will, with your own eyes, witness how brilliantly every one of you, even as a shining star, will radiate in the firmament of your country the light of Divine Guidance.", source: "'Abdu'l-Bahá, quoted p. 34" },
+            { text: "The present generation of this blessed, this repeatedly blessed, community will go from strength to strength, and will hand on, as the first century draws to a close, to the generations that must succeed it in the second the torch of Divine Guidance, undimmed by the tempestuous winds that must blow upon it.", source: "p. 41" }
         ],
         questions: [
-            "Shoghi Effendi states that America's failings are not disqualifying — they are, in a sense, the very terrain on which its destiny will be worked out. How does this understanding change the way you hold both the promise and the failures of a community you love?",
-            "He expresses deep personal emotion — \"inadequate words\" for what he feels — at the close. What is the significance of this pastoral intimacy within what is otherwise a highly formal letter?",
-            "Looking back across all five sessions: what is the through-line? Is there a single claim or challenge that Shoghi Effendi keeps returning to, in different forms?",
-            "The letter was written in 1938. Nearly ninety years later, what has been fulfilled? What remains? What has become more urgent?",
-            "Shoghi Effendi does not ask the community to be successful — he asks it to arise and demonstrate the Faith's capacity. What is the difference? How does that distinction affect how you measure your own service?"
+            "Bahá'u'lláh declares that \"a fleeting moment, in this Day, excelleth centuries of a bygone age\" and that \"an act, however infinitesimal, is... mightier than a mountain.\" How does this metaphysical claim about the unique spiritual weight of this historical moment affect how you understand the urgency Shoghi Effendi has been communicating throughout the letter?",
+            "Shoghi Effendi interprets America's gradual move toward international engagement — driven by geopolitical forces it cannot fully control — as the working of Providence toward the destiny 'Abdu'l-Bahá foresaw. What does it mean to read political and historical events through a prophetic lens? What does it require and what are its risks?",
+            "He prophesies that America will emerge from the coming world ordeal \"molded and purified in the crucible\" of conflict, ready to help establish universal peace. Writing in 1938, this was a forecast. How has history confirmed, complicated, or challenged his vision?",
+            "The extended passages from Bahá'u'lláh in this final section include both extraordinary promises and stark warnings — of coming convulsions, of retribution for heedlessness, of a day when \"the limbs of mankind will quake.\" Why does Shoghi Effendi choose to close with this combination of exaltation and warning rather than pure inspiration?",
+            "He describes the torch of Divine Guidance being handed from one generation to the next \"undimmed by the tempestuous winds.\" What does it mean to transmit a spiritual inheritance faithfully across generations? What can cause the torch to be dimmed, and what preserves it?",
+            "Throughout the letter Shoghi Effendi has asked for inner purity, racial unity, and sacrificial service. In the close he expresses personal prayers for the community and his conviction they will not fail. What is the relationship between human effort and divine assistance in the Bahá'í framework as this letter presents it?",
+            "Reading the letter as a whole: Shoghi Effendi moves from world crisis → community achievement → warning → inner prerequisites → outward mission → cosmic stakes → closing charge. What is the logic of this sequence? Could it have been arranged differently? What would be lost?",
+            "The letter ends not with a formula but with a challenge issued to a community Shoghi Effendi clearly loves. What is the tone of the final paragraphs — and how does that tone itself constitute a form of spiritual instruction?",
+            "Nearly ninety years after this letter was written: what has the American Bahá'í community accomplished that Shoghi Effendi asked for? What remains undone? What does honest accountability to this letter require of its readers today?"
         ]
     }
 ];
@@ -778,10 +945,44 @@ function renderSessions() {
         const body = document.createElement('div');
         body.className = 'session-body';
 
-        const overview = document.createElement('div');
-        overview.className = 'session-overview';
-        overview.textContent = session.overview;
-        body.appendChild(overview);
+        // Reading instruction block
+        const readingBlock = document.createElement('div');
+        readingBlock.className = 'reading-block';
+
+        const readingTitle = document.createElement('div');
+        readingTitle.className = 'reading-title';
+        readingTitle.textContent = '📖  Session Reading · 45 minutes';
+
+        const readingDesc = document.createElement('div');
+        readingDesc.className = 'reading-desc';
+        readingDesc.innerHTML = `Read aloud together as a group in <em>The Advent of Divine Justice</em>. Use the landmarks below to find your place in the text.`;
+
+        const landmarks = document.createElement('div');
+        landmarks.className = 'landmarks';
+
+        const startRow = document.createElement('div');
+        startRow.className = 'landmark start-landmark';
+        startRow.innerHTML = `<span class="landmark-label">Start</span><span class="landmark-text">${session.startAt}</span>`;
+
+        const stopRow = document.createElement('div');
+        stopRow.className = 'landmark stop-landmark';
+        stopRow.innerHTML = `<span class="landmark-label">Stop</span><span class="landmark-text">${session.stopAt}</span>`;
+
+        landmarks.appendChild(startRow);
+        landmarks.appendChild(stopRow);
+
+        const openBtn = document.createElement('a');
+        openBtn.className = 'open-text-btn';
+        openBtn.href = session.url;
+        openBtn.target = '_blank';
+        openBtn.rel = 'noopener';
+        openBtn.textContent = 'Open Full Text on bahai.org ↗';
+
+        readingBlock.appendChild(readingTitle);
+        readingBlock.appendChild(readingDesc);
+        readingBlock.appendChild(landmarks);
+        readingBlock.appendChild(openBtn);
+        body.appendChild(readingBlock);
 
         const divider1 = document.createElement('div');
         divider1.className = 'divider';
@@ -790,14 +991,19 @@ function renderSessions() {
         // Passages
         const passLabel = document.createElement('div');
         passLabel.className = 'section-label';
-        passLabel.textContent = 'Key Passages';
+        passLabel.textContent = 'Reference Passages';
+
+        const passNote = document.createElement('div');
+        passNote.className = 'section-note';
+        passNote.textContent = 'Key passages from this session\'s reading, for easy reference.';
         body.appendChild(passLabel);
+        body.appendChild(passNote);
 
         session.passages.forEach(p => {
             const passage = document.createElement('div');
             passage.className = 'passage';
             const pText = document.createElement('p');
-            pText.textContent = '"' + p.text + '"';
+            pText.textContent = '\u201C' + p.text + '\u201D';
             const pSource = document.createElement('div');
             pSource.className = 'passage-source';
             pSource.textContent = '— ' + p.source;
@@ -806,12 +1012,15 @@ function renderSessions() {
             body.appendChild(passage);
         });
 
-        // Questions
-        const qLabel = document.createElement('div');
-        qLabel.className = 'section-label';
-        qLabel.style.marginTop = '28px';
-        qLabel.textContent = 'Reflection Questions';
-        body.appendChild(qLabel);
+        // Homework
+        const qDivider = document.createElement('div');
+        qDivider.className = 'divider';
+        body.appendChild(qDivider);
+
+        const hwBlock = document.createElement('div');
+        hwBlock.className = 'homework-block';
+        hwBlock.innerHTML = `<span class="hw-label">Homework</span> Reflect on the following questions before the next session.`;
+        body.appendChild(hwBlock);
 
         const qList = document.createElement('div');
         qList.className = 'question-list';
@@ -863,7 +1072,6 @@ function renderSessions() {
         link.textContent = '↗ Read full text on bahai.org';
 
         footer.appendChild(completeBtn);
-        footer.appendChild(link);
         body.appendChild(footer);
 
         card.appendChild(header);
