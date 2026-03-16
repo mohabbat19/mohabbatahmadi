@@ -2332,6 +2332,18 @@ function getCellStyle(type) {
     takeawayRed: { font: { bold: true, sz: 10 }, fill: { fgColor: { rgb: 'F8D7DA' } }, alignment: { vertical: 'center', wrapText: true } },
     takeawayYellow: { font: { bold: true, sz: 10 }, fill: { fgColor: { rgb: 'FFF3CD' } }, alignment: { vertical: 'center', wrapText: true } },
     takeawayGreen: { font: { bold: true, sz: 10 }, fill: { fgColor: { rgb: 'D4EDDA' } }, alignment: { vertical: 'center', wrapText: true } },
+    // Conditional formatting styles for Summary sheet
+    dateExpired: { font: { sz: 10 }, fill: { fgColor: { rgb: 'FF0000' } }, alignment: { horizontal: 'center', vertical: 'center' }, border: { bottom: { style: 'hair', color: { rgb: 'DDDDDD' } } } },
+    dateExpiring: { font: { sz: 10 }, fill: { fgColor: { rgb: 'FFFF00' } }, alignment: { horizontal: 'center', vertical: 'center' }, border: { bottom: { style: 'hair', color: { rgb: 'DDDDDD' } } } },
+    dateNormal: { font: { sz: 10 }, alignment: { horizontal: 'center', vertical: 'center' }, border: { bottom: { style: 'hair', color: { rgb: 'DDDDDD' } } } },
+    balancePositive: { font: { bold: true, color: { rgb: '006100' }, sz: 10 }, fill: { fgColor: { rgb: 'C6EFCE' } }, numFmt: '"$"#,##0.00_);\\("$"#,##0.00\\)', alignment: { horizontal: 'right', vertical: 'center' }, border: { bottom: { style: 'hair', color: { rgb: 'DDDDDD' } } } },
+    balanceNegative: { font: { bold: true, color: { rgb: 'CC0000' }, sz: 10 }, fill: { fgColor: { rgb: 'FFC7CE' } }, numFmt: '"$"#,##0.00_);\\("$"#,##0.00\\)', alignment: { horizontal: 'right', vertical: 'center' }, border: { bottom: { style: 'hair', color: { rgb: 'DDDDDD' } } } },
+    // Summary meta styles
+    metaBorder: { font: { bold: true, sz: 10, color: { rgb: '002855' } }, alignment: { horizontal: 'left', vertical: 'center' }, border: { top: { style: 'thin', color: { rgb: '002855' } }, bottom: { style: 'thin', color: { rgb: '002855' } }, left: { style: 'thin', color: { rgb: '002855' } }, right: { style: 'thin', color: { rgb: '002855' } } } },
+    metaValueBorder: { font: { sz: 10 }, alignment: { horizontal: 'left', vertical: 'center' }, fill: { fgColor: { rgb: 'FFFF00' } }, border: { top: { style: 'thin', color: { rgb: '002855' } }, bottom: { style: 'thin', color: { rgb: '002855' } }, left: { style: 'thin', color: { rgb: '002855' } }, right: { style: 'thin', color: { rgb: '002855' } } } },
+    summaryTitle: { font: { bold: true, color: { rgb: 'FFFFFF' }, sz: 16 }, fill: { fgColor: { rgb: '002855' } }, alignment: { horizontal: 'left', vertical: 'center' } },
+    totalsHeader: { font: { bold: true, color: { rgb: '002855' }, sz: 10 }, fill: { fgColor: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center', vertical: 'center' }, border: { top: { style: 'thin', color: { rgb: '002855' } }, bottom: { style: 'thin', color: { rgb: '002855' } }, left: { style: 'thin', color: { rgb: '002855' } }, right: { style: 'thin', color: { rgb: '002855' } } } },
+    totalsValue: { font: { sz: 10 }, numFmt: '"$"#,##0.00_);\\("$"#,##0.00\\)', alignment: { horizontal: 'center', vertical: 'center' }, border: { top: { style: 'thin', color: { rgb: '002855' } }, bottom: { style: 'thin', color: { rgb: '002855' } }, left: { style: 'thin', color: { rgb: '002855' } }, right: { style: 'thin', color: { rgb: '002855' } } } },
   };
   return styles[type] || styles.normal;
 }
@@ -2344,95 +2356,210 @@ function setCell(ws, addr, value, style) {
 }
 
 function buildSummarySheet(wb, summaryData, pi, month, year, reportTitle, expDate, meetDate) {
-  const ws = {};
   const aoa = [];
+  const reportDate = new Date(year, month - 1, 1);
+  const warnDate = new Date(reportDate); warnDate.setDate(warnDate.getDate() + 120);
 
-  // Row 1: Report title
-  aoa.push([reportTitle, null, null, null, null, null, null, null, null, null, null]);
-  // Row 2: Meta
-  aoa.push([null, 'Project Manager:', null, null, null, null, null, 'Budget', 'Expenses', 'Commitments', 'Future Payroll', 'Balance']);
-  aoa.push([null, 'Expenditures Updated:', null, expDate, null, null, null,
+  // Row 0: Title bar — "MONTHLY BUDGET SUMMARY REPORT"
+  aoa.push(['', 'MONTHLY BUDGET SUMMARY REPORT', null, null, null, null, null, null, null, null, null, null]);
+
+  // Row 1: blank spacer
+  aoa.push([]);
+
+  // Row 2: Project Manager label + value (cols A-B) | Totals headers (cols G-K)
+  aoa.push(['Project Manager:', null, null, null, null, null, null, 'Budget', 'Expenses', 'Commitments', 'Future Payroll', 'Balance']);
+
+  // Row 3: Expenditures Updated label + date (cols A-F) | Totals values (cols G-K)
+  aoa.push(['Expenditures Updated from Aggie Enterprise PPM:', null, null, null, expDate || '', null, null,
     summaryData.totals.budget, summaryData.totals.expenses,
     summaryData.totals.commitments, summaryData.totals.futurePayroll, summaryData.totals.budgetBalance]);
-  aoa.push([null, 'Meeting Scheduled:', null, meetDate]);
-  aoa.push([null, 'Faculty/PI:', null, pi]);
-  aoa.push([]); // blank
-  // Column headers
-  aoa.push([null, 'Project Number', 'Project Name', 'Project Type', 'Task Number', 'End Date', 'Faculty/PI', 'Budget', 'Expenses', 'Commitments', 'Future Payroll', 'Budget Balance']);
 
-  // Data rows
+  // Row 4: Meeting Scheduled label + date
+  aoa.push(['Meeting Scheduled for Faculty and Research Administrator Status Review:', null, null, null, meetDate || '']);
+
+  // Row 5: Imported File info
+  aoa.push(['Imported File:', reportTitle]);
+
+  // Row 6: blank spacer before data table
+  aoa.push([]);
+
+  // Row 7: Column headers for data table
+  aoa.push(['Project Number', 'Project Name', null, null, 'Project Type', 'Task Number', 'End Date', 'Faculty/PI', 'Budget', 'Expenses', 'Commitments', 'Future Payroll', 'Budget Balance']);
+
+  // Row 8+: Data rows
   summaryData.rows.forEach(row => {
-    aoa.push([null,
-      row.projectNumber, row.projectName, row.projectType, row.taskNumber,
+    aoa.push([
+      row.projectNumber, row.projectName, null, null, row.projectType, row.taskNumber,
       formatDate(row.endDate), row.pi,
       row.budget, row.expenses, row.commitments, row.futurePayroll, row.budgetBalance
     ]);
   });
 
-  // Totals
-  aoa.push([null, 'GRAND TOTAL', null, null, null, null, null,
+  // Grand Total row
+  aoa.push(['GRAND TOTAL', null, null, null, null, null, null, null,
     summaryData.totals.budget, summaryData.totals.expenses,
     summaryData.totals.commitments, summaryData.totals.futurePayroll, summaryData.totals.budgetBalance]);
 
-  const ws2 = XLSX.utils.aoa_to_sheet(aoa);
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
 
-  // Apply column widths
-  ws2['!cols'] = [
-    {wch:3},{wch:14},{wch:60},{wch:12},{wch:10},{wch:12},{wch:22},
-    {wch:14},{wch:14},{wch:14},{wch:14},{wch:14}
+  // Column widths — A:Project#, B-D:ProjectName(merged), E:ProjectType, F:TaskNum, G:EndDate, H:Faculty, I:Budget, J:Expenses, K:Commitments, L:FuturePayroll, M:BudgetBalance
+  ws['!cols'] = [
+    {wch:16},{wch:30},{wch:30},{wch:20},{wch:45},{wch:12},{wch:12},{wch:20},
+    {wch:14},{wch:14},{wch:14},{wch:14},{wch:16}
   ];
 
-  // Apply row heights
-  ws2['!rows'] = [{ hpt: 30 }];
+  // Row heights
+  ws['!rows'] = [
+    { hpt: 36 },  // Row 0: title bar
+    { hpt: 8 },   // Row 1: spacer
+    { hpt: 22 },  // Row 2: Project Manager
+    { hpt: 22 },  // Row 3: Expenditures Updated
+    { hpt: 22 },  // Row 4: Meeting Scheduled
+    { hpt: 22 },  // Row 5: Imported File
+    { hpt: 8 },   // Row 6: spacer
+    { hpt: 28 },  // Row 7: column headers
+  ];
 
-  // Apply styles manually
-  const dataStartRow = 8; // 1-indexed
+  // ---- MERGES ----
+  const merges = [
+    // Title bar spans cols A-L
+    { s: { r: 0, c: 1 }, e: { r: 0, c: 12 } },
+    // Meta label merges
+    { s: { r: 2, c: 0 }, e: { r: 2, c: 1 } },  // Project Manager label
+    { s: { r: 3, c: 0 }, e: { r: 3, c: 3 } },  // Expenditures Updated label
+    { s: { r: 4, c: 0 }, e: { r: 4, c: 3 } },  // Meeting Scheduled label
+    // Totals headers row
+    // Project Name spans B-D in header and data rows
+    { s: { r: 7, c: 1 }, e: { r: 7, c: 3 } },  // Header: Project Name
+  ];
+
+  // Merge Project Name columns (B-D) in each data row
+  summaryData.rows.forEach((row, i) => {
+    merges.push({ s: { r: 8 + i, c: 1 }, e: { r: 8 + i, c: 3 } });
+  });
+  // Merge Grand Total label
+  const grandTotalRowIdx = 8 + summaryData.rows.length;
+  merges.push({ s: { r: grandTotalRowIdx, c: 0 }, e: { r: grandTotalRowIdx, c: 7 } });
+
+  ws['!merges'] = merges;
+
+  // ---- STYLES ----
+
+  // Row 0: Title bar — navy background, white bold text
+  for (let c = 0; c <= 12; c++) {
+    const addr = XLSX.utils.encode_cell({ r: 0, c });
+    if (!ws[addr]) ws[addr] = { v: '', t: 's' };
+    ws[addr].s = getCellStyle('summaryTitle');
+  }
+
+  // Row 2: Project Manager meta
+  setCell(ws, XLSX.utils.encode_cell({ r: 2, c: 0 }), 'Project Manager:', getCellStyle('metaBorder'));
+  // Yellow fill for the value area
+  for (let c = 2; c <= 5; c++) {
+    const addr = XLSX.utils.encode_cell({ r: 2, c });
+    if (!ws[addr]) ws[addr] = { v: '', t: 's' };
+    ws[addr].s = getCellStyle('metaValueBorder');
+  }
+
+  // Row 3: Expenditures Updated
+  const addr30 = XLSX.utils.encode_cell({ r: 3, c: 0 });
+  if (ws[addr30]) ws[addr30].s = getCellStyle('metaBorder');
+  const addr34 = XLSX.utils.encode_cell({ r: 3, c: 4 });
+  if (ws[addr34]) ws[addr34].s = { font: { sz: 10 }, alignment: { horizontal: 'center', vertical: 'center' }, border: { top: { style: 'thin', color: { rgb: '002855' } }, bottom: { style: 'thin', color: { rgb: '002855' } }, left: { style: 'thin', color: { rgb: '002855' } }, right: { style: 'thin', color: { rgb: '002855' } } } };
+
+  // Row 4: Meeting Scheduled
+  const addr40 = XLSX.utils.encode_cell({ r: 4, c: 0 });
+  if (ws[addr40]) ws[addr40].s = getCellStyle('metaBorder');
+  const addr44 = XLSX.utils.encode_cell({ r: 4, c: 4 });
+  if (ws[addr44]) ws[addr44].s = { font: { sz: 10 }, alignment: { horizontal: 'center', vertical: 'center' }, border: { top: { style: 'thin', color: { rgb: '002855' } }, bottom: { style: 'thin', color: { rgb: '002855' } }, left: { style: 'thin', color: { rgb: '002855' } }, right: { style: 'thin', color: { rgb: '002855' } } } };
+
+  // Row 5: Imported File
+  const addr50 = XLSX.utils.encode_cell({ r: 5, c: 0 });
+  if (ws[addr50]) ws[addr50].s = getCellStyle('metaBorder');
+  const addr51 = XLSX.utils.encode_cell({ r: 5, c: 1 });
+  if (ws[addr51]) ws[addr51].s = getCellStyle('metaValue');
+
+  // Totals box — Row 2: headers (cols G-K)
+  const totalsLabels = ['Budget', 'Expenses', 'Commitments', 'Future Payroll', 'Balance'];
+  for (let c = 7; c <= 11; c++) {
+    const addr = XLSX.utils.encode_cell({ r: 2, c });
+    if (ws[addr]) ws[addr].s = getCellStyle('totalsHeader');
+  }
+  // Totals box — Row 3: values (cols G-K)
+  for (let c = 7; c <= 11; c++) {
+    const addr = XLSX.utils.encode_cell({ r: 3, c });
+    if (ws[addr]) ws[addr].s = getCellStyle('totalsValue');
+  }
+
+  // Row 7: Data table column headers — navy background, white text
+  const headerRow = 7;
+  for (let c = 0; c <= 12; c++) {
+    const addr = XLSX.utils.encode_cell({ r: headerRow, c });
+    if (ws[addr]) ws[addr].s = getCellStyle('header');
+  }
+
+  // Data rows — apply conditional formatting
+  const dataStartRow = 8;
+  const currencyCols = [8, 9, 10, 11, 12]; // Budget, Expenses, Commitments, Future Payroll, Budget Balance
+
   summaryData.rows.forEach((row, i) => {
     const r = dataStartRow + i;
-    const isCurrency = [7,8,9,10,11];
-    const rc = row.rowClass;
-    const textStyle = rc === 'highlight-red' ? 'red' : rc === 'highlight-yellow' ? 'yellow' : 'normal';
-    const currStyle = rc === 'highlight-red' ? 'redCurrency' : rc === 'highlight-yellow' ? 'yellowCurrency' : 'currency';
 
-    for (let c = 1; c <= 11; c++) {
-      const addr = XLSX.utils.encode_cell({ r: r-1, c });
-      if (ws2[addr]) {
-        ws2[addr].s = getCellStyle(isCurrency.includes(c) ? currStyle : textStyle);
+    // Default styles for text and currency columns
+    for (let c = 0; c <= 12; c++) {
+      const addr = XLSX.utils.encode_cell({ r, c });
+      if (ws[addr]) {
+        ws[addr].s = getCellStyle(currencyCols.includes(c) ? 'currency' : 'normal');
       }
     }
-    // Balance cell — red text if negative
-    const balAddr = XLSX.utils.encode_cell({ r: r-1, c: 11 });
-    if (ws2[balAddr] && row.budgetBalance < 0) {
-      ws2[balAddr].s = { ...getCellStyle('redCurrency'), font: { bold: true, color: { rgb: 'C0392B' }, sz: 10 } };
+
+    // ---- CONDITIONAL FORMATTING: End Date (Col F = index 6) ----
+    const endDateAddr = XLSX.utils.encode_cell({ r, c: 6 });
+    if (ws[endDateAddr]) {
+      const endDateStr = row.endDate;
+      let dateStyle = 'dateNormal';
+      if (endDateStr && endDateStr.trim()) {
+        let ed = new Date(endDateStr);
+        if (isNaN(ed.getTime()) && endDateStr.includes('/')) {
+          const parts = endDateStr.split('/');
+          if (parts.length === 3) ed = new Date(parseInt(parts[2]), parseInt(parts[0])-1, parseInt(parts[1]));
+        }
+        if (!isNaN(ed.getTime())) {
+          if (ed < reportDate) {
+            dateStyle = 'dateExpired';       // Red background — expired
+          } else if (ed <= warnDate) {
+            dateStyle = 'dateExpiring';      // Yellow background — expiring within 4 months
+          }
+        }
+      }
+      ws[endDateAddr].s = getCellStyle(dateStyle);
+    }
+
+    // ---- CONDITIONAL FORMATTING: Budget Balance (Col L = index 12) ----
+    const balAddr = XLSX.utils.encode_cell({ r, c: 12 });
+    if (ws[balAddr]) {
+      if (row.budgetBalance >= 0) {
+        ws[balAddr].s = getCellStyle('balancePositive');   // Green — positive balance
+      } else {
+        ws[balAddr].s = getCellStyle('balanceNegative');   // Red — negative balance (overdraft)
+      }
     }
   });
 
-  // Header row styles
-  const hRow = 6; // 0-indexed row 6
-  for (let c = 1; c <= 11; c++) {
-    const addr = XLSX.utils.encode_cell({ r: hRow, c });
-    if (ws2[addr]) ws2[addr].s = getCellStyle('header');
+  // Grand Total row — navy background
+  for (let c = 0; c <= 12; c++) {
+    const addr = XLSX.utils.encode_cell({ r: grandTotalRowIdx, c });
+    if (!ws[addr]) ws[addr] = { v: '', t: 's' };
+    ws[addr].s = getCellStyle(currencyCols.includes(c) ? 'total' : 'totalLabel');
   }
 
-  // Title row
-  const titleAddr = XLSX.utils.encode_cell({ r: 0, c: 0 });
-  if (ws2[titleAddr]) ws2[titleAddr].s = getCellStyle('title');
+  // Freeze panes — freeze header row so data scrolls beneath it
+  ws['!sheetView'] = [{ state: 'frozen', ySplit: 8 }];
 
-  // Total row
-  const totalRow = dataStartRow + summaryData.rows.length - 1;
-  for (let c = 1; c <= 11; c++) {
-    const addr = XLSX.utils.encode_cell({ r: totalRow, c });
-    if (ws2[addr]) ws2[addr].s = getCellStyle(c >= 7 ? 'total' : 'totalLabel');
-  }
+  // Auto-filter on the data table columns
+  ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: headerRow, c: 0 }, e: { r: grandTotalRowIdx - 1, c: 12 } }) };
 
-  // Merge title cell
-  ws2['!merges'] = [
-    { s: { r: 0, c: 0 }, e: { r: 0, c: 11 } },
-  ];
-
-  ws2['!sheetView'] = [{ state: 'frozen', ySplit: 7 }];
-
-  XLSX.utils.book_append_sheet(wb, ws2, 'SUMMARY');
+  XLSX.utils.book_append_sheet(wb, ws, 'SUMMARY');
 }
 
 function buildExpensesSheet(wb, expData, reportTitle) {
