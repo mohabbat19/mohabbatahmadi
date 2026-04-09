@@ -2,526 +2,239 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Feast of Jalál Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feast of Jalál — Team Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap');
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'EB Garamond',Georgia,serif;background:linear-gradient(160deg,#fdfaf6,#f0ebe3);min-height:100vh;color:#1a1a2e}
-  .screen{display:none;min-height:100vh;padding:24px;flex-direction:column;align-items:center;justify-content:center}
-  .screen.active{display:flex}
-  .big-btn{padding:14px 40px;background:#E85D3A;color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:16px}
-  .big-btn:hover{background:#c9472a}
-  .big-btn:disabled{opacity:.4;cursor:default}
-  .tag{display:inline-block;padding:3px 10px;border-radius:6px;color:#fff;font-size:11px;font-weight:600;margin:2px}
-  .mode-title{font-size:36px;font-weight:700}
-  .mode-sub{color:#888;margin:8px 0 28px;font-size:16px}
-  .mode-btns{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
-  .mode-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 36px;border:2px solid #e0d8ce;border-radius:16px;background:#fff;cursor:pointer;font-family:inherit;min-width:160px}
-  .mode-btn:hover{border-color:#E85D3A}
-  .lobby-card{text-align:center;max-width:520px;width:100%}
-  .star{font-size:48px;margin-bottom:8px}
-  .host-title{font-size:40px;font-weight:700;letter-spacing:-1px}
-  .host-subtitle{font-size:14px;color:#E85D3A;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;margin:4px 0 12px}
-  .host-desc{color:#666;font-size:15px;line-height:1.6;margin-bottom:20px}
-  .small-label{font-size:13px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:1px;margin-top:24px}
-  .team-select{display:flex;gap:12px;justify-content:center;margin-top:8px}
-  .team-opt{padding:10px 24px;border:2px solid #E85D3A;border-radius:10px;cursor:pointer;font-weight:600;font-size:15px;font-family:inherit;background:transparent;color:#E85D3A}
-  .team-opt.active{background:#E85D3A;color:#fff}
-  .gameid-banner{text-align:center;padding:32px 24px;background:#1a1a2e;border-radius:20px;color:#fff;width:100%;max-width:600px}
-  .gameid-label{font-size:13px;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.6)}
-  .gameid-value{font-size:56px;font-weight:700;letter-spacing:12px;font-family:monospace;margin-top:8px}
-  .gameid-hint{font-size:13px;color:rgba(255,255,255,.5);margin-top:12px}
-  .team-cards{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:32px 0}
-  .team-card{display:flex;align-items:center;gap:10px;padding:14px 24px;border:2px solid;border-radius:12px;background:#fff}
-  .team-dot{width:14px;height:14px;border-radius:50%}
-  .host-game{justify-content:flex-start;align-items:stretch}
-  .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px}
-  .q-num{font-size:15px;font-weight:700;background:#e8e8e8;padding:6px 14px;border-radius:8px}
-  .timer-box{background:#fff;padding:8px 20px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-  .timer-text{font-size:28px;font-weight:700;font-family:monospace}
-  .timer-warn{color:#E85D3A!important}
-  .source-tag{font-size:12px;color:#999;font-style:italic}
-  .q-box{background:#fff;padding:28px 32px;border-radius:16px;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
-  .q-text{font-size:22px;font-weight:600;line-height:1.5}
-  .opts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
-  .opt-card{display:flex;align-items:flex-start;gap:12px;padding:16px 20px;border:2px solid #ddd;border-radius:14px;background:#fff;position:relative;transition:all .3s}
-  .opt-card.correct{border-color:#2B8A6E;background:rgba(43,138,110,.08);box-shadow:0 0 0 3px rgba(43,138,110,.2)}
-  .opt-card.wrong{border-color:#ccc}
-  .opt-letter{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;background:#e8e8e8;color:#666;flex-shrink:0}
-  .opt-card.correct .opt-letter{background:#2B8A6E;color:#fff}
-  .opt-text{font-size:16px;line-height:1.5}
-  .team-tags{position:absolute;bottom:8px;right:12px;display:flex;gap:4px;flex-wrap:wrap}
-  .scoreboard{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:16px 0}
-  .score-item{display:flex;align-items:center;gap:8px;padding:10px 20px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-  .score-dot{width:10px;height:10px;border-radius:50%}
-  .score-val{font-weight:700;font-size:16px;color:#E85D3A}
-  .final{text-align:center}
-  .final-title{font-size:36px;font-weight:700;margin:8px 0 24px}
-  .podium{max-width:400px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
-  .pod-item{display:flex;align-items:center;gap:12px;padding:16px 20px;background:#fff;border-radius:12px}
-  .pod-rank{font-size:20px;font-weight:700;color:#999;width:36px}
-  .pod-name{flex:1;font-weight:600;font-size:18px}
-  .pod-score{font-weight:700;font-size:20px;color:#E85D3A}
-  .closing-quote{font-style:italic;color:#555;max-width:500px;margin:32px auto 4px;line-height:1.6;font-size:15px}
-  .closing-attr{font-size:12px;color:#999}
-  .player-join{gap:14px}
-  .p-input{width:100%;max-width:280px;padding:12px 16px;border:2px solid #ddd;border-radius:10px;font-size:16px;font-family:inherit;background:#fff;-webkit-appearance:none}
-  .p-input:focus{outline:none;border-color:#E85D3A}
-  .player-wait{text-align:center}
-  @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:.7}}
-  .wait-dot{width:48px;height:48px;border-radius:50%;background:#E85D3A;margin:0 auto 16px;animation:pulse 1.5s ease-in-out infinite}
-  .team-badge{font-size:14px;font-weight:700;color:#E85D3A;text-transform:uppercase;letter-spacing:1.5px;margin-top:8px}
-  .player-q{justify-content:flex-start;align-items:stretch}
-  .pq-num{font-size:13px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
-  .pq-text{font-size:18px;font-weight:600;line-height:1.5;margin-bottom:20px}
-  .pq-opts{display:flex;flex-direction:column;gap:10px}
-  .pq-btn{display:flex;align-items:center;gap:10px;padding:14px 18px;border:2px solid #ddd;border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;text-align:left;background:#fff}
-  .pq-btn:hover{border-color:#E85D3A}
-  .pq-btn.selected{background:#2B8A6E;color:#fff;border-color:#2B8A6E}
-  .pq-btn.selected .pq-letter{color:#fff}
-  .pq-btn.faded{opacity:.4;pointer-events:none}
-  .pq-letter{font-weight:700;color:#E85D3A;font-size:16px;flex-shrink:0}
-  .locked-msg{text-align:center;color:#2B8A6E;font-weight:600;margin-top:12px}
-  .status-bar{position:fixed;top:0;left:0;right:0;padding:6px 12px;font-size:12px;z-index:999;text-align:center;font-family:monospace}
-  .status-bar.ok{background:#2B8A6E;color:#fff}
-  .status-bar.err{background:#E85D3A;color:#fff}
-  #loading-screen{position:fixed;inset:0;background:linear-gradient(160deg,#fdfaf6,#f0ebe3);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:'EB Garamond',Georgia,serif}
-  #loading-screen .spinner{width:40px;height:40px;border:4px solid #e0d8ce;border-top-color:#E85D3A;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:16px}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  #loading-screen p{color:#888;font-size:16px}
-  #loading-screen .error{color:#E85D3A;font-size:14px;margin-top:12px;max-width:400px;text-align:center;display:none}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#C8A456;--gold-light:#E8D5A0;--navy:#1A2744;--navy-light:#253B66;
+  --cream:#FAF6EE;--green:#3B7A57;--red:#B94A48;--text:#2C2C2C;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+h1,h2,h3{font-family:'Cormorant Garamond',serif}
+.container{max-width:720px;width:100%;position:relative}
+.screen{display:none;animation:fadeUp .5s ease}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+.card{background:#fff;border-radius:16px;padding:48px 36px;box-shadow:0 4px 30px rgba(26,39,68,.08);text-align:center}
+.card h1{font-size:2.4rem;color:var(--navy);margin-bottom:6px}
+.card h2{font-size:2rem;color:var(--navy);margin-bottom:4px}
+.subtitle{color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;letter-spacing:.5px;margin-bottom:28px}
+.ornament{width:48px;height:2px;background:var(--gold);margin:16px auto 20px;border-radius:2px}
+.card p{color:#666;line-height:1.6;margin-bottom:24px;font-size:.95rem}
+
+.name-input{width:100%;max-width:340px;padding:14px 18px;border:2px solid #e4dfd4;border-radius:10px;font-size:1rem;font-family:'DM Sans',sans-serif;text-align:center;outline:none;transition:border .2s}
+.name-input:focus{border-color:var(--gold)}
+.name-input::placeholder{color:#bbb}
+.input-row{margin-bottom:24px}
+
+button{cursor:pointer;border:none;font-family:'DM Sans',sans-serif;font-weight:600;transition:all .2s}
+.btn-primary{background:var(--navy);color:#fff;padding:14px 40px;border-radius:10px;font-size:1rem;letter-spacing:.3px}
+.btn-primary:hover{background:var(--navy-light);transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,39,68,.2)}
+.btn-primary:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none}
+.btn-secondary{background:transparent;color:var(--navy);padding:12px 28px;border-radius:10px;font-size:.9rem;border:2px solid #e4dfd4}
+.btn-secondary:hover{border-color:var(--gold);background:#FFFCF5}
+.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+.quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.progress-text{font-size:.85rem;color:#888;font-weight:500}
+.timer-badge{background:var(--navy);color:var(--gold-light);padding:6px 16px;border-radius:20px;font-size:.9rem;font-weight:600;min-width:56px;text-align:center}
+.timer-badge.warn{background:var(--red);color:#fff}
+.progress-bar{height:5px;background:#e4dfd4;border-radius:8px;margin-bottom:28px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--navy));border-radius:8px;transition:width .4s ease}
+.question-card{background:#fff;border-radius:16px;padding:36px 32px;box-shadow:0 4px 30px rgba(26,39,68,.08);margin-bottom:20px}
+.q-number{font-size:.78rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold);font-weight:600;margin-bottom:10px}
+.q-text{font-family:'Cormorant Garamond',serif;font-size:1.35rem;color:var(--navy);line-height:1.5;font-weight:600}
+.options{display:flex;flex-direction:column;gap:12px}
+.option{background:#fff;border:2px solid #e4dfd4;border-radius:12px;padding:16px 20px;font-size:.95rem;text-align:left;line-height:1.45;color:var(--text);position:relative}
+.option:hover:not(.locked){border-color:var(--gold);background:#FFFCF5}
+.option.correct{border-color:var(--green);background:#EBF5F0;color:var(--green)}
+.option.wrong{border-color:var(--red);background:#FDEEEE;color:var(--red)}
+.option.locked{cursor:default;opacity:.7}
+.option.correct.locked,.option.wrong.locked{opacity:1}
+.score-strip{display:flex;justify-content:space-between;margin-top:16px;font-size:.85rem;color:#999}
+.score-strip span strong{color:var(--navy)}
+
+.lb{margin:20px auto 28px;max-width:420px;text-align:left}
+.lb-row{display:flex;align-items:center;padding:12px 16px;border-radius:10px;margin-bottom:8px;background:#FDFBF6;border:1px solid #efe9dc}
+.lb-row.gold-bg{background:linear-gradient(135deg,#FFF9EB,#FFF3D6);border-color:var(--gold-light)}
+.lb-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;margin-right:14px;flex-shrink:0}
+.lb-row.gold-bg .lb-rank{background:var(--gold);color:#fff}
+.lb-row:not(.gold-bg) .lb-rank{background:#e4dfd4;color:#888}
+.lb-name{flex:1;font-weight:500;font-size:.95rem}
+.lb-score{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--navy)}
+.lb-empty{color:#bbb;font-size:.9rem;text-align:center;padding:24px 0}
+.you-tag{background:var(--gold);color:#fff;font-size:.65rem;padding:2px 7px;border-radius:4px;margin-left:8px;vertical-align:middle;text-transform:uppercase;letter-spacing:.5px}
+
+.big-score{font-size:4.5rem;font-family:'Cormorant Garamond',serif;font-weight:700;color:var(--gold);margin:12px 0}
+.results-msg{color:#666;line-height:1.6;margin-bottom:28px;font-size:.95rem;max-width:420px;margin-left:auto;margin-right:auto}
+
+@media(max-width:520px){
+  .card{padding:28px 20px}
+  .card h1{font-size:1.8rem}
+  .q-text{font-size:1.15rem}
+  .big-score{font-size:3.5rem}
+}
 </style>
 </head>
 <body>
+<div class="container">
 
-<!-- Loading screen while Firebase loads -->
-<div id="loading-screen">
-  <div class="spinner"></div>
-  <p>Loading quiz...</p>
-  <p class="error" id="load-error"></p>
-</div>
-
-<div class="status-bar" id="status" style="display:none"></div>
-
-<!-- MODE SELECT -->
-<div id="s-mode" class="screen">
-  <h1 class="mode-title">Feast of Jalál Quiz</h1>
-  <p class="mode-sub">Select your role</p>
-  <div class="mode-btns">
-    <button class="mode-btn" onclick="setMode('host')"><span style="font-size:32px">📺</span><span style="font-weight:700;font-size:18px">Host</span><span style="font-size:13px;color:#888">Project on screen</span></button>
-    <button class="mode-btn" onclick="setMode('player')"><span style="font-size:32px">📱</span><span style="font-weight:700;font-size:18px">Player</span><span style="font-size:13px;color:#888">Answer on phone</span></button>
+  <!-- JOIN -->
+  <div id="join" class="screen active">
+    <div class="card">
+      <h1>Feast of Jalál</h1>
+      <div class="ornament"></div>
+      <div class="subtitle">Welcoming Souls to the Faith</div>
+      <p>10 questions from tonight's reading. Enter your name to begin. Speed and accuracy both count!</p>
+      <div class="input-row">
+        <input class="name-input" id="nameInput" placeholder="Your name" maxlength="30" autocomplete="off">
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" id="startBtn" disabled onclick="startQuiz()">Start Quiz</button>
+        <button class="btn-secondary" onclick="showLeaderboard()">Leaderboard</button>
+      </div>
+    </div>
   </div>
-</div>
 
-<!-- HOST SETUP -->
-<div id="s-host-setup" class="screen">
-  <div class="lobby-card">
-    <div class="star">✦</div>
-    <h1 class="host-title">Feast Quiz</h1>
-    <p class="host-subtitle">Feast of Jalál</p>
-    <p class="host-desc">Team quiz on the readings: Recognizing the Moment, Learning from San Diego, and The Kind of Person We Are Becoming</p>
-    <p class="small-label">Number of Teams</p>
-    <div class="team-select">
-      <button class="team-opt active" id="btn-t2" onclick="pickTeams(2)">2 Teams</button>
-      <button class="team-opt" id="btn-t3" onclick="pickTeams(3)">3 Teams</button>
-    </div><br>
-    <button class="big-btn" onclick="hostStart()">Start Game</button>
+  <!-- QUIZ -->
+  <div id="quiz" class="screen">
+    <div class="quiz-header">
+      <span class="progress-text" id="progText">1 / 10</span>
+      <span class="timer-badge" id="timer">20</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progBar" style="width:10%"></div></div>
+    <div class="question-card">
+      <div class="q-number" id="qNum">Question 1</div>
+      <div class="q-text" id="qText"></div>
+    </div>
+    <div class="options" id="opts"></div>
+    <div class="score-strip">
+      <span>Score: <strong id="scoreLive">0</strong></span>
+      <span>Streak: <strong id="streakLive">0</strong></span>
+    </div>
   </div>
-</div>
 
-<!-- HOST LOBBY -->
-<div id="s-host-lobby" class="screen">
-  <div class="gameid-banner">
-    <p class="gameid-label">Game Code</p>
-    <p class="gameid-value" id="h-code"></p>
-    <p class="gameid-hint">Team reps: open this page on your phone, choose "Player", enter this code</p>
+  <!-- RESULTS -->
+  <div id="results" class="screen">
+    <div class="card">
+      <h2>Quiz Complete!</h2>
+      <div class="ornament"></div>
+      <div class="big-score" id="finalScore">0</div>
+      <p class="results-msg" id="finalMsg"></p>
+      <h3 style="color:var(--navy);margin-bottom:12px">Leaderboard</h3>
+      <div class="lb" id="resultsLb"></div>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="retake()">Play Again</button>
+        <button class="btn-secondary" onclick="backToJoin()">Home</button>
+      </div>
+    </div>
   </div>
-  <div class="team-cards" id="h-lobby-teams"></div>
-  <button class="big-btn" onclick="hostNextQ()">Begin Question 1</button>
-</div>
 
-<!-- HOST QUESTION -->
-<div id="s-host-q" class="screen host-game">
-  <div class="top-bar">
-    <span class="q-num" id="hq-num"></span>
-    <div class="timer-box"><span class="timer-text" id="hq-timer"></span></div>
-    <span class="source-tag" id="hq-sec"></span>
+  <!-- LEADERBOARD -->
+  <div id="lbScreen" class="screen">
+    <div class="card">
+      <h2>Leaderboard</h2>
+      <div class="ornament"></div>
+      <div class="lb" id="fullLb"></div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="clearScores()">Reset All Scores</button>
+        <button class="btn-primary" onclick="backToJoin()">Back</button>
+      </div>
+    </div>
   </div>
-  <div class="q-box"><h2 class="q-text" id="hq-text"></h2></div>
-  <div class="opts-grid" id="hq-opts"></div>
-  <div style="text-align:center;margin-top:20px" id="hq-btns"></div>
-</div>
 
-<!-- HOST FINAL -->
-<div id="s-host-final" class="screen">
-  <div class="final">
-    <div class="star">🏆</div>
-    <h1 class="final-title">Final Results</h1>
-    <div class="podium" id="h-pod"></div>
-    <p class="closing-quote">"In every face they see a fellow seeker after truth... And in the company of many others, they are building havens of peace."</p>
-    <p class="closing-attr">Universal House of Justice, 31 December 2025</p>
-    <button class="big-btn" onclick="location.reload()">New Game</button>
-  </div>
 </div>
-
-<!-- PLAYER JOIN -->
-<div id="s-player-join" class="screen player-join">
-  <h2 style="font-size:24px;font-weight:700">Join Quiz</h2>
-  <input class="p-input" id="pj-code" placeholder="Game Code" maxlength="6" autocapitalize="characters" autocomplete="off">
-  <select class="p-input" id="pj-team"><option value="">Select your team</option><option>Team 1</option><option>Team 2</option><option>Team 3</option></select>
-  <button class="big-btn" onclick="playerJoin()">Join</button>
-</div>
-
-<!-- PLAYER WAIT -->
-<div id="s-player-wait" class="screen player-wait">
-  <div class="wait-dot"></div>
-  <p style="font-size:18px;color:#666">Waiting for host to start...</p>
-  <p class="team-badge" id="pw-team"></p>
-</div>
-
-<!-- PLAYER QUESTION -->
-<div id="s-player-q" class="screen player-q">
-  <p class="pq-num" id="pq-num"></p>
-  <p class="pq-text" id="pq-text"></p>
-  <div class="pq-opts" id="pq-opts"></div>
-  <p class="locked-msg" id="pq-locked" style="display:none">Answer locked in!</p>
-</div>
-
-<!-- PLAYER RESULT -->
-<div id="s-player-result" class="screen player-wait">
-  <p style="font-size:48px" id="pr-icon"></p>
-  <p style="font-size:20px;font-weight:600;margin:8px 0" id="pr-text"></p>
-  <p style="font-size:14px;color:#888">Waiting for next question...</p>
-</div>
-
-<!-- PLAYER FINAL -->
-<div id="s-player-final" class="screen player-wait">
-  <h2 style="font-size:28px">🏆 Game Over!</h2>
-  <p style="font-size:20px;margin:12px 0" id="pf-result"></p>
-</div>
-
-<!--
-  Firebase SDK: try 3 different CDNs.
-  If all fail, the loading screen shows an error.
--->
 <script>
-var _fbLoaded = false;
-var _fbAttempt = 0;
-var _fbSources = [
-  ["https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js",
-   "https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"],
-  ["https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-app-compat.js",
-   "https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-database-compat.js"],
-  ["https://unpkg.com/firebase@9.23.0/firebase-app-compat.js",
-   "https://unpkg.com/firebase@9.23.0/firebase-database-compat.js"]
+const questions=[
+  {q:"According to the Universal House of Justice, what 'infinitely precious moment' should believers learn to recognize?",
+   a:["When a soul is ready to step within the doors of the Faith","When a community reaches 100 members","When a new Bahá'í center opens","When a teaching campaign begins"],c:0},
+  {q:"What phrase does the House of Justice use to describe a person's readiness to accept the Faith?",
+   a:["The turning of the heart","The city of the heart is open","The moment of truth","The awakening of the spirit"],c:1},
+  {q:"In which city did the youth institute camp described in the reading take place?",
+   a:["Los Angeles","Houston","San Diego","Chicago"],c:2},
+  {q:"How many youth and parents initially enrolled at the camp?",
+   a:["Three youth","Six youth and one parent","Ten youth","Five youth and two parents"],c:1},
+  {q:"What was the simple description of a Bahá'í given to camp participants?",
+   a:["Someone who has memorized all the prayers","Someone who wants to apply Bahá'u'lláh's teachings to improve their life and sees them as a source of unity","Someone who attends Feast every 19 days","Someone born into a Bahá'í family"],c:1},
+  {q:"Why did one youth at the camp hesitate to enroll?",
+   a:["He didn't agree with the teachings","He feared losing his family's culture","He was too young","He hadn't finished Book 1"],c:1},
+  {q:"What happened with the young woman's father from Haiti?",
+   a:["He refused to participate","He enrolled alongside his daughter after hearing what she learned in Book 1","He had never heard of the Faith before","He moved back to Haiti"],c:1},
+  {q:"According to the House of Justice, steady believers see what in every face?",
+   a:["A potential donor","A fellow seeker after truth","A future administrator","A friend in need"],c:1},
+  {q:"The closing appeal speaks of spending one's life in 'acute awareness' of what?",
+   a:["The importance of education","The divine remedy","The need for sacrifice","The power of institutions"],c:1},
+  {q:"What does the reading say 'much remains to be learned' about?",
+   a:["How to build Bahá'í centers","How to discern receptivity and recognize when it has matured into faith","How to organize children's classes","How to plan Holy Day celebrations"],c:1}
 ];
 
-function tryLoadFirebase() {
-  if (_fbAttempt >= _fbSources.length) {
-    document.getElementById('load-error').style.display = 'block';
-    document.getElementById('load-error').textContent =
-      'Could not load Firebase from any CDN. Check your internet connection or try a different browser/network.';
-    return;
-  }
-  var srcs = _fbSources[_fbAttempt];
-  var s1 = document.createElement('script');
-  s1.src = srcs[0];
-  s1.onload = function() {
-    var s2 = document.createElement('script');
-    s2.src = srcs[1];
-    s2.onload = function() {
-      if (typeof firebase !== 'undefined' && firebase.initializeApp) {
-        _fbLoaded = true;
-        initApp();
-      } else {
-        _fbAttempt++;
-        tryLoadFirebase();
-      }
-    };
-    s2.onerror = function() { _fbAttempt++; tryLoadFirebase(); };
-    document.head.appendChild(s2);
-  };
-  s1.onerror = function() { _fbAttempt++; tryLoadFirebase(); };
-  document.head.appendChild(s1);
+let playerName='',idx=0,score=0,streak=0,bestStreak=0,timerInterval,secs,locked;
+const SK='feast-jalal-quiz-scores';
+
+async function loadScores(){try{const r=await window.storage.get(SK,true);return r?JSON.parse(r.value):[]}catch(e){return[]}}
+async function saveScore(name,pts){const s=await loadScores();s.push({name,score:pts,ts:Date.now()});s.sort((a,b)=>b.score-a.score);const t=s.slice(0,50);try{await window.storage.set(SK,JSON.stringify(t),true)}catch(e){}return t}
+async function resetScores(){try{await window.storage.delete(SK,true)}catch(e){}}
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+function renderLb(cid,scores,hl){
+  const el=document.getElementById(cid);
+  if(!scores.length){el.innerHTML='<div class="lb-empty">No scores yet. Be the first!</div>';return}
+  el.innerHTML=scores.slice(0,10).map((s,i)=>{
+    const isYou=s.name===hl&&i===scores.findIndex(x=>x.name===hl&&x.ts===s.ts);
+    return`<div class="lb-row${i===0?' gold-bg':''}"><div class="lb-rank">${i+1}</div><div class="lb-name">${esc(s.name)}${isYou?'<span class="you-tag">You</span>':''}</div><div class="lb-score">${s.score}</div></div>`
+  }).join('');
 }
 
-tryLoadFirebase();
-</script>
+const nameEl=document.getElementById('nameInput'),startBtnEl=document.getElementById('startBtn');
+nameEl.addEventListener('input',()=>{startBtnEl.disabled=!nameEl.value.trim()});
+nameEl.addEventListener('keydown',e=>{if(e.key==='Enter'&&nameEl.value.trim())startQuiz()});
 
-<script>
-// ╔══════════════════════════════════════════════════════════╗
-// ║  PASTE YOUR FIREBASE CONFIG HERE                        ║
-// ╚══════════════════════════════════════════════════════════╝
-var firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-// ╔══════════════════════════════════════════════════════════╗
-// ║  DO NOT EDIT BELOW THIS LINE                            ║
-// ╚══════════════════════════════════════════════════════════╝
+function startQuiz(){playerName=nameEl.value.trim();if(!playerName)return;idx=0;score=0;streak=0;bestStreak=0;show('quiz');render()}
 
-var db;
-
-function initApp() {
-  try {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.database();
-  } catch(e) {
-    document.getElementById('load-error').style.display = 'block';
-    document.getElementById('load-error').textContent = 'Firebase init error: ' + e.message;
-    return;
-  }
-
-  // Connection monitor
-  db.ref(".info/connected").on("value", function(snap) {
-    var el = document.getElementById("status");
-    if (snap.val() === true) {
-      el.className = "status-bar ok";
-      el.textContent = "✓ Connected";
-      el.style.display = "block";
-      setTimeout(function(){ el.style.display = "none"; }, 3000);
-    } else {
-      el.className = "status-bar err";
-      el.textContent = "Connecting...";
-      el.style.display = "block";
-    }
-  });
-
-  // Hide loading, show app
-  document.getElementById('loading-screen').style.display = 'none';
-  document.getElementById('s-mode').classList.add('active');
+function render(){
+  locked=false;secs=20;const q=questions[idx];
+  document.getElementById('progText').textContent=`${idx+1} / ${questions.length}`;
+  document.getElementById('progBar').style.width=((idx+1)/questions.length*100)+'%';
+  document.getElementById('qNum').textContent=`Question ${idx+1}`;
+  document.getElementById('qText').textContent=q.q;
+  const box=document.getElementById('opts');box.innerHTML='';
+  const t=document.getElementById('timer');t.textContent='20';t.classList.remove('warn');
+  q.a.forEach((a,i)=>{const b=document.createElement('button');b.className='option';b.textContent=a;b.onclick=()=>pick(i);box.appendChild(b)});
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{secs--;t.textContent=secs;if(secs<=5)t.classList.add('warn');if(secs<=0){clearInterval(timerInterval);timeout()}},1000);
+  updateStrip();
 }
 
-var QS = [
-  {q:"What phrase does the House of Justice use to describe the moment when someone is ready to embrace the Faith?",o:["The door of the heart is unlocked","The city of the heart is open","The soul has found its home","The spirit of faith is awakened"],a:1,s:"Section 1"},
-  {q:"In what year did the House of Justice first draw attention to this 'infinitely precious moment' in a spiritual journey?",o:["2018","2021","2023","2025"],a:1,s:"Section 1"},
-  {q:"According to the House of Justice, what two things remain to be learned about this precious moment?",o:["How to teach and how to deepen","How to discern receptivity and how to acknowledge when it has matured into faith","How to plan firesides and how to follow up","How to form study circles and how to sustain them"],a:1,s:"Section 1"},
-  {q:"How many youth and parents crossed the threshold at the San Diego camp?",o:["4 youth","5 youth and 2 parents","6 youth and 1 parent","8 youth"],a:2,s:"Section 2"},
-  {q:"What proportion of the non-enrolled camp participants does this represent?",o:["About a quarter","About a third","About half","Nearly all"],a:2,s:"Section 2"},
-  {q:"In the closing remarks, a Bahá'í was described as someone who wants to apply Bahá'u'lláh's teachings and sees them as a source of what?",o:["Personal salvation","Unity for all humanity","Individual enlightenment","Spiritual protection"],a:1,s:"Section 2"},
-  {q:"One hesitant youth ultimately enrolled after realizing that becoming a Bahá'í did NOT mean what?",o:["Leaving his friends behind","Giving up his hobbies","Abandoning his family's culture","Changing his daily routine"],a:2,s:"Section 2"},
-  {q:"What inspired one father to re-enroll after years of disengagement?",o:["A visit from an Auxiliary Board member","His daughter sharing what she learned in Book 1","Reading the December 31 message","Attending a devotional gathering"],a:1,s:"Section 2"},
-  {q:"According to the House of Justice, what are the enkindled souls building 'in the company of many others'?",o:["Centers of learning","Houses of Worship","Havens of peace","Networks of communities"],a:2,s:"Section 3"},
-  {q:"The House of Justice says there can be no greater joy than knowing one's life was spent in acute awareness of what?",o:["The oneness of humanity","The divine remedy","The power of prayer","The need for justice"],a:1,s:"Section 3"}
-];
-var COLORS=["#E85D3A","#2B8A6E","#3A6FD8"], LETTERS=["A","B","C","D"], ROUND=20;
-
-var G = { id:"", mode:"", numTeams:2, teams:[], scores:{}, qi:0, timer:ROUND, timerInt:null, pTeam:"", pSub:false, pLastState:"", pLastQi:-1 };
-
-function show(id) {
-  var all = document.querySelectorAll('.screen');
-  for (var i=0;i<all.length;i++) all[i].classList.remove('active');
-  document.getElementById(id).classList.add('active');
+function pick(i){
+  if(locked)return;locked=true;clearInterval(timerInterval);
+  const btns=document.querySelectorAll('.option');btns.forEach(b=>b.classList.add('locked'));
+  btns[questions[idx].c].classList.add('correct');
+  if(i===questions[idx].c){score+=secs+10;streak++;if(streak>bestStreak)bestStreak=streak}
+  else{btns[i].classList.add('wrong');streak=0}
+  updateStrip();setTimeout(next,1200);
 }
 
-function setMode(m) { G.mode=m; show(m==='host'?'s-host-setup':'s-player-join'); }
+function timeout(){locked=true;const btns=document.querySelectorAll('.option');btns.forEach(b=>b.classList.add('locked'));btns[questions[idx].c].classList.add('correct');streak=0;updateStrip();setTimeout(next,1200)}
+function next(){idx++;if(idx>=questions.length)return finish();render()}
+function updateStrip(){document.getElementById('scoreLive').textContent=score;document.getElementById('streakLive').textContent=bestStreak}
 
-function pickTeams(n) {
-  G.numTeams=n;
-  document.getElementById('btn-t2').classList.toggle('active',n===2);
-  document.getElementById('btn-t3').classList.toggle('active',n===3);
+async function finish(){
+  show('results');document.getElementById('finalScore').textContent=score;
+  const pct=score/(questions.length*30)*100;
+  const msgs=[[80,"Outstanding! A shining example of deep engagement with the reading."],[60,"Well done! You clearly absorbed the material tonight."],[40,"Good effort! A review of the passages would deepen your understanding."],[0,"Keep going! Every step in learning is valuable."]];
+  document.getElementById('finalMsg').textContent=msgs.find(m=>pct>=m[0])[1];
+  const scores=await saveScore(playerName,score);renderLb('resultsLb',scores,playerName);
 }
 
-// ═══════════════ HOST ═══════════════
-
-function hostStart() {
-  G.id = Math.random().toString(36).substr(2,6).toUpperCase();
-  G.teams = [];
-  for (var i=0;i<G.numTeams;i++) G.teams.push("Team "+(i+1));
-  G.scores = {};
-  G.teams.forEach(function(t){ G.scores[t]=0; });
-  G.qi = 0;
-
-  db.ref("games/"+G.id).set({p:"lobby",q:-1,t:G.teams,s:G.scores,a:{}}, function(err) {
-    if (err) { alert("Firebase error: "+err.message+"\n\nCheck your config and database rules (should be in test mode)."); return; }
-    document.getElementById('h-code').textContent = G.id;
-    var h="";
-    G.teams.forEach(function(t,i){
-      h+='<div class="team-card" style="border-color:'+COLORS[i]+'"><div class="team-dot" style="background:'+COLORS[i]+'"></div><span style="font-weight:600;font-size:16px">'+t+'</span></div>';
-    });
-    document.getElementById('h-lobby-teams').innerHTML=h;
-    show('s-host-lobby');
-
-    // Listen for answers
-    db.ref("games/"+G.id+"/a").on("value", function(snap) {
-      var ans=snap.val()||{};
-      for(var i=0;i<4;i++){ var el=document.getElementById('ht-'+i); if(el) el.innerHTML=""; }
-      var keys=Object.keys(ans);
-      for(var k=0;k<keys.length;k++){
-        var team=keys[k], v=ans[team];
-        var el=document.getElementById('ht-'+v.c);
-        var ci=G.teams.indexOf(team);
-        if(el&&ci>=0) el.innerHTML+='<span class="tag" style="background:'+COLORS[ci]+'">'+team+'</span>';
-      }
-    });
-  });
-}
-
-function hostNextQ() {
-  var qi=G.qi, q=QS[qi];
-  document.getElementById('hq-num').textContent="Q"+(qi+1)+"/"+QS.length;
-  G.timer=ROUND;
-  document.getElementById('hq-timer').textContent=ROUND+"s";
-  document.getElementById('hq-timer').classList.remove('timer-warn');
-  document.getElementById('hq-sec').textContent=q.s;
-  document.getElementById('hq-text').textContent=q.q;
-  var h="";
-  for(var i=0;i<q.o.length;i++){
-    h+='<div class="opt-card" id="ho-'+i+'"><span class="opt-letter">'+LETTERS[i]+'</span><span class="opt-text">'+q.o[i]+'</span><div class="team-tags" id="ht-'+i+'"></div></div>';
-  }
-  document.getElementById('hq-opts').innerHTML=h;
-  document.getElementById('hq-btns').innerHTML="";
-  show('s-host-q');
-
-  db.ref("games/"+G.id).update({p:"q",q:qi,a:{}}, function(err){
-    if(err) console.error("Firebase update error:",err);
-  });
-
-  if(G.timerInt) clearInterval(G.timerInt);
-  G.timerInt=setInterval(function(){
-    G.timer--;
-    var el=document.getElementById('hq-timer');
-    el.textContent=G.timer+"s";
-    if(G.timer<=5) el.classList.add('timer-warn');
-    if(G.timer<=0){clearInterval(G.timerInt);G.timerInt=null;hostReveal();}
-  },1000);
-}
-
-function hostReveal() {
-  if(G.timerInt){clearInterval(G.timerInt);G.timerInt=null;}
-  var q=QS[G.qi];
-  for(var i=0;i<q.o.length;i++) document.getElementById('ho-'+i).classList.add(i===q.a?'correct':'wrong');
-
-  db.ref("games/"+G.id+"/a").once("value",function(snap){
-    var ans=snap.val()||{}, winners=[], keys=Object.keys(ans);
-    for(var k=0;k<keys.length;k++){
-      if(ans[keys[k]].c===q.a) winners.push({team:keys[k],ts:ans[keys[k]].ts});
-    }
-    winners.sort(function(a,b){return a.ts-b.ts});
-    for(var w=0;w<winners.length;w++){
-      G.scores[winners[w].team]=(G.scores[winners[w].team]||0)+10+(w===0?5:0);
-    }
-    db.ref("games/"+G.id).update({p:"reveal",s:G.scores});
-
-    var sb='<div class="scoreboard">';
-    G.teams.forEach(function(t,i){
-      sb+='<div class="score-item"><div class="score-dot" style="background:'+COLORS[i]+'"></div><span style="font-weight:600;font-size:14px">'+t+'</span><span class="score-val">'+(G.scores[t]||0)+' pts</span></div>';
-    });
-    sb+='</div>';
-    var last=G.qi+1>=QS.length;
-    sb+='<button class="big-btn" onclick="'+(last?'hostFinal()':'G.qi++;hostNextQ()')+'">'+(last?'See Final Results':'Next Question ('+(G.qi+2)+'/'+QS.length+')')+'</button>';
-    document.getElementById('hq-btns').innerHTML=sb;
-  });
-}
-
-function hostFinal() {
-  db.ref("games/"+G.id).update({p:"final",s:G.scores});
-  var sorted=G.teams.slice().sort(function(a,b){return(G.scores[b]||0)-(G.scores[a]||0)});
-  var h="";
-  sorted.forEach(function(t,i){
-    var ci=G.teams.indexOf(t);
-    h+='<div class="pod-item" style="border-left:5px solid '+COLORS[ci]+'"><span class="pod-rank">#'+(i+1)+'</span><span class="pod-name">'+t+'</span><span class="pod-score">'+(G.scores[t]||0)+' pts</span></div>';
-  });
-  document.getElementById('h-pod').innerHTML=h;
-  show('s-host-final');
-}
-
-// ═══════════════ PLAYER ═══════════════
-
-function playerJoin() {
-  var code=document.getElementById('pj-code').value.toUpperCase().trim();
-  var team=document.getElementById('pj-team').value;
-  if(!code||!team){alert("Enter a game code and select your team.");return;}
-
-  G.id=code; G.pTeam=team; G.pLastState=""; G.pSub=false;
-  document.getElementById('pw-team').textContent=team;
-  show('s-player-wait');
-
-  var ref=db.ref("games/"+code);
-  ref.once("value",function(snap){
-    if(!snap.exists()){alert("Game '"+code+"' not found. Check the code.");show('s-player-join');return;}
-
-    // Listen for ALL changes
-    ref.on("value",function(snap){
-      var d=snap.val();
-      if(!d) return;
-      var key=d.p+"_"+d.q;
-      if(key===G.pLastState) return;
-      G.pLastState=key;
-
-      if(d.p==="lobby"){show('s-player-wait');return;}
-
-      if(d.p==="q"){
-        G.pSub=false;
-        var q=QS[d.q];
-        document.getElementById('pq-num').textContent="Q"+(d.q+1)+" · "+q.s;
-        document.getElementById('pq-text').textContent=q.q;
-        document.getElementById('pq-locked').style.display="none";
-        var h="";
-        for(var i=0;i<q.o.length;i++){
-          h+='<button class="pq-btn" id="pb-'+i+'" onclick="playerAnswer('+i+')"><span class="pq-letter">'+LETTERS[i]+'</span> '+q.o[i]+'</button>';
-        }
-        document.getElementById('pq-opts').innerHTML=h;
-        show('s-player-q');
-        return;
-      }
-
-      if(d.p==="reveal"){
-        var q=QS[d.q];
-        var my=d.a&&d.a[G.pTeam];
-        var ok=my&&my.c===q.a;
-        document.getElementById('pr-icon').textContent=ok?"✅":(my?"❌":"⏰");
-        document.getElementById('pr-text').textContent=ok?"Correct!":(my?"Answer: "+LETTERS[q.a]:"Time's up!");
-        show('s-player-result');
-        return;
-      }
-
-      if(d.p==="final"){
-        var ts=d.t||[],sc=d.s||{};
-        var sorted=ts.slice().sort(function(a,b){return(sc[b]||0)-(sc[a]||0)});
-        var rank=sorted.indexOf(G.pTeam)+1;
-        document.getElementById('pf-result').textContent=G.pTeam+": #"+rank+" with "+(sc[G.pTeam]||0)+" pts";
-        show('s-player-final');
-        return;
-      }
-    }, function(err){
-      var el=document.getElementById("status");
-      el.className="status-bar err";
-      el.textContent="Error: "+err.message;
-      el.style.display="block";
-    });
-
-  },function(err){
-    alert("Firebase error: "+err.message);
-    show('s-player-join');
-  });
-}
-
-function playerAnswer(choice) {
-  if(G.pSub) return;
-  G.pSub=true;
-  for(var i=0;i<4;i++){
-    var el=document.getElementById('pb-'+i);
-    if(!el) continue;
-    if(i===choice) el.classList.add('selected');
-    else el.classList.add('faded');
-  }
-  document.getElementById('pq-locked').style.display="block";
-
-  db.ref("games/"+G.id+"/a/"+G.pTeam).set({c:choice,ts:Date.now()},function(err){
-    if(err){
-      document.getElementById("status").className="status-bar err";
-      document.getElementById("status").textContent="Submit failed: "+err.message;
-      document.getElementById("status").style.display="block";
-    }
-  });
-}
+function retake(){startQuiz()}
+function backToJoin(){show('join')}
+async function showLeaderboard(){show('lbScreen');renderLb('fullLb',await loadScores(),'')}
+async function clearScores(){if(!confirm('Reset all scores? This cannot be undone.'))return;await resetScores();renderLb('fullLb',[],'');}
 </script>
 </body>
 </html>
