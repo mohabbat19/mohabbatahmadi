@@ -2,82 +2,73 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Feast of Jalál Quiz</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap');
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'EB Garamond', Georgia, serif; background: linear-gradient(160deg, #fdfaf6, #f0ebe3); min-height: 100vh; color: #1a1a2e; }
+  .screen { display: none; min-height: 100vh; padding: 24px; flex-direction: column; align-items: center; justify-content: center; }
+  .screen.active { display: flex; }
+  .big-btn { padding: 14px 40px; background: #E85D3A; color: #fff; border: none; border-radius: 12px; font-size: 17px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 16px; transition: all 0.2s; }
+  .big-btn:hover { background: #c9472a; }
+  .big-btn:disabled { opacity: 0.4; cursor: default; }
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 6px; color: #fff; font-size: 11px; font-weight: 600; margin: 2px; }
 
-  /* ─── Mode Select ─── */
-  .screen { display: none; min-height: 100vh; padding: 24px; }
-  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .mode-title { font-size: 36px; font-weight: 700; letter-spacing: -0.5px; }
+  /* Mode */
+  .mode-title { font-size: 36px; font-weight: 700; }
   .mode-sub { color: #888; margin: 8px 0 28px; font-size: 16px; }
   .mode-btns { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
-  .mode-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 28px 36px; border: 2px solid #e0d8ce; border-radius: 16px; background: #fff; cursor: pointer; font-family: inherit; min-width: 160px; transition: all 0.2s; }
-  .mode-btn:hover { border-color: #E85D3A; transform: translateY(-2px); }
-  .mode-btn .icon { font-size: 32px; }
-  .mode-btn .label { font-weight: 700; font-size: 18px; }
-  .mode-btn .hint { font-size: 13px; color: #888; }
+  .mode-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 28px 36px; border: 2px solid #e0d8ce; border-radius: 16px; background: #fff; cursor: pointer; font-family: inherit; min-width: 160px; }
+  .mode-btn:hover { border-color: #E85D3A; }
 
-  /* ─── Shared ─── */
-  .coral { color: #E85D3A; }
-  .teal { color: #2B8A6E; }
-  .big-btn { padding: 14px 40px; background: #E85D3A; color: #fff; border: none; border-radius: 12px; font-size: 17px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 16px; transition: all 0.2s; }
-  .big-btn:hover { background: #c9472a; transform: translateY(-1px); }
-  .big-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
-  .tag { display: inline-block; padding: 3px 10px; border-radius: 6px; color: #fff; font-size: 11px; font-weight: 600; }
-
-  /* ─── Host Lobby ─── */
+  /* Host setup */
   .lobby-card { text-align: center; max-width: 520px; width: 100%; }
   .star { font-size: 48px; margin-bottom: 8px; }
   .host-title { font-size: 40px; font-weight: 700; letter-spacing: -1px; }
   .host-subtitle { font-size: 14px; color: #E85D3A; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin: 4px 0 12px; }
   .host-desc { color: #666; font-size: 15px; line-height: 1.6; margin-bottom: 20px; }
-  .team-select { display: flex; gap: 12px; justify-content: center; margin-top: 8px; }
-  .team-opt { padding: 10px 24px; border: 2px solid #E85D3A; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 15px; font-family: inherit; background: transparent; color: #E85D3A; transition: all 0.2s; }
-  .team-opt.active { background: #E85D3A; color: #fff; }
   .small-label { font-size: 13px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 1px; margin-top: 24px; }
+  .team-select { display: flex; gap: 12px; justify-content: center; margin-top: 8px; }
+  .team-opt { padding: 10px 24px; border: 2px solid #E85D3A; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 15px; font-family: inherit; background: transparent; color: #E85D3A; }
+  .team-opt.active { background: #E85D3A; color: #fff; }
 
-  /* ─── Game ID Banner ─── */
+  /* Game ID */
   .gameid-banner { text-align: center; padding: 32px 24px; background: #1a1a2e; border-radius: 20px; color: #fff; width: 100%; max-width: 600px; }
   .gameid-label { font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.6); }
   .gameid-value { font-size: 56px; font-weight: 700; letter-spacing: 12px; font-family: monospace; margin-top: 8px; }
   .gameid-hint { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 12px; }
+  .gameid-url { font-size: 14px; color: rgba(255,255,255,0.7); margin-top: 8px; word-break: break-all; }
   .team-cards { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin: 32px 0; }
   .team-card { display: flex; align-items: center; gap: 10px; padding: 14px 24px; border: 2px solid; border-radius: 12px; background: #fff; }
   .team-dot { width: 14px; height: 14px; border-radius: 50%; }
-  .team-label { font-weight: 600; font-size: 16px; }
 
-  /* ─── Question ─── */
-  .host-game { min-height: 100vh; padding: 24px 32px; }
+  /* Question */
+  .host-game { justify-content: flex-start; align-items: stretch; }
   .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 8px; }
   .q-num { font-size: 15px; font-weight: 700; background: #e8e8e8; padding: 6px 14px; border-radius: 8px; }
   .timer-box { background: #fff; padding: 8px 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
   .timer-text { font-size: 28px; font-weight: 700; font-family: monospace; }
-  .timer-text.warn { color: #E85D3A; }
+  .timer-warn { color: #E85D3A !important; }
   .source-tag { font-size: 12px; color: #999; font-style: italic; }
   .q-box { background: #fff; padding: 28px 32px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
   .q-text { font-size: 22px; font-weight: 600; line-height: 1.5; }
   .opts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
-  .opt-card { display: flex; align-items: flex-start; gap: 12px; padding: 16px 20px; border: 2px solid #ddd; border-radius: 14px; background: #fff; transition: all 0.3s; position: relative; }
+  .opt-card { display: flex; align-items: flex-start; gap: 12px; padding: 16px 20px; border: 2px solid #ddd; border-radius: 14px; background: #fff; position: relative; transition: all 0.3s; }
   .opt-card.correct { border-color: #2B8A6E; background: rgba(43,138,110,0.08); box-shadow: 0 0 0 3px rgba(43,138,110,0.2); }
   .opt-card.wrong { border-color: #ccc; }
   .opt-letter { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; background: #e8e8e8; color: #666; flex-shrink: 0; }
   .opt-card.correct .opt-letter { background: #2B8A6E; color: #fff; }
   .opt-text { font-size: 16px; line-height: 1.5; }
-  .team-tags { position: absolute; bottom: 8px; right: 12px; display: flex; gap: 4px; }
+  .team-tags { position: absolute; bottom: 8px; right: 12px; display: flex; gap: 4px; flex-wrap: wrap; }
 
-  /* ─── Scoreboard ─── */
+  /* Scoreboard */
   .scoreboard { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin: 16px 0; }
   .score-item { display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
   .score-dot { width: 10px; height: 10px; border-radius: 50%; }
-  .score-name { font-weight: 600; font-size: 14px; }
   .score-val { font-weight: 700; font-size: 16px; color: #E85D3A; }
 
-  /* ─── Final ─── */
+  /* Final */
   .final { text-align: center; }
   .final-title { font-size: 36px; font-weight: 700; margin: 8px 0 24px; }
   .podium { max-width: 400px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
@@ -85,58 +76,57 @@
   .pod-rank { font-size: 20px; font-weight: 700; color: #999; width: 36px; }
   .pod-name { flex: 1; font-weight: 600; font-size: 18px; }
   .pod-score { font-weight: 700; font-size: 20px; color: #E85D3A; }
-  .closing-quote { text-align: center; font-style: italic; color: #555; max-width: 500px; margin: 32px auto 4px; line-height: 1.6; font-size: 15px; }
-  .closing-attr { text-align: center; font-size: 12px; color: #999; }
+  .closing-quote { font-style: italic; color: #555; max-width: 500px; margin: 32px auto 4px; line-height: 1.6; font-size: 15px; }
+  .closing-attr { font-size: 12px; color: #999; }
 
-  /* ─── Player ─── */
+  /* Player */
   .player-join { gap: 14px; }
-  .pj-title { font-size: 24px; font-weight: 700; }
-  .p-input { width: 100%; max-width: 280px; padding: 12px 16px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; font-family: inherit; background: #fff; }
+  .p-input { width: 100%; max-width: 280px; padding: 12px 16px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; font-family: inherit; background: #fff; -webkit-appearance: none; }
   .p-input:focus { outline: none; border-color: #E85D3A; }
   .player-wait { text-align: center; }
-  .wait-dot { width: 48px; height: 48px; border-radius: 50%; background: #E85D3A; margin: 0 auto 16px; animation: pulse 1.5s ease-in-out infinite; }
   @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.7; } }
-  .wait-text { font-size: 18px; color: #666; }
+  .wait-dot { width: 48px; height: 48px; border-radius: 50%; background: #E85D3A; margin: 0 auto 16px; animation: pulse 1.5s ease-in-out infinite; }
   .team-badge { font-size: 14px; font-weight: 700; color: #E85D3A; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 8px; }
-  .player-q { padding: 20px; justify-content: flex-start; align-items: stretch; }
+  .player-q { justify-content: flex-start; align-items: stretch; }
   .pq-num { font-size: 13px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
   .pq-text { font-size: 18px; font-weight: 600; line-height: 1.5; margin-bottom: 20px; }
   .pq-opts { display: flex; flex-direction: column; gap: 10px; }
-  .pq-btn { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border: 2px solid #ddd; border-radius: 12px; font-size: 15px; font-family: inherit; cursor: pointer; text-align: left; transition: all 0.2s; background: #fff; }
+  .pq-btn { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border: 2px solid #ddd; border-radius: 12px; font-size: 15px; font-family: inherit; cursor: pointer; text-align: left; background: #fff; transition: all 0.2s; }
   .pq-btn:hover { border-color: #E85D3A; }
   .pq-btn.selected { background: #2B8A6E; color: #fff; border-color: #2B8A6E; }
-  .pq-btn.faded { opacity: 0.4; }
-  .pq-letter { font-weight: 700; color: #E85D3A; font-size: 16px; flex-shrink: 0; }
   .pq-btn.selected .pq-letter { color: #fff; }
+  .pq-btn.faded { opacity: 0.4; pointer-events: none; }
+  .pq-letter { font-weight: 700; color: #E85D3A; font-size: 16px; flex-shrink: 0; }
   .locked-msg { text-align: center; color: #2B8A6E; font-weight: 600; margin-top: 12px; }
-  .result-icon { font-size: 48px; }
-  .result-text { font-size: 20px; font-weight: 600; margin: 8px 0; }
-  .result-wait { font-size: 14px; color: #888; }
-  .final-player { font-size: 20px; margin: 12px 0; }
+
+  /* Debug */
+  .debug { position: fixed; bottom: 4px; left: 4px; font-size: 10px; color: #ccc; z-index: 999; }
 </style>
 </head>
 <body>
 
-<!-- ═══ MODE SELECT ═══ -->
-<div id="screen-mode" class="screen active">
+<div class="debug" id="debug"></div>
+
+<!-- MODE SELECT -->
+<div id="s-mode" class="screen active">
   <h1 class="mode-title">Feast of Jalál Quiz</h1>
   <p class="mode-sub">Select your role</p>
   <div class="mode-btns">
     <button class="mode-btn" onclick="setMode('host')">
-      <span class="icon">📺</span>
-      <span class="label">Host</span>
-      <span class="hint">Project on screen</span>
+      <span style="font-size:32px">📺</span>
+      <span style="font-weight:700;font-size:18px">Host</span>
+      <span style="font-size:13px;color:#888">Project on screen</span>
     </button>
     <button class="mode-btn" onclick="setMode('player')">
-      <span class="icon">📱</span>
-      <span class="label">Player</span>
-      <span class="hint">Answer on phone</span>
+      <span style="font-size:32px">📱</span>
+      <span style="font-weight:700;font-size:18px">Player</span>
+      <span style="font-size:13px;color:#888">Answer on phone</span>
     </button>
   </div>
 </div>
 
-<!-- ═══ HOST: SETUP ═══ -->
-<div id="screen-host-setup" class="screen">
+<!-- HOST SETUP -->
+<div id="s-host-setup" class="screen">
   <div class="lobby-card">
     <div class="star">✦</div>
     <h1 class="host-title">Feast Quiz</h1>
@@ -144,27 +134,27 @@
     <p class="host-desc">Team quiz on the readings: Recognizing the Moment, Learning from San Diego, and The Kind of Person We Are Becoming</p>
     <p class="small-label">Number of Teams</p>
     <div class="team-select">
-      <button class="team-opt active" onclick="pickTeams(2)" id="t2">2 Teams</button>
-      <button class="team-opt" onclick="pickTeams(3)" id="t3">3 Teams</button>
+      <button class="team-opt active" id="btn-t2" onclick="pickTeams(2)">2 Teams</button>
+      <button class="team-opt" id="btn-t3" onclick="pickTeams(3)">3 Teams</button>
     </div>
     <br>
-    <button class="big-btn" onclick="startGame()">Start Game</button>
+    <button class="big-btn" onclick="hostStartGame()">Start Game</button>
   </div>
 </div>
 
-<!-- ═══ HOST: LOBBY ═══ -->
-<div id="screen-host-lobby" class="screen">
+<!-- HOST LOBBY -->
+<div id="s-host-lobby" class="screen">
   <div class="gameid-banner">
     <p class="gameid-label">Game Code</p>
-    <p class="gameid-value" id="display-code"></p>
-    <p class="gameid-hint">Team reps: go to this page on your phone, choose "Player", and enter this code</p>
+    <p class="gameid-value" id="h-code"></p>
+    <p class="gameid-hint">Team reps: open this page on your phone, choose "Player", enter this code</p>
   </div>
-  <div class="team-cards" id="lobby-teams"></div>
-  <button class="big-btn" onclick="beginQuestion(0)">Begin Question 1</button>
+  <div class="team-cards" id="h-lobby-teams"></div>
+  <button class="big-btn" onclick="hostBeginQ(0)">Begin Question 1</button>
 </div>
 
-<!-- ═══ HOST: QUESTION ═══ -->
-<div id="screen-host-q" class="screen host-game" style="justify-content: flex-start; align-items: stretch;">
+<!-- HOST QUESTION -->
+<div id="s-host-q" class="screen host-game">
   <div class="top-bar">
     <span class="q-num" id="hq-num"></span>
     <div class="timer-box"><span class="timer-text" id="hq-timer"></span></div>
@@ -172,70 +162,68 @@
   </div>
   <div class="q-box"><h2 class="q-text" id="hq-text"></h2></div>
   <div class="opts-grid" id="hq-opts"></div>
-  <div style="text-align:center; margin-top:20px;" id="hq-actions"></div>
+  <div style="text-align:center;margin-top:20px" id="hq-actions"></div>
 </div>
 
-<!-- ═══ HOST: FINAL ═══ -->
-<div id="screen-host-final" class="screen">
+<!-- HOST FINAL -->
+<div id="s-host-final" class="screen">
   <div class="final">
     <div class="star">🏆</div>
     <h1 class="final-title">Final Results</h1>
-    <div class="podium" id="final-podium"></div>
+    <div class="podium" id="h-podium"></div>
     <p class="closing-quote">"In every face they see a fellow seeker after truth... And in the company of many others, they are building havens of peace."</p>
     <p class="closing-attr">Universal House of Justice, 31 December 2025</p>
     <button class="big-btn" onclick="location.reload()">New Game</button>
   </div>
 </div>
 
-<!-- ═══ PLAYER: JOIN ═══ -->
-<div id="screen-player-join" class="screen player-join">
-  <h2 class="pj-title">Join Quiz</h2>
-  <input class="p-input" id="pj-code" placeholder="Game Code" maxlength="6" style="text-transform:uppercase;">
+<!-- PLAYER JOIN -->
+<div id="s-player-join" class="screen player-join">
+  <h2 style="font-size:24px;font-weight:700">Join Quiz</h2>
+  <input class="p-input" id="pj-code" placeholder="Game Code" maxlength="6" autocapitalize="characters" autocomplete="off">
   <select class="p-input" id="pj-team">
     <option value="">Select your team</option>
     <option value="Team 1">Team 1</option>
     <option value="Team 2">Team 2</option>
     <option value="Team 3">Team 3</option>
   </select>
-  <button class="big-btn" onclick="joinGame()" id="pj-btn">Join</button>
+  <button class="big-btn" onclick="playerJoin()">Join</button>
 </div>
 
-<!-- ═══ PLAYER: WAITING ═══ -->
-<div id="screen-player-wait" class="screen player-wait">
+<!-- PLAYER WAIT -->
+<div id="s-player-wait" class="screen player-wait">
   <div class="wait-dot"></div>
-  <p class="wait-text">Waiting for host to start...</p>
+  <p style="font-size:18px;color:#666">Waiting for host to start...</p>
   <p class="team-badge" id="pw-team"></p>
 </div>
 
-<!-- ═══ PLAYER: QUESTION ═══ -->
-<div id="screen-player-q" class="screen player-q">
+<!-- PLAYER QUESTION -->
+<div id="s-player-q" class="screen player-q">
   <p class="pq-num" id="pq-num"></p>
   <p class="pq-text" id="pq-text"></p>
   <div class="pq-opts" id="pq-opts"></div>
-  <p class="locked-msg" id="pq-locked" style="display:none;">Answer locked in!</p>
+  <p class="locked-msg" id="pq-locked" style="display:none">Answer locked in!</p>
 </div>
 
-<!-- ═══ PLAYER: RESULT ═══ -->
-<div id="screen-player-result" class="screen player-wait">
-  <p class="result-icon" id="pr-icon"></p>
-  <p class="result-text" id="pr-text"></p>
-  <p class="result-wait">Waiting for next question...</p>
+<!-- PLAYER RESULT -->
+<div id="s-player-result" class="screen player-wait">
+  <p style="font-size:48px" id="pr-icon"></p>
+  <p style="font-size:20px;font-weight:600;margin:8px 0" id="pr-text"></p>
+  <p style="font-size:14px;color:#888">Waiting for next question...</p>
 </div>
 
-<!-- ═══ PLAYER: FINAL ═══ -->
-<div id="screen-player-final" class="screen player-wait">
-  <h2 style="font-size:28px;">🏆 Game Over!</h2>
-  <p class="final-player" id="pf-result"></p>
+<!-- PLAYER FINAL -->
+<div id="s-player-final" class="screen player-wait">
+  <h2 style="font-size:28px">🏆 Game Over!</h2>
+  <p style="font-size:20px;margin:12px 0" id="pf-result"></p>
 </div>
 
-<!-- ═══ Firebase ═══ -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
 <script>
-// ╔══════════════════════════════════════════════════════╗
-// ║  PASTE YOUR FIREBASE CONFIG BELOW (see SETUP.md)    ║
-// ╚══════════════════════════════════════════════════════╝
+// ╔══════════════════════════════════════════════════════════╗
+// ║  PASTE YOUR FIREBASE CONFIG HERE                        ║
+// ╚══════════════════════════════════════════════════════════╝
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -245,250 +233,299 @@ const firebaseConfig = {
   messagingSenderId: "YOUR_SENDER_ID",
   appId: "YOUR_APP_ID"
 };
-// ╔══════════════════════════════════════════════════════╗
-// ║  DO NOT EDIT BELOW THIS LINE                        ║
-// ╚══════════════════════════════════════════════════════╝
+// ╔══════════════════════════════════════════════════════════╗
+// ║  DO NOT EDIT BELOW THIS LINE                            ║
+// ╚══════════════════════════════════════════════════════════╝
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const QUESTIONS = [
-  { q: "What phrase does the House of Justice use to describe the moment when someone is ready to embrace the Faith?", options: ["The door of the heart is unlocked", "The city of the heart is open", "The soul has found its home", "The spirit of faith is awakened"], answer: 1, section: "Section 1" },
-  { q: "In what year did the House of Justice first draw attention to this 'infinitely precious moment' in a spiritual journey?", options: ["2018", "2021", "2023", "2025"], answer: 1, section: "Section 1" },
-  { q: "According to the House of Justice, what two things remain to be learned about this precious moment?", options: ["How to teach and how to deepen", "How to discern receptivity and how to acknowledge when it has matured into faith", "How to plan firesides and how to follow up", "How to form study circles and how to sustain them"], answer: 1, section: "Section 1" },
-  { q: "How many youth and parents crossed the threshold at the San Diego camp?", options: ["4 youth", "5 youth and 2 parents", "6 youth and 1 parent", "8 youth"], answer: 2, section: "Section 2" },
-  { q: "What proportion of the non-enrolled camp participants does this represent?", options: ["About a quarter", "About a third", "About half", "Nearly all"], answer: 2, section: "Section 2" },
-  { q: "In the closing remarks, a Bahá'í was described as someone who wants to apply Bahá'u'lláh's teachings and sees them as a source of what?", options: ["Personal salvation", "Unity for all humanity", "Individual enlightenment", "Spiritual protection"], answer: 1, section: "Section 2" },
-  { q: "One hesitant youth ultimately enrolled after realizing that becoming a Bahá'í did NOT mean what?", options: ["Leaving his friends behind", "Giving up his hobbies", "Abandoning his family's culture", "Changing his daily routine"], answer: 2, section: "Section 2" },
-  { q: "What inspired one father to re-enroll after years of disengagement?", options: ["A visit from an Auxiliary Board member", "His daughter sharing what she learned in Book 1", "Reading the December 31 message", "Attending a devotional gathering"], answer: 1, section: "Section 2" },
-  { q: "According to the House of Justice, what are the enkindled souls building 'in the company of many others'?", options: ["Centers of learning", "Houses of Worship", "Havens of peace", "Networks of communities"], answer: 2, section: "Section 3" },
-  { q: "The House of Justice says there can be no greater joy than knowing one's life was spent in acute awareness of what?", options: ["The oneness of humanity", "The divine remedy", "The power of prayer", "The need for justice"], answer: 1, section: "Section 3" }
+const QS = [
+  { q: "What phrase does the House of Justice use to describe the moment when someone is ready to embrace the Faith?", o: ["The door of the heart is unlocked", "The city of the heart is open", "The soul has found its home", "The spirit of faith is awakened"], a: 1, s: "Section 1" },
+  { q: "In what year did the House of Justice first draw attention to this 'infinitely precious moment' in a spiritual journey?", o: ["2018", "2021", "2023", "2025"], a: 1, s: "Section 1" },
+  { q: "According to the House of Justice, what two things remain to be learned about this precious moment?", o: ["How to teach and how to deepen", "How to discern receptivity and how to acknowledge when it has matured into faith", "How to plan firesides and how to follow up", "How to form study circles and how to sustain them"], a: 1, s: "Section 1" },
+  { q: "How many youth and parents crossed the threshold at the San Diego camp?", o: ["4 youth", "5 youth and 2 parents", "6 youth and 1 parent", "8 youth"], a: 2, s: "Section 2" },
+  { q: "What proportion of the non-enrolled camp participants does this represent?", o: ["About a quarter", "About a third", "About half", "Nearly all"], a: 2, s: "Section 2" },
+  { q: "In the closing remarks, a Bahá'í was described as someone who wants to apply Bahá'u'lláh's teachings and sees them as a source of what?", o: ["Personal salvation", "Unity for all humanity", "Individual enlightenment", "Spiritual protection"], a: 1, s: "Section 2" },
+  { q: "One hesitant youth ultimately enrolled after realizing that becoming a Bahá'í did NOT mean what?", o: ["Leaving his friends behind", "Giving up his hobbies", "Abandoning his family's culture", "Changing his daily routine"], a: 2, s: "Section 2" },
+  { q: "What inspired one father to re-enroll after years of disengagement?", o: ["A visit from an Auxiliary Board member", "His daughter sharing what she learned in Book 1", "Reading the December 31 message", "Attending a devotional gathering"], a: 1, s: "Section 2" },
+  { q: "According to the House of Justice, what are the enkindled souls building 'in the company of many others'?", o: ["Centers of learning", "Houses of Worship", "Havens of peace", "Networks of communities"], a: 2, s: "Section 3" },
+  { q: "The House of Justice says there can be no greater joy than knowing one's life was spent in acute awareness of what?", o: ["The oneness of humanity", "The divine remedy", "The power of prayer", "The need for justice"], a: 1, s: "Section 3" }
 ];
 
 const COLORS = ["#E85D3A", "#2B8A6E", "#3A6FD8"];
 const LETTERS = ["A", "B", "C", "D"];
-const ROUND_TIME = 20;
+const TIMER = 20;
 
-let mode = null, gameId = "", numTeams = 2, teams = [], scores = {}, currentQ = 0;
-let timerInterval = null, timerVal = ROUND_TIME;
-let playerTeam = "", playerSubmitted = false, playerChoice = null, lastPlayerQ = -1;
-let gameRef = null;
+// State
+let gameId = "", numTeams = 2, teams = [], scores = {};
+let currentQ = 0, timerInt = null, timerVal = TIMER;
+let pTeam = "", pSubmitted = false, pChoice = null, pLastQ = -1;
+let gameRef = null, answersRef = null;
 
-// ─── Screen management ───
+function log(msg) { document.getElementById('debug').textContent = msg; console.log(msg); }
+
+// ─── Screen ───
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  log("screen: " + id);
 }
 
 function setMode(m) {
-  mode = m;
-  if (m === 'host') show('screen-host-setup');
-  else show('screen-player-join');
+  show(m === 'host' ? 's-host-setup' : 's-player-join');
 }
 
-// ─── Host ───
 function pickTeams(n) {
   numTeams = n;
-  document.getElementById('t2').classList.toggle('active', n === 2);
-  document.getElementById('t3').classList.toggle('active', n === 3);
+  document.getElementById('btn-t2').classList.toggle('active', n === 2);
+  document.getElementById('btn-t3').classList.toggle('active', n === 3);
 }
 
-function startGame() {
+// ═══════════════════════════════
+// HOST
+// ═══════════════════════════════
+function hostStartGame() {
   gameId = Math.random().toString(36).substring(2, 8).toUpperCase();
-  teams = Array.from({ length: numTeams }, (_, i) => "Team " + (i + 1));
+  teams = [];
+  for (let i = 0; i < numTeams; i++) teams.push("Team " + (i + 1));
   scores = {};
   teams.forEach(t => scores[t] = 0);
-  currentQ = 0;
 
   gameRef = db.ref("games/" + gameId);
-  gameRef.set({ phase: "lobby", currentQ: 0, teams, scores, answers: {} });
-
-  document.getElementById('display-code').textContent = gameId;
-  let html = "";
-  teams.forEach((t, i) => {
-    html += `<div class="team-card" style="border-color:${COLORS[i]}"><div class="team-dot" style="background:${COLORS[i]}"></div><span class="team-label">${t}</span></div>`;
+  gameRef.set({
+    phase: "lobby",
+    qIndex: -1,
+    teams: teams,
+    scores: scores,
+    answers: {}
   });
-  document.getElementById('lobby-teams').innerHTML = html;
-  show('screen-host-lobby');
+
+  document.getElementById('h-code').textContent = gameId;
+  let h = "";
+  teams.forEach((t, i) => {
+    h += '<div class="team-card" style="border-color:' + COLORS[i] + '"><div class="team-dot" style="background:' + COLORS[i] + '"></div><span style="font-weight:600;font-size:16px">' + t + '</span></div>';
+  });
+  document.getElementById('h-lobby-teams').innerHTML = h;
+  show('s-host-lobby');
 }
 
-function beginQuestion(qi) {
+function hostBeginQ(qi) {
   currentQ = qi;
-  timerVal = ROUND_TIME;
-  playerSubmitted = false;
+  timerVal = TIMER;
 
-  const q = QUESTIONS[qi];
-  document.getElementById('hq-num').textContent = `Q${qi + 1}/${QUESTIONS.length}`;
+  const q = QS[qi];
+  document.getElementById('hq-num').textContent = "Q" + (qi + 1) + "/" + QS.length;
   document.getElementById('hq-timer').textContent = timerVal + "s";
-  document.getElementById('hq-timer').classList.remove('warn');
-  document.getElementById('hq-section').textContent = q.section;
+  document.getElementById('hq-timer').classList.remove('timer-warn');
+  document.getElementById('hq-section').textContent = q.s;
   document.getElementById('hq-text').textContent = q.q;
 
-  let html = "";
-  q.options.forEach((opt, i) => {
-    html += `<div class="opt-card" id="hopt-${i}"><span class="opt-letter">${LETTERS[i]}</span><span class="opt-text">${opt}</span><div class="team-tags" id="htags-${i}"></div></div>`;
+  let h = "";
+  q.o.forEach((opt, i) => {
+    h += '<div class="opt-card" id="ho-' + i + '"><span class="opt-letter">' + LETTERS[i] + '</span><span class="opt-text">' + opt + '</span><div class="team-tags" id="ht-' + i + '"></div></div>';
   });
-  document.getElementById('hq-opts').innerHTML = html;
+  document.getElementById('hq-opts').innerHTML = h;
   document.getElementById('hq-actions').innerHTML = "";
+  show('s-host-q');
 
-  gameRef.update({ phase: "question", currentQ: qi, answers: {}, timerStart: Date.now() });
+  // Update Firebase: new question
+  gameRef.update({
+    phase: "question",
+    qIndex: qi,
+    answers: {}
+  });
 
-  // Listen for answers
-  gameRef.child("answers").on("value", snap => {
-    const a = snap.val() || {};
-    teams.forEach(t => {
-      // Clear old tags
-      q.options.forEach((_, i) => {
-        const el = document.getElementById('htags-' + i);
-        if (el) el.innerHTML = "";
-      });
+  // Listen for incoming answers
+  if (answersRef) answersRef.off();
+  answersRef = gameRef.child("answers");
+  answersRef.on("value", function(snap) {
+    const ans = snap.val() || {};
+    // Clear all tags
+    q.o.forEach((_, i) => {
+      const el = document.getElementById('ht-' + i);
+      if (el) el.innerHTML = "";
     });
-    Object.entries(a).forEach(([t, v]) => {
-      const el = document.getElementById('htags-' + v.choice);
-      const idx = teams.indexOf(t);
-      if (el) el.innerHTML += `<span class="tag" style="background:${COLORS[idx] || '#999'}">${t}</span> `;
+    // Show who answered what
+    Object.keys(ans).forEach(function(t) {
+      const v = ans[t];
+      const el = document.getElementById('ht-' + v.choice);
+      const ci = teams.indexOf(t);
+      if (el && ci >= 0) {
+        el.innerHTML += '<span class="tag" style="background:' + COLORS[ci] + '">' + t + '</span>';
+      }
     });
   });
 
-  show('screen-host-q');
-
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
+  // Start timer
+  if (timerInt) clearInterval(timerInt);
+  timerInt = setInterval(function() {
     timerVal--;
-    const el = document.getElementById('hq-timer');
+    var el = document.getElementById('hq-timer');
     el.textContent = timerVal + "s";
-    if (timerVal <= 5) el.classList.add('warn');
+    if (timerVal <= 5) el.classList.add('timer-warn');
     if (timerVal <= 0) {
-      clearInterval(timerInterval);
-      revealAnswer();
+      clearInterval(timerInt);
+      timerInt = null;
+      hostReveal();
     }
   }, 1000);
 }
 
-function revealAnswer() {
-  if (timerInterval) clearInterval(timerInterval);
-  gameRef.child("answers").off();
+function hostReveal() {
+  if (timerInt) { clearInterval(timerInt); timerInt = null; }
+  if (answersRef) { answersRef.off(); answersRef = null; }
 
-  const q = QUESTIONS[currentQ];
-  const correct = q.answer;
+  const q = QS[currentQ];
+  const correct = q.a;
 
   // Style options
-  q.options.forEach((_, i) => {
-    const el = document.getElementById('hopt-' + i);
+  q.o.forEach((_, i) => {
+    var el = document.getElementById('ho-' + i);
     el.classList.add(i === correct ? 'correct' : 'wrong');
   });
 
-  // Score
-  gameRef.child("answers").once("value", snap => {
-    const a = snap.val() || {};
-    const entries = Object.entries(a).filter(([, v]) => v.choice === correct).sort((x, y) => x[1].ts - y[1].ts);
-    entries.forEach(([team], idx) => {
-      scores[team] = (scores[team] || 0) + 10 + (idx === 0 ? 5 : 0);
+  // Calculate scores from Firebase
+  gameRef.child("answers").once("value", function(snap) {
+    const ans = snap.val() || {};
+    const winners = [];
+    Object.keys(ans).forEach(function(t) {
+      if (ans[t].choice === correct) winners.push({ team: t, ts: ans[t].ts });
+    });
+    winners.sort(function(a, b) { return a.ts - b.ts; });
+    winners.forEach(function(w, idx) {
+      scores[w.team] = (scores[w.team] || 0) + 10 + (idx === 0 ? 5 : 0);
     });
 
-    gameRef.update({ phase: "reveal", scores });
+    gameRef.update({ phase: "reveal", scores: scores });
 
-    // Show scoreboard + next button
-    let sb = '<div class="scoreboard">';
-    teams.forEach((t, i) => {
-      sb += `<div class="score-item"><div class="score-dot" style="background:${COLORS[i]}"></div><span class="score-name">${t}</span><span class="score-val">${scores[t] || 0} pts</span></div>`;
+    // Show scoreboard
+    var sb = '<div class="scoreboard">';
+    teams.forEach(function(t, i) {
+      sb += '<div class="score-item"><div class="score-dot" style="background:' + COLORS[i] + '"></div><span style="font-weight:600;font-size:14px">' + t + '</span><span class="score-val">' + (scores[t] || 0) + ' pts</span></div>';
     });
     sb += '</div>';
-    const isLast = currentQ + 1 >= QUESTIONS.length;
-    sb += `<button class="big-btn" onclick="${isLast ? 'showFinal()' : 'beginQuestion(' + (currentQ + 1) + ')'}">${isLast ? 'See Final Results' : 'Next Question (' + (currentQ + 2) + '/' + QUESTIONS.length + ')'}</button>`;
+
+    var isLast = currentQ + 1 >= QS.length;
+    if (isLast) {
+      sb += '<button class="big-btn" onclick="hostFinal()">See Final Results</button>';
+    } else {
+      sb += '<button class="big-btn" onclick="hostBeginQ(' + (currentQ + 1) + ')">Next Question (' + (currentQ + 2) + '/' + QS.length + ')</button>';
+    }
     document.getElementById('hq-actions').innerHTML = sb;
   });
 }
 
-function showFinal() {
-  gameRef.update({ phase: "final" });
-  const sorted = [...teams].sort((a, b) => (scores[b] || 0) - (scores[a] || 0));
-  let html = "";
-  sorted.forEach((t, i) => {
-    const idx = teams.indexOf(t);
-    html += `<div class="pod-item" style="border-left:5px solid ${COLORS[idx]}"><span class="pod-rank">#${i + 1}</span><span class="pod-name">${t}</span><span class="pod-score">${scores[t] || 0} pts</span></div>`;
+function hostFinal() {
+  gameRef.update({ phase: "final", scores: scores });
+  var sorted = teams.slice().sort(function(a, b) { return (scores[b] || 0) - (scores[a] || 0); });
+  var h = "";
+  sorted.forEach(function(t, i) {
+    var ci = teams.indexOf(t);
+    h += '<div class="pod-item" style="border-left:5px solid ' + COLORS[ci] + '"><span class="pod-rank">#' + (i + 1) + '</span><span class="pod-name">' + t + '</span><span class="pod-score">' + (scores[t] || 0) + ' pts</span></div>';
   });
-  document.getElementById('final-podium').innerHTML = html;
-  show('screen-host-final');
+  document.getElementById('h-podium').innerHTML = h;
+  show('s-host-final');
 }
 
-// ─── Player ───
-function joinGame() {
-  const code = document.getElementById('pj-code').value.toUpperCase().trim();
-  const team = document.getElementById('pj-team').value;
-  if (!code || !team) return;
+// ═══════════════════════════════
+// PLAYER
+// ═══════════════════════════════
+function playerJoin() {
+  var code = document.getElementById('pj-code').value.toUpperCase().trim();
+  var team = document.getElementById('pj-team').value;
+  if (!code || !team) { alert("Enter a game code and select your team."); return; }
+
   gameId = code;
-  playerTeam = team;
-  gameRef = db.ref("games/" + gameId);
+  pTeam = team;
+  pLastQ = -1;
+  pSubmitted = false;
 
   document.getElementById('pw-team').textContent = team;
-  show('screen-player-wait');
+  show('s-player-wait');
+  log("Joining game: " + code + " as " + team);
 
-  // Listen for game state
-  gameRef.on("value", snap => {
-    const s = snap.val();
-    if (!s) return;
+  gameRef = db.ref("games/" + gameId);
 
-    if (s.phase === "lobby") {
-      show('screen-player-wait');
+  // Main listener: react to ALL state changes
+  gameRef.on("value", function(snap) {
+    var s = snap.val();
+    if (!s) { log("No game data found"); return; }
+
+    var phase = s.phase;
+    var qi = s.qIndex;
+    log("phase=" + phase + " qi=" + qi + " pLastQ=" + pLastQ);
+
+    if (phase === "lobby") {
+      show('s-player-wait');
+      return;
     }
 
-    if (s.phase === "question") {
-      if (s.currentQ !== lastPlayerQ) {
-        lastPlayerQ = s.currentQ;
-        playerSubmitted = false;
-        playerChoice = null;
-        showPlayerQuestion(s.currentQ);
+    if (phase === "question") {
+      // New question?
+      if (qi !== pLastQ) {
+        pLastQ = qi;
+        pSubmitted = false;
+        pChoice = null;
+        playerShowQ(qi);
       }
+      // If already submitted, stay on question screen (don't re-render)
+      return;
     }
 
-    if (s.phase === "reveal") {
-      const q = QUESTIONS[s.currentQ];
-      const myAnswer = s.answers && s.answers[playerTeam];
-      const isCorrect = myAnswer && myAnswer.choice === q.answer;
-      document.getElementById('pr-icon').textContent = isCorrect ? "✅" : (myAnswer ? "❌" : "⏰");
-      document.getElementById('pr-text').textContent = isCorrect ? "Correct!" : (myAnswer ? "Answer: " + LETTERS[q.answer] : "Time's up!");
-      show('screen-player-result');
+    if (phase === "reveal") {
+      var q = QS[s.qIndex];
+      var myAns = s.answers && s.answers[pTeam];
+      var isCorrect = myAns && myAns.choice === q.a;
+      document.getElementById('pr-icon').textContent = isCorrect ? "✅" : (myAns ? "❌" : "⏰");
+      document.getElementById('pr-text').textContent = isCorrect ? "Correct!" : (myAns ? "Answer: " + LETTERS[q.a] : "Time's up!");
+      show('s-player-result');
+      return;
     }
 
-    if (s.phase === "final") {
-      const sorted = [...(s.teams || [])].sort((a, b) => (s.scores[b] || 0) - (s.scores[a] || 0));
-      const rank = sorted.indexOf(playerTeam) + 1;
-      document.getElementById('pf-result').textContent = `${playerTeam}: #${rank} with ${(s.scores && s.scores[playerTeam]) || 0} pts`;
-      show('screen-player-final');
+    if (phase === "final") {
+      var ts = s.teams || [];
+      var sc = s.scores || {};
+      var sorted = ts.slice().sort(function(a, b) { return (sc[b] || 0) - (sc[a] || 0); });
+      var rank = sorted.indexOf(pTeam) + 1;
+      document.getElementById('pf-result').textContent = pTeam + ": #" + rank + " with " + (sc[pTeam] || 0) + " pts";
+      show('s-player-final');
+      return;
     }
   });
 }
 
-function showPlayerQuestion(qi) {
-  const q = QUESTIONS[qi];
-  document.getElementById('pq-num').textContent = `Q${qi + 1} · ${q.section}`;
+function playerShowQ(qi) {
+  var q = QS[qi];
+  document.getElementById('pq-num').textContent = "Q" + (qi + 1) + " · " + q.s;
   document.getElementById('pq-text').textContent = q.q;
-  document.getElementById('pq-locked').style.display = 'none';
+  document.getElementById('pq-locked').style.display = "none";
 
-  let html = "";
-  q.options.forEach((opt, i) => {
-    html += `<button class="pq-btn" id="pbtn-${i}" onclick="submitPlayerAnswer(${i})"><span class="pq-letter">${LETTERS[i]}</span> ${opt}</button>`;
+  var h = "";
+  q.o.forEach(function(opt, i) {
+    h += '<button class="pq-btn" id="pb-' + i + '" onclick="playerAnswer(' + i + ')"><span class="pq-letter">' + LETTERS[i] + '</span> ' + opt + '</button>';
   });
-  document.getElementById('pq-opts').innerHTML = html;
-  show('screen-player-q');
+  document.getElementById('pq-opts').innerHTML = h;
+  show('s-player-q');
 }
 
-function submitPlayerAnswer(choice) {
-  if (playerSubmitted) return;
-  playerSubmitted = true;
-  playerChoice = choice;
+function playerAnswer(choice) {
+  if (pSubmitted) return;
+  pSubmitted = true;
+  pChoice = choice;
 
-  QUESTIONS[0].options.forEach((_, i) => {
-    const el = document.getElementById('pbtn-' + i);
+  // Style buttons
+  QS[0].o.forEach(function(_, i) {
+    var el = document.getElementById('pb-' + i);
     if (!el) return;
-    if (i === choice) { el.classList.add('selected'); }
-    else { el.classList.add('faded'); }
-    el.disabled = true;
+    if (i === choice) el.classList.add('selected');
+    else el.classList.add('faded');
   });
-  document.getElementById('pq-locked').style.display = 'block';
+  document.getElementById('pq-locked').style.display = "block";
 
-  gameRef.child("answers/" + playerTeam).set({ choice, ts: Date.now() });
+  // Write to Firebase
+  gameRef.child("answers/" + pTeam).set({ choice: choice, ts: Date.now() });
+  log("Submitted answer: " + LETTERS[choice]);
 }
 </script>
 </body>
