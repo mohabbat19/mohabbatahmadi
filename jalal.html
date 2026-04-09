@@ -1,0 +1,592 @@
+import { useState, useEffect, useRef } from "react";
+
+const QUESTIONS = [
+  {
+    q: "What phrase does the House of Justice use to describe the moment when someone is ready to embrace the Faith?",
+    options: [
+      "The door of the heart is unlocked",
+      "The city of the heart is open",
+      "The soul has found its home",
+      "The spirit of faith is awakened"
+    ],
+    answer: 1,
+    section: "Section 1"
+  },
+  {
+    q: "In what year did the House of Justice first draw attention to this 'infinitely precious moment' in a spiritual journey?",
+    options: ["2018", "2021", "2023", "2025"],
+    answer: 1,
+    section: "Section 1"
+  },
+  {
+    q: "According to the House of Justice, what two things remain to be learned about this precious moment?",
+    options: [
+      "How to teach and how to deepen",
+      "How to discern receptivity and how to acknowledge when it has matured into faith",
+      "How to plan firesides and how to follow up",
+      "How to form study circles and how to sustain them"
+    ],
+    answer: 1,
+    section: "Section 1"
+  },
+  {
+    q: "How many youth and parents crossed the threshold at the San Diego camp?",
+    options: ["4 youth", "5 youth and 2 parents", "6 youth and 1 parent", "8 youth"],
+    answer: 2,
+    section: "Section 2"
+  },
+  {
+    q: "What proportion of the non-enrolled camp participants does this represent?",
+    options: ["About a quarter", "About a third", "About half", "Nearly all"],
+    answer: 2,
+    section: "Section 2"
+  },
+  {
+    q: "In the closing remarks, a Bahá'í was described as someone who wants to apply Bahá'u'lláh's teachings and sees them as a source of what?",
+    options: [
+      "Personal salvation",
+      "Unity for all humanity",
+      "Individual enlightenment",
+      "Spiritual protection"
+    ],
+    answer: 1,
+    section: "Section 2"
+  },
+  {
+    q: "One hesitant youth ultimately enrolled after realizing that becoming a Bahá'í did NOT mean what?",
+    options: [
+      "Leaving his friends behind",
+      "Giving up his hobbies",
+      "Abandoning his family's culture",
+      "Changing his daily routine"
+    ],
+    answer: 2,
+    section: "Section 2"
+  },
+  {
+    q: "What inspired one father to re-enroll after years of disengagement?",
+    options: [
+      "A visit from an Auxiliary Board member",
+      "His daughter sharing what she learned in Book 1",
+      "Reading the December 31 message",
+      "Attending a devotional gathering"
+    ],
+    answer: 1,
+    section: "Section 2"
+  },
+  {
+    q: "According to the House of Justice, what are the enkindled souls building 'in the company of many others'?",
+    options: [
+      "Centers of learning",
+      "Houses of Worship",
+      "Havens of peace",
+      "Networks of communities"
+    ],
+    answer: 2,
+    section: "Section 3"
+  },
+  {
+    q: "The House of Justice says there can be no greater joy than knowing one's life was spent in acute awareness of what?",
+    options: [
+      "The oneness of humanity",
+      "The divine remedy",
+      "The power of prayer",
+      "The need for justice"
+    ],
+    answer: 1,
+    section: "Section 3"
+  }
+];
+
+const TEAM_COLORS = ["#E85D3A", "#2B8A6E", "#3A6FD8"];
+const TEAM_NAMES_DEFAULT = ["Team 1", "Team 2", "Team 3"];
+const OPTION_LETTERS = ["A", "B", "C", "D"];
+const ROUND_TIME = 20;
+
+function generateGameId() {
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
+}
+
+function HostView() {
+  const [gameId, setGameId] = useState("");
+  const [phase, setPhase] = useState("lobby");
+  const [currentQ, setCurrentQ] = useState(0);
+  const [timer, setTimer] = useState(ROUND_TIME);
+  const [timerActive, setTimerActive] = useState(false);
+  const [teams, setTeams] = useState([]);
+  const [answers, setAnswers] = useState({});
+  const [scores, setScores] = useState({});
+  const [numTeams, setNumTeams] = useState(3);
+  const timerRef = useRef(null);
+  const pollRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+  }, []);
+
+  const startGame = async () => {
+    const id = generateGameId();
+    setGameId(id);
+    const teamList = TEAM_NAMES_DEFAULT.slice(0, numTeams);
+    setTeams(teamList);
+    const initialScores = {};
+    teamList.forEach(t => { initialScores[t] = 0; });
+    setScores(initialScores);
+    const state = { phase: "lobby", currentQ: 0, teams: teamList, scores: initialScores, answers: {}, timerStart: null };
+    try { await window.storage.set(`fq-${id}-state`, JSON.stringify(state), true); } catch(e) { console.error(e); }
+    setPhase("lobby");
+  };
+
+  const pushState = async (updates) => {
+    try {
+      const res = await window.storage.get(`fq-${gameId}-state`, true);
+      const state = res ? JSON.parse(res.value) : {};
+      const next = { ...state, ...updates };
+      await window.storage.set(`fq-${gameId}-state`, JSON.stringify(next), true);
+    } catch(e) { console.error(e); }
+  };
+
+  const startQuestion = async (qIdx) => {
+    const qi = qIdx !== undefined ? qIdx : currentQ;
+    setCurrentQ(qi);
+    setPhase("question");
+    setTimer(ROUND_TIME);
+    setTimerActive(true);
+    setAnswers({});
+    await pushState({ phase: "question", currentQ: qi, answers: {}, timerStart: Date.now() });
+
+    if (pollRef.current) clearInterval(pollRef.current);
+    pollRef.current = setInterval(async () => {
+      try {
+        const res = await window.storage.get(`fq-${gameId}-state`, true);
+        if (res) {
+          const s = JSON.parse(res.value);
+          if (s.answers) setAnswers(s.answers);
+        }
+      } catch(e) {}
+    }, 1000);
+
+    if (timerRef.current) clearInterval(timerRef.current);
+    let t = ROUND_TIME;
+    timerRef.current = setInterval(() => {
+      t--;
+      setTimer(t);
+      if (t <= 0) {
+        clearInterval(timerRef.current);
+        setTimerActive(false);
+        revealAnswer(qi);
+      }
+    }, 1000);
+  };
+
+  const revealAnswer = async (qi) => {
+    const qIdx = qi !== undefined ? qi : currentQ;
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (pollRef.current) clearInterval(pollRef.current);
+    setTimerActive(false);
+    setPhase("reveal");
+
+    try {
+      const res = await window.storage.get(`fq-${gameId}-state`, true);
+      if (res) {
+        const s = JSON.parse(res.value);
+        const a = s.answers || {};
+        setAnswers(a);
+        const correct = QUESTIONS[qIdx].answer;
+        const newScores = { ...scores };
+        const entries = Object.entries(a).filter(([, v]) => v.choice === correct).sort((x, y) => x[1].ts - y[1].ts);
+        entries.forEach(([team], idx) => {
+          newScores[team] = (newScores[team] || 0) + 10 + (idx === 0 ? 5 : 0);
+        });
+        setScores(newScores);
+        await pushState({ phase: "reveal", scores: newScores });
+      }
+    } catch(e) { console.error(e); }
+  };
+
+  const nextQuestion = () => {
+    if (currentQ + 1 >= QUESTIONS.length) {
+      setPhase("final");
+      pushState({ phase: "final" });
+    } else {
+      startQuestion(currentQ + 1);
+    }
+  };
+
+  const resetGame = () => {
+    setPhase("lobby");
+    setCurrentQ(0);
+    setGameId("");
+    setScores({});
+    setAnswers({});
+  };
+
+  if (!gameId) {
+    return (
+      <div style={styles.hostLobby}>
+        <div style={styles.hostLobbyCard}>
+          <div style={styles.starBurst}>✦</div>
+          <h1 style={styles.hostTitle}>Feast Quiz</h1>
+          <p style={styles.hostSubtitle}>Feast of Jalál</p>
+          <p style={styles.hostDesc}>Team quiz on the readings: Recognizing the Moment, Learning from San Diego, and The Kind of Person We Are Becoming</p>
+          <div style={{ margin: "24px 0" }}>
+            <label style={styles.label}>Number of Teams</label>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 8 }}>
+              {[2, 3].map(n => (
+                <button key={n} onClick={() => setNumTeams(n)}
+                  style={{ ...styles.teamBtn, background: numTeams === n ? "#E85D3A" : "transparent", color: numTeams === n ? "#fff" : "#E85D3A" }}>
+                  {n} Teams
+                </button>
+              ))}
+            </div>
+          </div>
+          <button onClick={startGame} style={styles.bigBtn}>Start Game</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === "lobby") {
+    return (
+      <div style={styles.hostScreen}>
+        <div style={styles.gameIdBanner}>
+          <p style={styles.gameIdLabel}>Game Code</p>
+          <p style={styles.gameIdValue}>{gameId}</p>
+          <p style={styles.gameIdHint}>Team reps: open this page on your phone, choose "Player", and enter this code</p>
+        </div>
+        <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", margin: "32px 0" }}>
+          {teams.map((t, i) => (
+            <div key={t} style={{ ...styles.teamCard, borderColor: TEAM_COLORS[i] }}>
+              <div style={{ ...styles.teamDot, background: TEAM_COLORS[i] }} />
+              <span style={styles.teamLabel}>{t}</span>
+            </div>
+          ))}
+        </div>
+        <button onClick={() => startQuestion(0)} style={styles.bigBtn}>Begin Question 1</button>
+      </div>
+    );
+  }
+
+  if (phase === "question" || phase === "reveal") {
+    const question = QUESTIONS[currentQ];
+    const correct = question.answer;
+    return (
+      <div style={styles.hostScreen}>
+        <div style={styles.topBar}>
+          <span style={styles.qNum}>Q{currentQ + 1}/{QUESTIONS.length}</span>
+          <div style={styles.timerBox}>
+            <span style={{ ...styles.timerText, color: timer <= 5 ? "#E85D3A" : "#1a1a2e" }}>{phase === "reveal" ? "\u2014" : `${timer}s`}</span>
+          </div>
+          <span style={styles.sourceTag}>{question.section}</span>
+        </div>
+
+        <div style={styles.questionBox}>
+          <h2 style={styles.questionText}>{question.q}</h2>
+        </div>
+
+        <div style={styles.optionsGrid}>
+          {question.options.map((opt, i) => {
+            const isCorrect = i === correct;
+            const showResult = phase === "reveal";
+            const answeredTeams = Object.entries(answers).filter(([, v]) => v.choice === i).map(([t]) => t);
+            return (
+              <div key={i} style={{
+                ...styles.optionCard,
+                borderColor: showResult ? (isCorrect ? "#2B8A6E" : "#ccc") : "#ddd",
+                background: showResult && isCorrect ? "rgba(43,138,110,0.08)" : "#fff",
+                boxShadow: showResult && isCorrect ? "0 0 0 3px rgba(43,138,110,0.2)" : "none"
+              }}>
+                <span style={{ ...styles.optLetter, background: showResult && isCorrect ? "#2B8A6E" : "#e8e8e8", color: showResult && isCorrect ? "#fff" : "#666" }}>
+                  {OPTION_LETTERS[i]}
+                </span>
+                <span style={styles.optText}>{opt}</span>
+                {showResult && answeredTeams.length > 0 && (
+                  <div style={styles.teamTags}>
+                    {answeredTeams.map(t => {
+                      const idx = teams.indexOf(t);
+                      return <span key={t} style={{ ...styles.teamTag, background: TEAM_COLORS[idx] || "#999" }}>{t}</span>;
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {phase === "question" && !timerActive && (
+          <button onClick={() => revealAnswer()} style={styles.bigBtn}>Reveal Answer</button>
+        )}
+
+        {phase === "reveal" && (
+          <div style={{ textAlign: "center", marginTop: 20 }}>
+            <div style={styles.scoreBoard}>
+              {teams.map((t, i) => (
+                <div key={t} style={styles.scoreItem}>
+                  <div style={{ ...styles.scoreDot, background: TEAM_COLORS[i] }} />
+                  <span style={styles.scoreName}>{t}</span>
+                  <span style={styles.scoreVal}>{scores[t] || 0} pts</span>
+                </div>
+              ))}
+            </div>
+            <button onClick={nextQuestion} style={styles.bigBtn}>
+              {currentQ + 1 >= QUESTIONS.length ? "See Final Results" : `Next Question (${currentQ + 2}/${QUESTIONS.length})`}
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (phase === "final") {
+    const sorted = [...teams].sort((a, b) => (scores[b] || 0) - (scores[a] || 0));
+    return (
+      <div style={styles.hostScreen}>
+        <div style={{ textAlign: "center" }}>
+          <div style={styles.starBurst}>🏆</div>
+          <h1 style={styles.finalTitle}>Final Results</h1>
+          <div style={styles.podium}>
+            {sorted.map((t, i) => {
+              const idx = teams.indexOf(t);
+              return (
+                <div key={t} style={{ ...styles.podiumItem, borderLeft: `5px solid ${TEAM_COLORS[idx]}` }}>
+                  <span style={styles.rank}>#{i + 1}</span>
+                  <span style={styles.podName}>{t}</span>
+                  <span style={styles.podScore}>{scores[t] || 0} pts</span>
+                </div>
+              );
+            })}
+          </div>
+          <p style={styles.closingQuote}>
+            "In every face they see a fellow seeker after truth... And in the company of many others, they are building havens of peace."
+          </p>
+          <p style={styles.closingAttr}>Universal House of Justice, 31 December 2025</p>
+          <button onClick={resetGame} style={{ ...styles.bigBtn, marginTop: 24 }}>New Game</button>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+function PlayerView() {
+  const [gameId, setGameId] = useState("");
+  const [teamName, setTeamName] = useState("");
+  const [joined, setJoined] = useState(false);
+  const [gameState, setGameState] = useState(null);
+  const [selectedChoice, setSelectedChoice] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [inputCode, setInputCode] = useState("");
+  const pollRef = useRef(null);
+  const lastQ = useRef(-1);
+
+  const joinGame = async () => {
+    const code = inputCode.toUpperCase().trim();
+    if (!code || !teamName) return;
+    setGameId(code);
+    setJoined(true);
+  };
+
+  useEffect(() => {
+    if (!joined || !gameId) return;
+    const poll = async () => {
+      try {
+        const res = await window.storage.get(`fq-${gameId}-state`, true);
+        if (res) {
+          const s = JSON.parse(res.value);
+          setGameState(s);
+          if (s.currentQ !== lastQ.current) {
+            lastQ.current = s.currentQ;
+            setSelectedChoice(null);
+            setSubmitted(false);
+          }
+        }
+      } catch(e) {}
+    };
+    poll();
+    pollRef.current = setInterval(poll, 1500);
+    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+  }, [joined, gameId]);
+
+  const submitAnswer = async (choice) => {
+    if (submitted) return;
+    setSelectedChoice(choice);
+    setSubmitted(true);
+    try {
+      const res = await window.storage.get(`fq-${gameId}-state`, true);
+      if (res) {
+        const s = JSON.parse(res.value);
+        s.answers = s.answers || {};
+        s.answers[teamName] = { choice, ts: Date.now() };
+        await window.storage.set(`fq-${gameId}-state`, JSON.stringify(s), true);
+      }
+    } catch(e) { console.error(e); }
+  };
+
+  if (!joined) {
+    return (
+      <div style={styles.playerJoin}>
+        <h2 style={styles.pjTitle}>Join Quiz</h2>
+        <input placeholder="Game Code" value={inputCode} onChange={e => setInputCode(e.target.value)}
+          style={styles.input} maxLength={6} />
+        <select value={teamName} onChange={e => setTeamName(e.target.value)} style={styles.input}>
+          <option value="">Select your team</option>
+          {TEAM_NAMES_DEFAULT.map(t => <option key={t} value={t}>{t}</option>)}
+        </select>
+        <button onClick={joinGame} disabled={!inputCode || !teamName} style={{ ...styles.bigBtn, opacity: (!inputCode || !teamName) ? 0.4 : 1 }}>
+          Join
+        </button>
+      </div>
+    );
+  }
+
+  if (!gameState || gameState.phase === "lobby") {
+    return (
+      <div style={styles.playerWait}>
+        <div style={{ width: 48, height: 48, borderRadius: "50%", background: "#E85D3A", marginBottom: 16 }} />
+        <p style={styles.waitText}>Waiting for host to start...</p>
+        <p style={styles.teamBadge}>{teamName}</p>
+      </div>
+    );
+  }
+
+  if (gameState.phase === "final") {
+    const sorted = [...(gameState.teams || [])].sort((a, b) => (gameState.scores[b] || 0) - (gameState.scores[a] || 0));
+    const myRank = sorted.indexOf(teamName) + 1;
+    return (
+      <div style={styles.playerWait}>
+        <h2 style={{ fontSize: 28, margin: 0 }}>🏆 Game Over!</h2>
+        <p style={{ fontSize: 20, margin: "12px 0" }}>{teamName}: #{myRank} with {gameState.scores[teamName] || 0} pts</p>
+      </div>
+    );
+  }
+
+  if (gameState.phase === "reveal") {
+    const q = QUESTIONS[gameState.currentQ];
+    const myAnswer = gameState.answers?.[teamName];
+    const isCorrect = myAnswer?.choice === q.answer;
+    return (
+      <div style={styles.playerWait}>
+        <p style={{ fontSize: 48, margin: 0 }}>{isCorrect ? "✅" : myAnswer ? "❌" : "⏰"}</p>
+        <p style={{ fontSize: 20, fontWeight: 600, margin: "8px 0" }}>
+          {isCorrect ? "Correct!" : myAnswer ? `Answer: ${OPTION_LETTERS[q.answer]}` : "Time's up!"}
+        </p>
+        <p style={{ fontSize: 14, color: "#888" }}>Waiting for next question...</p>
+      </div>
+    );
+  }
+
+  const question = QUESTIONS[gameState.currentQ];
+  return (
+    <div style={styles.playerQ}>
+      <p style={styles.pqNum}>Q{gameState.currentQ + 1} · {question.section}</p>
+      <p style={styles.pqText}>{question.q}</p>
+      <div style={styles.pqOptions}>
+        {question.options.map((opt, i) => (
+          <button key={i} onClick={() => submitAnswer(i)} disabled={submitted}
+            style={{
+              ...styles.pqBtn,
+              background: submitted && selectedChoice === i ? "#2B8A6E" : "#fff",
+              color: submitted && selectedChoice === i ? "#fff" : "#1a1a2e",
+              opacity: submitted && selectedChoice !== i ? 0.4 : 1
+            }}>
+            <span style={styles.pqLetter}>{OPTION_LETTERS[i]}</span> {opt}
+          </button>
+        ))}
+      </div>
+      {submitted && <p style={{ textAlign: "center", color: "#2B8A6E", fontWeight: 600, marginTop: 12 }}>Answer locked in!</p>}
+    </div>
+  );
+}
+
+export default function App() {
+  const [mode, setMode] = useState(null);
+
+  if (!mode) {
+    return (
+      <div style={styles.modeSelect}>
+        <h1 style={styles.modeTitle}>Feast of Jalál Quiz</h1>
+        <p style={styles.modeDesc}>Select your role</p>
+        <div style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center" }}>
+          <button onClick={() => setMode("host")} style={styles.modeBtn}>
+            <span style={{ fontSize: 32 }}>📺</span>
+            <span style={{ fontWeight: 700, fontSize: 18 }}>Host</span>
+            <span style={{ fontSize: 13, color: "#888" }}>Project on screen</span>
+          </button>
+          <button onClick={() => setMode("player")} style={styles.modeBtn}>
+            <span style={{ fontSize: 32 }}>📱</span>
+            <span style={{ fontWeight: 700, fontSize: 18 }}>Player</span>
+            <span style={{ fontSize: 13, color: "#888" }}>Answer on phone</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return mode === "host" ? <HostView /> : <PlayerView />;
+}
+
+const styles = {
+  modeSelect: { minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Georgia', serif", padding: 24, background: "linear-gradient(160deg, #fdfaf6 0%, #f0ebe3 100%)" },
+  modeTitle: { fontSize: 32, fontWeight: 700, color: "#1a1a2e", margin: 0, letterSpacing: -0.5 },
+  modeDesc: { color: "#888", margin: "8px 0 28px", fontSize: 15 },
+  modeBtn: { display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "28px 36px", border: "2px solid #e0d8ce", borderRadius: 16, background: "#fff", cursor: "pointer", transition: "all 0.2s", minWidth: 160 },
+  hostLobby: { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Georgia', serif", background: "linear-gradient(160deg, #fdfaf6 0%, #f0ebe3 100%)", padding: 24 },
+  hostLobbyCard: { textAlign: "center", maxWidth: 520, width: "100%" },
+  starBurst: { fontSize: 48, marginBottom: 8 },
+  hostTitle: { fontSize: 40, fontWeight: 700, color: "#1a1a2e", margin: "0 0 4px", letterSpacing: -1 },
+  hostSubtitle: { fontSize: 16, color: "#E85D3A", fontWeight: 600, margin: "0 0 12px", textTransform: "uppercase", letterSpacing: 1.5 },
+  hostDesc: { color: "#666", fontSize: 14, lineHeight: 1.6, margin: "0 0 20px" },
+  label: { fontSize: 13, fontWeight: 600, color: "#999", textTransform: "uppercase", letterSpacing: 1 },
+  teamBtn: { padding: "10px 24px", border: "2px solid #E85D3A", borderRadius: 10, cursor: "pointer", fontWeight: 600, fontSize: 15, fontFamily: "'Georgia', serif", transition: "all 0.2s" },
+  bigBtn: { padding: "14px 40px", background: "#E85D3A", color: "#fff", border: "none", borderRadius: 12, fontSize: 17, fontWeight: 700, cursor: "pointer", fontFamily: "'Georgia', serif", marginTop: 16, transition: "all 0.2s" },
+  hostScreen: { minHeight: "100vh", fontFamily: "'Georgia', serif", padding: "24px 32px", background: "linear-gradient(160deg, #fdfaf6 0%, #f0ebe3 100%)" },
+  gameIdBanner: { textAlign: "center", padding: "32px 24px", background: "#1a1a2e", borderRadius: 20, color: "#fff" },
+  gameIdLabel: { margin: 0, fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: "rgba(255,255,255,0.6)" },
+  gameIdValue: { margin: "8px 0 0", fontSize: 56, fontWeight: 700, letterSpacing: 12, fontFamily: "monospace" },
+  gameIdHint: { margin: "12px 0 0", fontSize: 13, color: "rgba(255,255,255,0.5)" },
+  teamCard: { display: "flex", alignItems: "center", gap: 10, padding: "14px 24px", border: "2px solid", borderRadius: 12, background: "#fff" },
+  teamDot: { width: 14, height: 14, borderRadius: "50%" },
+  teamLabel: { fontWeight: 600, fontSize: 16 },
+  topBar: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 8 },
+  qNum: { fontSize: 15, fontWeight: 700, color: "#1a1a2e", background: "#e8e8e8", padding: "6px 14px", borderRadius: 8 },
+  timerBox: { background: "#fff", padding: "8px 20px", borderRadius: 10, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" },
+  timerText: { fontSize: 28, fontWeight: 700, fontFamily: "monospace" },
+  sourceTag: { fontSize: 12, color: "#999", fontStyle: "italic" },
+  questionBox: { background: "#fff", padding: "28px 32px", borderRadius: 16, marginBottom: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.04)" },
+  questionText: { fontSize: 22, fontWeight: 600, color: "#1a1a2e", margin: 0, lineHeight: 1.5 },
+  optionsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 },
+  optionCard: { display: "flex", alignItems: "flex-start", gap: 12, padding: "16px 20px", border: "2px solid #ddd", borderRadius: 14, background: "#fff", transition: "all 0.3s", position: "relative" },
+  optLetter: { width: 32, height: 32, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 14, flexShrink: 0 },
+  optText: { fontSize: 16, lineHeight: 1.5, color: "#1a1a2e" },
+  teamTags: { position: "absolute", bottom: 8, right: 12, display: "flex", gap: 4 },
+  teamTag: { padding: "3px 10px", borderRadius: 6, color: "#fff", fontSize: 11, fontWeight: 600 },
+  scoreBoard: { display: "flex", gap: 20, justifyContent: "center", flexWrap: "wrap", margin: "16px 0" },
+  scoreItem: { display: "flex", alignItems: "center", gap: 8, padding: "10px 20px", background: "#fff", borderRadius: 10, boxShadow: "0 1px 4px rgba(0,0,0,0.06)" },
+  scoreDot: { width: 10, height: 10, borderRadius: "50%" },
+  scoreName: { fontWeight: 600, fontSize: 14 },
+  scoreVal: { fontWeight: 700, fontSize: 16, color: "#E85D3A" },
+  finalTitle: { fontSize: 36, fontWeight: 700, color: "#1a1a2e", margin: "8px 0 24px" },
+  podium: { maxWidth: 400, margin: "0 auto", display: "flex", flexDirection: "column", gap: 12 },
+  podiumItem: { display: "flex", alignItems: "center", gap: 12, padding: "16px 20px", background: "#fff", borderRadius: 12 },
+  rank: { fontSize: 20, fontWeight: 700, color: "#999", width: 36 },
+  podName: { flex: 1, fontWeight: 600, fontSize: 18 },
+  podScore: { fontWeight: 700, fontSize: 20, color: "#E85D3A" },
+  closingQuote: { textAlign: "center", fontStyle: "italic", color: "#555", maxWidth: 500, margin: "32px auto 4px", lineHeight: 1.6, fontSize: 15 },
+  closingAttr: { textAlign: "center", fontSize: 12, color: "#999" },
+  playerJoin: { minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, gap: 14, fontFamily: "'Georgia', serif", background: "#fdfaf6" },
+  pjTitle: { fontSize: 24, fontWeight: 700, margin: 0, color: "#1a1a2e" },
+  input: { width: "100%", maxWidth: 280, padding: "12px 16px", border: "2px solid #ddd", borderRadius: 10, fontSize: 16, fontFamily: "'Georgia', serif", background: "#fff" },
+  playerWait: { minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "'Georgia', serif", background: "#fdfaf6", textAlign: "center" },
+  waitText: { fontSize: 18, color: "#666" },
+  teamBadge: { fontSize: 14, fontWeight: 700, color: "#E85D3A", textTransform: "uppercase", letterSpacing: 1.5 },
+  playerQ: { minHeight: "100vh", padding: 20, fontFamily: "'Georgia', serif", background: "#fdfaf6" },
+  pqNum: { fontSize: 13, fontWeight: 700, color: "#999", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 8px" },
+  pqText: { fontSize: 18, fontWeight: 600, color: "#1a1a2e", lineHeight: 1.5, margin: "0 0 20px" },
+  pqOptions: { display: "flex", flexDirection: "column", gap: 10 },
+  pqBtn: { display: "flex", alignItems: "center", gap: 10, padding: "14px 18px", border: "2px solid #ddd", borderRadius: 12, fontSize: 15, fontFamily: "'Georgia', serif", cursor: "pointer", textAlign: "left", transition: "all 0.2s" },
+  pqLetter: { fontWeight: 700, color: "#E85D3A", fontSize: 16, flexShrink: 0 },
+};
