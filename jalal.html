@@ -6,122 +6,111 @@
 <title>Feast of Jalál Quiz</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap');
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'EB Garamond', Georgia, serif; background: linear-gradient(160deg, #fdfaf6, #f0ebe3); min-height: 100vh; color: #1a1a2e; }
-  .screen { display: none; min-height: 100vh; padding: 24px; flex-direction: column; align-items: center; justify-content: center; }
-  .screen.active { display: flex; }
-  .big-btn { padding: 14px 40px; background: #E85D3A; color: #fff; border: none; border-radius: 12px; font-size: 17px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 16px; transition: all 0.2s; }
-  .big-btn:hover { background: #c9472a; }
-  .big-btn:disabled { opacity: 0.4; cursor: default; }
-  .tag { display: inline-block; padding: 3px 10px; border-radius: 6px; color: #fff; font-size: 11px; font-weight: 600; margin: 2px; }
-
-  /* Mode */
-  .mode-title { font-size: 36px; font-weight: 700; }
-  .mode-sub { color: #888; margin: 8px 0 28px; font-size: 16px; }
-  .mode-btns { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
-  .mode-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 28px 36px; border: 2px solid #e0d8ce; border-radius: 16px; background: #fff; cursor: pointer; font-family: inherit; min-width: 160px; }
-  .mode-btn:hover { border-color: #E85D3A; }
-
-  /* Host setup */
-  .lobby-card { text-align: center; max-width: 520px; width: 100%; }
-  .star { font-size: 48px; margin-bottom: 8px; }
-  .host-title { font-size: 40px; font-weight: 700; letter-spacing: -1px; }
-  .host-subtitle { font-size: 14px; color: #E85D3A; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin: 4px 0 12px; }
-  .host-desc { color: #666; font-size: 15px; line-height: 1.6; margin-bottom: 20px; }
-  .small-label { font-size: 13px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 1px; margin-top: 24px; }
-  .team-select { display: flex; gap: 12px; justify-content: center; margin-top: 8px; }
-  .team-opt { padding: 10px 24px; border: 2px solid #E85D3A; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 15px; font-family: inherit; background: transparent; color: #E85D3A; }
-  .team-opt.active { background: #E85D3A; color: #fff; }
-
-  /* Game ID */
-  .gameid-banner { text-align: center; padding: 32px 24px; background: #1a1a2e; border-radius: 20px; color: #fff; width: 100%; max-width: 600px; }
-  .gameid-label { font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.6); }
-  .gameid-value { font-size: 56px; font-weight: 700; letter-spacing: 12px; font-family: monospace; margin-top: 8px; }
-  .gameid-hint { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 12px; }
-  .gameid-url { font-size: 14px; color: rgba(255,255,255,0.7); margin-top: 8px; word-break: break-all; }
-  .team-cards { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin: 32px 0; }
-  .team-card { display: flex; align-items: center; gap: 10px; padding: 14px 24px; border: 2px solid; border-radius: 12px; background: #fff; }
-  .team-dot { width: 14px; height: 14px; border-radius: 50%; }
-
-  /* Question */
-  .host-game { justify-content: flex-start; align-items: stretch; }
-  .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 8px; }
-  .q-num { font-size: 15px; font-weight: 700; background: #e8e8e8; padding: 6px 14px; border-radius: 8px; }
-  .timer-box { background: #fff; padding: 8px 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-  .timer-text { font-size: 28px; font-weight: 700; font-family: monospace; }
-  .timer-warn { color: #E85D3A !important; }
-  .source-tag { font-size: 12px; color: #999; font-style: italic; }
-  .q-box { background: #fff; padding: 28px 32px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
-  .q-text { font-size: 22px; font-weight: 600; line-height: 1.5; }
-  .opts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
-  .opt-card { display: flex; align-items: flex-start; gap: 12px; padding: 16px 20px; border: 2px solid #ddd; border-radius: 14px; background: #fff; position: relative; transition: all 0.3s; }
-  .opt-card.correct { border-color: #2B8A6E; background: rgba(43,138,110,0.08); box-shadow: 0 0 0 3px rgba(43,138,110,0.2); }
-  .opt-card.wrong { border-color: #ccc; }
-  .opt-letter { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; background: #e8e8e8; color: #666; flex-shrink: 0; }
-  .opt-card.correct .opt-letter { background: #2B8A6E; color: #fff; }
-  .opt-text { font-size: 16px; line-height: 1.5; }
-  .team-tags { position: absolute; bottom: 8px; right: 12px; display: flex; gap: 4px; flex-wrap: wrap; }
-
-  /* Scoreboard */
-  .scoreboard { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin: 16px 0; }
-  .score-item { display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-  .score-dot { width: 10px; height: 10px; border-radius: 50%; }
-  .score-val { font-weight: 700; font-size: 16px; color: #E85D3A; }
-
-  /* Final */
-  .final { text-align: center; }
-  .final-title { font-size: 36px; font-weight: 700; margin: 8px 0 24px; }
-  .podium { max-width: 400px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-  .pod-item { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: #fff; border-radius: 12px; }
-  .pod-rank { font-size: 20px; font-weight: 700; color: #999; width: 36px; }
-  .pod-name { flex: 1; font-weight: 600; font-size: 18px; }
-  .pod-score { font-weight: 700; font-size: 20px; color: #E85D3A; }
-  .closing-quote { font-style: italic; color: #555; max-width: 500px; margin: 32px auto 4px; line-height: 1.6; font-size: 15px; }
-  .closing-attr { font-size: 12px; color: #999; }
-
-  /* Player */
-  .player-join { gap: 14px; }
-  .p-input { width: 100%; max-width: 280px; padding: 12px 16px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; font-family: inherit; background: #fff; -webkit-appearance: none; }
-  .p-input:focus { outline: none; border-color: #E85D3A; }
-  .player-wait { text-align: center; }
-  @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.7; } }
-  .wait-dot { width: 48px; height: 48px; border-radius: 50%; background: #E85D3A; margin: 0 auto 16px; animation: pulse 1.5s ease-in-out infinite; }
-  .team-badge { font-size: 14px; font-weight: 700; color: #E85D3A; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 8px; }
-  .player-q { justify-content: flex-start; align-items: stretch; }
-  .pq-num { font-size: 13px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
-  .pq-text { font-size: 18px; font-weight: 600; line-height: 1.5; margin-bottom: 20px; }
-  .pq-opts { display: flex; flex-direction: column; gap: 10px; }
-  .pq-btn { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border: 2px solid #ddd; border-radius: 12px; font-size: 15px; font-family: inherit; cursor: pointer; text-align: left; background: #fff; transition: all 0.2s; }
-  .pq-btn:hover { border-color: #E85D3A; }
-  .pq-btn.selected { background: #2B8A6E; color: #fff; border-color: #2B8A6E; }
-  .pq-btn.selected .pq-letter { color: #fff; }
-  .pq-btn.faded { opacity: 0.4; pointer-events: none; }
-  .pq-letter { font-weight: 700; color: #E85D3A; font-size: 16px; flex-shrink: 0; }
-  .locked-msg { text-align: center; color: #2B8A6E; font-weight: 600; margin-top: 12px; }
-
-  /* Debug */
-  .debug { position: fixed; bottom: 4px; left: 4px; font-size: 10px; color: #ccc; z-index: 999; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'EB Garamond',Georgia,serif;background:linear-gradient(160deg,#fdfaf6,#f0ebe3);min-height:100vh;color:#1a1a2e}
+  .screen{display:none;min-height:100vh;padding:24px;flex-direction:column;align-items:center;justify-content:center}
+  .screen.active{display:flex}
+  .big-btn{padding:14px 40px;background:#E85D3A;color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:16px}
+  .big-btn:hover{background:#c9472a}
+  .big-btn:disabled{opacity:.4;cursor:default}
+  .tag{display:inline-block;padding:3px 10px;border-radius:6px;color:#fff;font-size:11px;font-weight:600;margin:2px}
+  .mode-title{font-size:36px;font-weight:700}
+  .mode-sub{color:#888;margin:8px 0 28px;font-size:16px}
+  .mode-btns{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+  .mode-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 36px;border:2px solid #e0d8ce;border-radius:16px;background:#fff;cursor:pointer;font-family:inherit;min-width:160px}
+  .mode-btn:hover{border-color:#E85D3A}
+  .lobby-card{text-align:center;max-width:520px;width:100%}
+  .star{font-size:48px;margin-bottom:8px}
+  .host-title{font-size:40px;font-weight:700;letter-spacing:-1px}
+  .host-subtitle{font-size:14px;color:#E85D3A;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;margin:4px 0 12px}
+  .host-desc{color:#666;font-size:15px;line-height:1.6;margin-bottom:20px}
+  .small-label{font-size:13px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:1px;margin-top:24px}
+  .team-select{display:flex;gap:12px;justify-content:center;margin-top:8px}
+  .team-opt{padding:10px 24px;border:2px solid #E85D3A;border-radius:10px;cursor:pointer;font-weight:600;font-size:15px;font-family:inherit;background:transparent;color:#E85D3A}
+  .team-opt.active{background:#E85D3A;color:#fff}
+  .gameid-banner{text-align:center;padding:32px 24px;background:#1a1a2e;border-radius:20px;color:#fff;width:100%;max-width:600px}
+  .gameid-label{font-size:13px;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.6)}
+  .gameid-value{font-size:56px;font-weight:700;letter-spacing:12px;font-family:monospace;margin-top:8px}
+  .gameid-hint{font-size:13px;color:rgba(255,255,255,.5);margin-top:12px}
+  .team-cards{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:32px 0}
+  .team-card{display:flex;align-items:center;gap:10px;padding:14px 24px;border:2px solid;border-radius:12px;background:#fff}
+  .team-dot{width:14px;height:14px;border-radius:50%}
+  .host-game{justify-content:flex-start;align-items:stretch}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px}
+  .q-num{font-size:15px;font-weight:700;background:#e8e8e8;padding:6px 14px;border-radius:8px}
+  .timer-box{background:#fff;padding:8px 20px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .timer-text{font-size:28px;font-weight:700;font-family:monospace}
+  .timer-warn{color:#E85D3A!important}
+  .source-tag{font-size:12px;color:#999;font-style:italic}
+  .q-box{background:#fff;padding:28px 32px;border-radius:16px;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+  .q-text{font-size:22px;font-weight:600;line-height:1.5}
+  .opts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .opt-card{display:flex;align-items:flex-start;gap:12px;padding:16px 20px;border:2px solid #ddd;border-radius:14px;background:#fff;position:relative;transition:all .3s}
+  .opt-card.correct{border-color:#2B8A6E;background:rgba(43,138,110,.08);box-shadow:0 0 0 3px rgba(43,138,110,.2)}
+  .opt-card.wrong{border-color:#ccc}
+  .opt-letter{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;background:#e8e8e8;color:#666;flex-shrink:0}
+  .opt-card.correct .opt-letter{background:#2B8A6E;color:#fff}
+  .opt-text{font-size:16px;line-height:1.5}
+  .team-tags{position:absolute;bottom:8px;right:12px;display:flex;gap:4px;flex-wrap:wrap}
+  .scoreboard{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+  .score-item{display:flex;align-items:center;gap:8px;padding:10px 20px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .score-dot{width:10px;height:10px;border-radius:50%}
+  .score-val{font-weight:700;font-size:16px;color:#E85D3A}
+  .final{text-align:center}
+  .final-title{font-size:36px;font-weight:700;margin:8px 0 24px}
+  .podium{max-width:400px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+  .pod-item{display:flex;align-items:center;gap:12px;padding:16px 20px;background:#fff;border-radius:12px}
+  .pod-rank{font-size:20px;font-weight:700;color:#999;width:36px}
+  .pod-name{flex:1;font-weight:600;font-size:18px}
+  .pod-score{font-weight:700;font-size:20px;color:#E85D3A}
+  .closing-quote{font-style:italic;color:#555;max-width:500px;margin:32px auto 4px;line-height:1.6;font-size:15px}
+  .closing-attr{font-size:12px;color:#999}
+  .player-join{gap:14px}
+  .p-input{width:100%;max-width:280px;padding:12px 16px;border:2px solid #ddd;border-radius:10px;font-size:16px;font-family:inherit;background:#fff;-webkit-appearance:none}
+  .p-input:focus{outline:none;border-color:#E85D3A}
+  .player-wait{text-align:center}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:.7}}
+  .wait-dot{width:48px;height:48px;border-radius:50%;background:#E85D3A;margin:0 auto 16px;animation:pulse 1.5s ease-in-out infinite}
+  .team-badge{font-size:14px;font-weight:700;color:#E85D3A;text-transform:uppercase;letter-spacing:1.5px;margin-top:8px}
+  .player-q{justify-content:flex-start;align-items:stretch}
+  .pq-num{font-size:13px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
+  .pq-text{font-size:18px;font-weight:600;line-height:1.5;margin-bottom:20px}
+  .pq-opts{display:flex;flex-direction:column;gap:10px}
+  .pq-btn{display:flex;align-items:center;gap:10px;padding:14px 18px;border:2px solid #ddd;border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;text-align:left;background:#fff}
+  .pq-btn:hover{border-color:#E85D3A}
+  .pq-btn.selected{background:#2B8A6E;color:#fff;border-color:#2B8A6E}
+  .pq-btn.selected .pq-letter{color:#fff}
+  .pq-btn.faded{opacity:.4;pointer-events:none}
+  .pq-letter{font-weight:700;color:#E85D3A;font-size:16px;flex-shrink:0}
+  .locked-msg{text-align:center;color:#2B8A6E;font-weight:600;margin-top:12px}
+  .status-bar{position:fixed;top:0;left:0;right:0;padding:6px 12px;font-size:12px;z-index:999;text-align:center;font-family:monospace}
+  .status-bar.ok{background:#2B8A6E;color:#fff}
+  .status-bar.err{background:#E85D3A;color:#fff}
+  #loading-screen{position:fixed;inset:0;background:linear-gradient(160deg,#fdfaf6,#f0ebe3);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:'EB Garamond',Georgia,serif}
+  #loading-screen .spinner{width:40px;height:40px;border:4px solid #e0d8ce;border-top-color:#E85D3A;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:16px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  #loading-screen p{color:#888;font-size:16px}
+  #loading-screen .error{color:#E85D3A;font-size:14px;margin-top:12px;max-width:400px;text-align:center;display:none}
 </style>
 </head>
 <body>
 
-<div class="debug" id="debug"></div>
+<!-- Loading screen while Firebase loads -->
+<div id="loading-screen">
+  <div class="spinner"></div>
+  <p>Loading quiz...</p>
+  <p class="error" id="load-error"></p>
+</div>
+
+<div class="status-bar" id="status" style="display:none"></div>
 
 <!-- MODE SELECT -->
-<div id="s-mode" class="screen active">
+<div id="s-mode" class="screen">
   <h1 class="mode-title">Feast of Jalál Quiz</h1>
   <p class="mode-sub">Select your role</p>
   <div class="mode-btns">
-    <button class="mode-btn" onclick="setMode('host')">
-      <span style="font-size:32px">📺</span>
-      <span style="font-weight:700;font-size:18px">Host</span>
-      <span style="font-size:13px;color:#888">Project on screen</span>
-    </button>
-    <button class="mode-btn" onclick="setMode('player')">
-      <span style="font-size:32px">📱</span>
-      <span style="font-weight:700;font-size:18px">Player</span>
-      <span style="font-size:13px;color:#888">Answer on phone</span>
-    </button>
+    <button class="mode-btn" onclick="setMode('host')"><span style="font-size:32px">📺</span><span style="font-weight:700;font-size:18px">Host</span><span style="font-size:13px;color:#888">Project on screen</span></button>
+    <button class="mode-btn" onclick="setMode('player')"><span style="font-size:32px">📱</span><span style="font-weight:700;font-size:18px">Player</span><span style="font-size:13px;color:#888">Answer on phone</span></button>
   </div>
 </div>
 
@@ -136,9 +125,8 @@
     <div class="team-select">
       <button class="team-opt active" id="btn-t2" onclick="pickTeams(2)">2 Teams</button>
       <button class="team-opt" id="btn-t3" onclick="pickTeams(3)">3 Teams</button>
-    </div>
-    <br>
-    <button class="big-btn" onclick="hostStartGame()">Start Game</button>
+    </div><br>
+    <button class="big-btn" onclick="hostStart()">Start Game</button>
   </div>
 </div>
 
@@ -150,7 +138,7 @@
     <p class="gameid-hint">Team reps: open this page on your phone, choose "Player", enter this code</p>
   </div>
   <div class="team-cards" id="h-lobby-teams"></div>
-  <button class="big-btn" onclick="hostBeginQ(0)">Begin Question 1</button>
+  <button class="big-btn" onclick="hostNextQ()">Begin Question 1</button>
 </div>
 
 <!-- HOST QUESTION -->
@@ -158,11 +146,11 @@
   <div class="top-bar">
     <span class="q-num" id="hq-num"></span>
     <div class="timer-box"><span class="timer-text" id="hq-timer"></span></div>
-    <span class="source-tag" id="hq-section"></span>
+    <span class="source-tag" id="hq-sec"></span>
   </div>
   <div class="q-box"><h2 class="q-text" id="hq-text"></h2></div>
   <div class="opts-grid" id="hq-opts"></div>
-  <div style="text-align:center;margin-top:20px" id="hq-actions"></div>
+  <div style="text-align:center;margin-top:20px" id="hq-btns"></div>
 </div>
 
 <!-- HOST FINAL -->
@@ -170,7 +158,7 @@
   <div class="final">
     <div class="star">🏆</div>
     <h1 class="final-title">Final Results</h1>
-    <div class="podium" id="h-podium"></div>
+    <div class="podium" id="h-pod"></div>
     <p class="closing-quote">"In every face they see a fellow seeker after truth... And in the company of many others, they are building havens of peace."</p>
     <p class="closing-attr">Universal House of Justice, 31 December 2025</p>
     <button class="big-btn" onclick="location.reload()">New Game</button>
@@ -181,12 +169,7 @@
 <div id="s-player-join" class="screen player-join">
   <h2 style="font-size:24px;font-weight:700">Join Quiz</h2>
   <input class="p-input" id="pj-code" placeholder="Game Code" maxlength="6" autocapitalize="characters" autocomplete="off">
-  <select class="p-input" id="pj-team">
-    <option value="">Select your team</option>
-    <option value="Team 1">Team 1</option>
-    <option value="Team 2">Team 2</option>
-    <option value="Team 3">Team 3</option>
-  </select>
+  <select class="p-input" id="pj-team"><option value="">Select your team</option><option>Team 1</option><option>Team 2</option><option>Team 3</option></select>
   <button class="big-btn" onclick="playerJoin()">Join</button>
 </div>
 
@@ -218,13 +201,59 @@
   <p style="font-size:20px;margin:12px 0" id="pf-result"></p>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!--
+  Firebase SDK: try 3 different CDNs.
+  If all fail, the loading screen shows an error.
+-->
+<script>
+var _fbLoaded = false;
+var _fbAttempt = 0;
+var _fbSources = [
+  ["https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js",
+   "https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"],
+  ["https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-app-compat.js",
+   "https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-database-compat.js"],
+  ["https://unpkg.com/firebase@9.23.0/firebase-app-compat.js",
+   "https://unpkg.com/firebase@9.23.0/firebase-database-compat.js"]
+];
+
+function tryLoadFirebase() {
+  if (_fbAttempt >= _fbSources.length) {
+    document.getElementById('load-error').style.display = 'block';
+    document.getElementById('load-error').textContent =
+      'Could not load Firebase from any CDN. Check your internet connection or try a different browser/network.';
+    return;
+  }
+  var srcs = _fbSources[_fbAttempt];
+  var s1 = document.createElement('script');
+  s1.src = srcs[0];
+  s1.onload = function() {
+    var s2 = document.createElement('script');
+    s2.src = srcs[1];
+    s2.onload = function() {
+      if (typeof firebase !== 'undefined' && firebase.initializeApp) {
+        _fbLoaded = true;
+        initApp();
+      } else {
+        _fbAttempt++;
+        tryLoadFirebase();
+      }
+    };
+    s2.onerror = function() { _fbAttempt++; tryLoadFirebase(); };
+    document.head.appendChild(s2);
+  };
+  s1.onerror = function() { _fbAttempt++; tryLoadFirebase(); };
+  document.head.appendChild(s1);
+}
+
+tryLoadFirebase();
+</script>
+
 <script>
 // ╔══════════════════════════════════════════════════════════╗
 // ║  PASTE YOUR FIREBASE CONFIG HERE                        ║
 // ╚══════════════════════════════════════════════════════════╝
-const firebaseConfig = {
+var firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
   databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
@@ -237,295 +266,261 @@ const firebaseConfig = {
 // ║  DO NOT EDIT BELOW THIS LINE                            ║
 // ╚══════════════════════════════════════════════════════════╝
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+var db;
 
-const QS = [
-  { q: "What phrase does the House of Justice use to describe the moment when someone is ready to embrace the Faith?", o: ["The door of the heart is unlocked", "The city of the heart is open", "The soul has found its home", "The spirit of faith is awakened"], a: 1, s: "Section 1" },
-  { q: "In what year did the House of Justice first draw attention to this 'infinitely precious moment' in a spiritual journey?", o: ["2018", "2021", "2023", "2025"], a: 1, s: "Section 1" },
-  { q: "According to the House of Justice, what two things remain to be learned about this precious moment?", o: ["How to teach and how to deepen", "How to discern receptivity and how to acknowledge when it has matured into faith", "How to plan firesides and how to follow up", "How to form study circles and how to sustain them"], a: 1, s: "Section 1" },
-  { q: "How many youth and parents crossed the threshold at the San Diego camp?", o: ["4 youth", "5 youth and 2 parents", "6 youth and 1 parent", "8 youth"], a: 2, s: "Section 2" },
-  { q: "What proportion of the non-enrolled camp participants does this represent?", o: ["About a quarter", "About a third", "About half", "Nearly all"], a: 2, s: "Section 2" },
-  { q: "In the closing remarks, a Bahá'í was described as someone who wants to apply Bahá'u'lláh's teachings and sees them as a source of what?", o: ["Personal salvation", "Unity for all humanity", "Individual enlightenment", "Spiritual protection"], a: 1, s: "Section 2" },
-  { q: "One hesitant youth ultimately enrolled after realizing that becoming a Bahá'í did NOT mean what?", o: ["Leaving his friends behind", "Giving up his hobbies", "Abandoning his family's culture", "Changing his daily routine"], a: 2, s: "Section 2" },
-  { q: "What inspired one father to re-enroll after years of disengagement?", o: ["A visit from an Auxiliary Board member", "His daughter sharing what she learned in Book 1", "Reading the December 31 message", "Attending a devotional gathering"], a: 1, s: "Section 2" },
-  { q: "According to the House of Justice, what are the enkindled souls building 'in the company of many others'?", o: ["Centers of learning", "Houses of Worship", "Havens of peace", "Networks of communities"], a: 2, s: "Section 3" },
-  { q: "The House of Justice says there can be no greater joy than knowing one's life was spent in acute awareness of what?", o: ["The oneness of humanity", "The divine remedy", "The power of prayer", "The need for justice"], a: 1, s: "Section 3" }
+function initApp() {
+  try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+  } catch(e) {
+    document.getElementById('load-error').style.display = 'block';
+    document.getElementById('load-error').textContent = 'Firebase init error: ' + e.message;
+    return;
+  }
+
+  // Connection monitor
+  db.ref(".info/connected").on("value", function(snap) {
+    var el = document.getElementById("status");
+    if (snap.val() === true) {
+      el.className = "status-bar ok";
+      el.textContent = "✓ Connected";
+      el.style.display = "block";
+      setTimeout(function(){ el.style.display = "none"; }, 3000);
+    } else {
+      el.className = "status-bar err";
+      el.textContent = "Connecting...";
+      el.style.display = "block";
+    }
+  });
+
+  // Hide loading, show app
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('s-mode').classList.add('active');
+}
+
+var QS = [
+  {q:"What phrase does the House of Justice use to describe the moment when someone is ready to embrace the Faith?",o:["The door of the heart is unlocked","The city of the heart is open","The soul has found its home","The spirit of faith is awakened"],a:1,s:"Section 1"},
+  {q:"In what year did the House of Justice first draw attention to this 'infinitely precious moment' in a spiritual journey?",o:["2018","2021","2023","2025"],a:1,s:"Section 1"},
+  {q:"According to the House of Justice, what two things remain to be learned about this precious moment?",o:["How to teach and how to deepen","How to discern receptivity and how to acknowledge when it has matured into faith","How to plan firesides and how to follow up","How to form study circles and how to sustain them"],a:1,s:"Section 1"},
+  {q:"How many youth and parents crossed the threshold at the San Diego camp?",o:["4 youth","5 youth and 2 parents","6 youth and 1 parent","8 youth"],a:2,s:"Section 2"},
+  {q:"What proportion of the non-enrolled camp participants does this represent?",o:["About a quarter","About a third","About half","Nearly all"],a:2,s:"Section 2"},
+  {q:"In the closing remarks, a Bahá'í was described as someone who wants to apply Bahá'u'lláh's teachings and sees them as a source of what?",o:["Personal salvation","Unity for all humanity","Individual enlightenment","Spiritual protection"],a:1,s:"Section 2"},
+  {q:"One hesitant youth ultimately enrolled after realizing that becoming a Bahá'í did NOT mean what?",o:["Leaving his friends behind","Giving up his hobbies","Abandoning his family's culture","Changing his daily routine"],a:2,s:"Section 2"},
+  {q:"What inspired one father to re-enroll after years of disengagement?",o:["A visit from an Auxiliary Board member","His daughter sharing what she learned in Book 1","Reading the December 31 message","Attending a devotional gathering"],a:1,s:"Section 2"},
+  {q:"According to the House of Justice, what are the enkindled souls building 'in the company of many others'?",o:["Centers of learning","Houses of Worship","Havens of peace","Networks of communities"],a:2,s:"Section 3"},
+  {q:"The House of Justice says there can be no greater joy than knowing one's life was spent in acute awareness of what?",o:["The oneness of humanity","The divine remedy","The power of prayer","The need for justice"],a:1,s:"Section 3"}
 ];
+var COLORS=["#E85D3A","#2B8A6E","#3A6FD8"], LETTERS=["A","B","C","D"], ROUND=20;
 
-const COLORS = ["#E85D3A", "#2B8A6E", "#3A6FD8"];
-const LETTERS = ["A", "B", "C", "D"];
-const TIMER = 20;
+var G = { id:"", mode:"", numTeams:2, teams:[], scores:{}, qi:0, timer:ROUND, timerInt:null, pTeam:"", pSub:false, pLastState:"", pLastQi:-1 };
 
-// State
-let gameId = "", numTeams = 2, teams = [], scores = {};
-let currentQ = 0, timerInt = null, timerVal = TIMER;
-let pTeam = "", pSubmitted = false, pChoice = null, pLastQ = -1;
-let gameRef = null, answersRef = null;
-
-function log(msg) { document.getElementById('debug').textContent = msg; console.log(msg); }
-
-// ─── Screen ───
 function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  var all = document.querySelectorAll('.screen');
+  for (var i=0;i<all.length;i++) all[i].classList.remove('active');
   document.getElementById(id).classList.add('active');
-  log("screen: " + id);
 }
 
-function setMode(m) {
-  show(m === 'host' ? 's-host-setup' : 's-player-join');
-}
+function setMode(m) { G.mode=m; show(m==='host'?'s-host-setup':'s-player-join'); }
 
 function pickTeams(n) {
-  numTeams = n;
-  document.getElementById('btn-t2').classList.toggle('active', n === 2);
-  document.getElementById('btn-t3').classList.toggle('active', n === 3);
+  G.numTeams=n;
+  document.getElementById('btn-t2').classList.toggle('active',n===2);
+  document.getElementById('btn-t3').classList.toggle('active',n===3);
 }
 
-// ═══════════════════════════════
-// HOST
-// ═══════════════════════════════
-function hostStartGame() {
-  gameId = Math.random().toString(36).substring(2, 8).toUpperCase();
-  teams = [];
-  for (let i = 0; i < numTeams; i++) teams.push("Team " + (i + 1));
-  scores = {};
-  teams.forEach(t => scores[t] = 0);
+// ═══════════════ HOST ═══════════════
 
-  gameRef = db.ref("games/" + gameId);
-  gameRef.set({
-    phase: "lobby",
-    qIndex: -1,
-    teams: teams,
-    scores: scores,
-    answers: {}
-  });
+function hostStart() {
+  G.id = Math.random().toString(36).substr(2,6).toUpperCase();
+  G.teams = [];
+  for (var i=0;i<G.numTeams;i++) G.teams.push("Team "+(i+1));
+  G.scores = {};
+  G.teams.forEach(function(t){ G.scores[t]=0; });
+  G.qi = 0;
 
-  document.getElementById('h-code').textContent = gameId;
-  let h = "";
-  teams.forEach((t, i) => {
-    h += '<div class="team-card" style="border-color:' + COLORS[i] + '"><div class="team-dot" style="background:' + COLORS[i] + '"></div><span style="font-weight:600;font-size:16px">' + t + '</span></div>';
-  });
-  document.getElementById('h-lobby-teams').innerHTML = h;
-  show('s-host-lobby');
-}
-
-function hostBeginQ(qi) {
-  currentQ = qi;
-  timerVal = TIMER;
-
-  const q = QS[qi];
-  document.getElementById('hq-num').textContent = "Q" + (qi + 1) + "/" + QS.length;
-  document.getElementById('hq-timer').textContent = timerVal + "s";
-  document.getElementById('hq-timer').classList.remove('timer-warn');
-  document.getElementById('hq-section').textContent = q.s;
-  document.getElementById('hq-text').textContent = q.q;
-
-  let h = "";
-  q.o.forEach((opt, i) => {
-    h += '<div class="opt-card" id="ho-' + i + '"><span class="opt-letter">' + LETTERS[i] + '</span><span class="opt-text">' + opt + '</span><div class="team-tags" id="ht-' + i + '"></div></div>';
-  });
-  document.getElementById('hq-opts').innerHTML = h;
-  document.getElementById('hq-actions').innerHTML = "";
-  show('s-host-q');
-
-  // Update Firebase: new question
-  gameRef.update({
-    phase: "question",
-    qIndex: qi,
-    answers: {}
-  });
-
-  // Listen for incoming answers
-  if (answersRef) answersRef.off();
-  answersRef = gameRef.child("answers");
-  answersRef.on("value", function(snap) {
-    const ans = snap.val() || {};
-    // Clear all tags
-    q.o.forEach((_, i) => {
-      const el = document.getElementById('ht-' + i);
-      if (el) el.innerHTML = "";
+  db.ref("games/"+G.id).set({p:"lobby",q:-1,t:G.teams,s:G.scores,a:{}}, function(err) {
+    if (err) { alert("Firebase error: "+err.message+"\n\nCheck your config and database rules (should be in test mode)."); return; }
+    document.getElementById('h-code').textContent = G.id;
+    var h="";
+    G.teams.forEach(function(t,i){
+      h+='<div class="team-card" style="border-color:'+COLORS[i]+'"><div class="team-dot" style="background:'+COLORS[i]+'"></div><span style="font-weight:600;font-size:16px">'+t+'</span></div>';
     });
-    // Show who answered what
-    Object.keys(ans).forEach(function(t) {
-      const v = ans[t];
-      const el = document.getElementById('ht-' + v.choice);
-      const ci = teams.indexOf(t);
-      if (el && ci >= 0) {
-        el.innerHTML += '<span class="tag" style="background:' + COLORS[ci] + '">' + t + '</span>';
+    document.getElementById('h-lobby-teams').innerHTML=h;
+    show('s-host-lobby');
+
+    // Listen for answers
+    db.ref("games/"+G.id+"/a").on("value", function(snap) {
+      var ans=snap.val()||{};
+      for(var i=0;i<4;i++){ var el=document.getElementById('ht-'+i); if(el) el.innerHTML=""; }
+      var keys=Object.keys(ans);
+      for(var k=0;k<keys.length;k++){
+        var team=keys[k], v=ans[team];
+        var el=document.getElementById('ht-'+v.c);
+        var ci=G.teams.indexOf(team);
+        if(el&&ci>=0) el.innerHTML+='<span class="tag" style="background:'+COLORS[ci]+'">'+team+'</span>';
       }
     });
   });
+}
 
-  // Start timer
-  if (timerInt) clearInterval(timerInt);
-  timerInt = setInterval(function() {
-    timerVal--;
-    var el = document.getElementById('hq-timer');
-    el.textContent = timerVal + "s";
-    if (timerVal <= 5) el.classList.add('timer-warn');
-    if (timerVal <= 0) {
-      clearInterval(timerInt);
-      timerInt = null;
-      hostReveal();
-    }
-  }, 1000);
+function hostNextQ() {
+  var qi=G.qi, q=QS[qi];
+  document.getElementById('hq-num').textContent="Q"+(qi+1)+"/"+QS.length;
+  G.timer=ROUND;
+  document.getElementById('hq-timer').textContent=ROUND+"s";
+  document.getElementById('hq-timer').classList.remove('timer-warn');
+  document.getElementById('hq-sec').textContent=q.s;
+  document.getElementById('hq-text').textContent=q.q;
+  var h="";
+  for(var i=0;i<q.o.length;i++){
+    h+='<div class="opt-card" id="ho-'+i+'"><span class="opt-letter">'+LETTERS[i]+'</span><span class="opt-text">'+q.o[i]+'</span><div class="team-tags" id="ht-'+i+'"></div></div>';
+  }
+  document.getElementById('hq-opts').innerHTML=h;
+  document.getElementById('hq-btns').innerHTML="";
+  show('s-host-q');
+
+  db.ref("games/"+G.id).update({p:"q",q:qi,a:{}}, function(err){
+    if(err) console.error("Firebase update error:",err);
+  });
+
+  if(G.timerInt) clearInterval(G.timerInt);
+  G.timerInt=setInterval(function(){
+    G.timer--;
+    var el=document.getElementById('hq-timer');
+    el.textContent=G.timer+"s";
+    if(G.timer<=5) el.classList.add('timer-warn');
+    if(G.timer<=0){clearInterval(G.timerInt);G.timerInt=null;hostReveal();}
+  },1000);
 }
 
 function hostReveal() {
-  if (timerInt) { clearInterval(timerInt); timerInt = null; }
-  if (answersRef) { answersRef.off(); answersRef = null; }
+  if(G.timerInt){clearInterval(G.timerInt);G.timerInt=null;}
+  var q=QS[G.qi];
+  for(var i=0;i<q.o.length;i++) document.getElementById('ho-'+i).classList.add(i===q.a?'correct':'wrong');
 
-  const q = QS[currentQ];
-  const correct = q.a;
-
-  // Style options
-  q.o.forEach((_, i) => {
-    var el = document.getElementById('ho-' + i);
-    el.classList.add(i === correct ? 'correct' : 'wrong');
-  });
-
-  // Calculate scores from Firebase
-  gameRef.child("answers").once("value", function(snap) {
-    const ans = snap.val() || {};
-    const winners = [];
-    Object.keys(ans).forEach(function(t) {
-      if (ans[t].choice === correct) winners.push({ team: t, ts: ans[t].ts });
-    });
-    winners.sort(function(a, b) { return a.ts - b.ts; });
-    winners.forEach(function(w, idx) {
-      scores[w.team] = (scores[w.team] || 0) + 10 + (idx === 0 ? 5 : 0);
-    });
-
-    gameRef.update({ phase: "reveal", scores: scores });
-
-    // Show scoreboard
-    var sb = '<div class="scoreboard">';
-    teams.forEach(function(t, i) {
-      sb += '<div class="score-item"><div class="score-dot" style="background:' + COLORS[i] + '"></div><span style="font-weight:600;font-size:14px">' + t + '</span><span class="score-val">' + (scores[t] || 0) + ' pts</span></div>';
-    });
-    sb += '</div>';
-
-    var isLast = currentQ + 1 >= QS.length;
-    if (isLast) {
-      sb += '<button class="big-btn" onclick="hostFinal()">See Final Results</button>';
-    } else {
-      sb += '<button class="big-btn" onclick="hostBeginQ(' + (currentQ + 1) + ')">Next Question (' + (currentQ + 2) + '/' + QS.length + ')</button>';
+  db.ref("games/"+G.id+"/a").once("value",function(snap){
+    var ans=snap.val()||{}, winners=[], keys=Object.keys(ans);
+    for(var k=0;k<keys.length;k++){
+      if(ans[keys[k]].c===q.a) winners.push({team:keys[k],ts:ans[keys[k]].ts});
     }
-    document.getElementById('hq-actions').innerHTML = sb;
+    winners.sort(function(a,b){return a.ts-b.ts});
+    for(var w=0;w<winners.length;w++){
+      G.scores[winners[w].team]=(G.scores[winners[w].team]||0)+10+(w===0?5:0);
+    }
+    db.ref("games/"+G.id).update({p:"reveal",s:G.scores});
+
+    var sb='<div class="scoreboard">';
+    G.teams.forEach(function(t,i){
+      sb+='<div class="score-item"><div class="score-dot" style="background:'+COLORS[i]+'"></div><span style="font-weight:600;font-size:14px">'+t+'</span><span class="score-val">'+(G.scores[t]||0)+' pts</span></div>';
+    });
+    sb+='</div>';
+    var last=G.qi+1>=QS.length;
+    sb+='<button class="big-btn" onclick="'+(last?'hostFinal()':'G.qi++;hostNextQ()')+'">'+(last?'See Final Results':'Next Question ('+(G.qi+2)+'/'+QS.length+')')+'</button>';
+    document.getElementById('hq-btns').innerHTML=sb;
   });
 }
 
 function hostFinal() {
-  gameRef.update({ phase: "final", scores: scores });
-  var sorted = teams.slice().sort(function(a, b) { return (scores[b] || 0) - (scores[a] || 0); });
-  var h = "";
-  sorted.forEach(function(t, i) {
-    var ci = teams.indexOf(t);
-    h += '<div class="pod-item" style="border-left:5px solid ' + COLORS[ci] + '"><span class="pod-rank">#' + (i + 1) + '</span><span class="pod-name">' + t + '</span><span class="pod-score">' + (scores[t] || 0) + ' pts</span></div>';
+  db.ref("games/"+G.id).update({p:"final",s:G.scores});
+  var sorted=G.teams.slice().sort(function(a,b){return(G.scores[b]||0)-(G.scores[a]||0)});
+  var h="";
+  sorted.forEach(function(t,i){
+    var ci=G.teams.indexOf(t);
+    h+='<div class="pod-item" style="border-left:5px solid '+COLORS[ci]+'"><span class="pod-rank">#'+(i+1)+'</span><span class="pod-name">'+t+'</span><span class="pod-score">'+(G.scores[t]||0)+' pts</span></div>';
   });
-  document.getElementById('h-podium').innerHTML = h;
+  document.getElementById('h-pod').innerHTML=h;
   show('s-host-final');
 }
 
-// ═══════════════════════════════
-// PLAYER
-// ═══════════════════════════════
+// ═══════════════ PLAYER ═══════════════
+
 function playerJoin() {
-  var code = document.getElementById('pj-code').value.toUpperCase().trim();
-  var team = document.getElementById('pj-team').value;
-  if (!code || !team) { alert("Enter a game code and select your team."); return; }
+  var code=document.getElementById('pj-code').value.toUpperCase().trim();
+  var team=document.getElementById('pj-team').value;
+  if(!code||!team){alert("Enter a game code and select your team.");return;}
 
-  gameId = code;
-  pTeam = team;
-  pLastQ = -1;
-  pSubmitted = false;
-
-  document.getElementById('pw-team').textContent = team;
+  G.id=code; G.pTeam=team; G.pLastState=""; G.pSub=false;
+  document.getElementById('pw-team').textContent=team;
   show('s-player-wait');
-  log("Joining game: " + code + " as " + team);
 
-  gameRef = db.ref("games/" + gameId);
+  var ref=db.ref("games/"+code);
+  ref.once("value",function(snap){
+    if(!snap.exists()){alert("Game '"+code+"' not found. Check the code.");show('s-player-join');return;}
 
-  // Main listener: react to ALL state changes
-  gameRef.on("value", function(snap) {
-    var s = snap.val();
-    if (!s) { log("No game data found"); return; }
+    // Listen for ALL changes
+    ref.on("value",function(snap){
+      var d=snap.val();
+      if(!d) return;
+      var key=d.p+"_"+d.q;
+      if(key===G.pLastState) return;
+      G.pLastState=key;
 
-    var phase = s.phase;
-    var qi = s.qIndex;
-    log("phase=" + phase + " qi=" + qi + " pLastQ=" + pLastQ);
+      if(d.p==="lobby"){show('s-player-wait');return;}
 
-    if (phase === "lobby") {
-      show('s-player-wait');
-      return;
-    }
-
-    if (phase === "question") {
-      // New question?
-      if (qi !== pLastQ) {
-        pLastQ = qi;
-        pSubmitted = false;
-        pChoice = null;
-        playerShowQ(qi);
+      if(d.p==="q"){
+        G.pSub=false;
+        var q=QS[d.q];
+        document.getElementById('pq-num').textContent="Q"+(d.q+1)+" · "+q.s;
+        document.getElementById('pq-text').textContent=q.q;
+        document.getElementById('pq-locked').style.display="none";
+        var h="";
+        for(var i=0;i<q.o.length;i++){
+          h+='<button class="pq-btn" id="pb-'+i+'" onclick="playerAnswer('+i+')"><span class="pq-letter">'+LETTERS[i]+'</span> '+q.o[i]+'</button>';
+        }
+        document.getElementById('pq-opts').innerHTML=h;
+        show('s-player-q');
+        return;
       }
-      // If already submitted, stay on question screen (don't re-render)
-      return;
-    }
 
-    if (phase === "reveal") {
-      var q = QS[s.qIndex];
-      var myAns = s.answers && s.answers[pTeam];
-      var isCorrect = myAns && myAns.choice === q.a;
-      document.getElementById('pr-icon').textContent = isCorrect ? "✅" : (myAns ? "❌" : "⏰");
-      document.getElementById('pr-text').textContent = isCorrect ? "Correct!" : (myAns ? "Answer: " + LETTERS[q.a] : "Time's up!");
-      show('s-player-result');
-      return;
-    }
+      if(d.p==="reveal"){
+        var q=QS[d.q];
+        var my=d.a&&d.a[G.pTeam];
+        var ok=my&&my.c===q.a;
+        document.getElementById('pr-icon').textContent=ok?"✅":(my?"❌":"⏰");
+        document.getElementById('pr-text').textContent=ok?"Correct!":(my?"Answer: "+LETTERS[q.a]:"Time's up!");
+        show('s-player-result');
+        return;
+      }
 
-    if (phase === "final") {
-      var ts = s.teams || [];
-      var sc = s.scores || {};
-      var sorted = ts.slice().sort(function(a, b) { return (sc[b] || 0) - (sc[a] || 0); });
-      var rank = sorted.indexOf(pTeam) + 1;
-      document.getElementById('pf-result').textContent = pTeam + ": #" + rank + " with " + (sc[pTeam] || 0) + " pts";
-      show('s-player-final');
-      return;
-    }
+      if(d.p==="final"){
+        var ts=d.t||[],sc=d.s||{};
+        var sorted=ts.slice().sort(function(a,b){return(sc[b]||0)-(sc[a]||0)});
+        var rank=sorted.indexOf(G.pTeam)+1;
+        document.getElementById('pf-result').textContent=G.pTeam+": #"+rank+" with "+(sc[G.pTeam]||0)+" pts";
+        show('s-player-final');
+        return;
+      }
+    }, function(err){
+      var el=document.getElementById("status");
+      el.className="status-bar err";
+      el.textContent="Error: "+err.message;
+      el.style.display="block";
+    });
+
+  },function(err){
+    alert("Firebase error: "+err.message);
+    show('s-player-join');
   });
-}
-
-function playerShowQ(qi) {
-  var q = QS[qi];
-  document.getElementById('pq-num').textContent = "Q" + (qi + 1) + " · " + q.s;
-  document.getElementById('pq-text').textContent = q.q;
-  document.getElementById('pq-locked').style.display = "none";
-
-  var h = "";
-  q.o.forEach(function(opt, i) {
-    h += '<button class="pq-btn" id="pb-' + i + '" onclick="playerAnswer(' + i + ')"><span class="pq-letter">' + LETTERS[i] + '</span> ' + opt + '</button>';
-  });
-  document.getElementById('pq-opts').innerHTML = h;
-  show('s-player-q');
 }
 
 function playerAnswer(choice) {
-  if (pSubmitted) return;
-  pSubmitted = true;
-  pChoice = choice;
-
-  // Style buttons
-  QS[0].o.forEach(function(_, i) {
-    var el = document.getElementById('pb-' + i);
-    if (!el) return;
-    if (i === choice) el.classList.add('selected');
+  if(G.pSub) return;
+  G.pSub=true;
+  for(var i=0;i<4;i++){
+    var el=document.getElementById('pb-'+i);
+    if(!el) continue;
+    if(i===choice) el.classList.add('selected');
     else el.classList.add('faded');
-  });
-  document.getElementById('pq-locked').style.display = "block";
+  }
+  document.getElementById('pq-locked').style.display="block";
 
-  // Write to Firebase
-  gameRef.child("answers/" + pTeam).set({ choice: choice, ts: Date.now() });
-  log("Submitted answer: " + LETTERS[choice]);
+  db.ref("games/"+G.id+"/a/"+G.pTeam).set({c:choice,ts:Date.now()},function(err){
+    if(err){
+      document.getElementById("status").className="status-bar err";
+      document.getElementById("status").textContent="Submit failed: "+err.message;
+      document.getElementById("status").style.display="block";
+    }
+  });
 }
 </script>
 </body>
