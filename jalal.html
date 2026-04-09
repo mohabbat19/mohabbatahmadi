@@ -1,3 +1,5 @@
+The only functional change is the small shuffle block added right below the questions array.
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -170,6 +172,15 @@ const questions=[
   {q:"What does the reading say 'much remains to be learned' about?",
    a:["How to build Bahá'í centers","How to discern receptivity and recognize when it has matured into faith","How to organize children's classes","How to plan Holy Day celebrations"],c:1}
 ];
+
+questions.forEach(q => {
+  const correctAnswer = q.a[q.c];
+  for (let i = q.a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [q.a[i], q.a[j]] = [q.a[j], q.a[i]];
+  }
+  q.c = q.a.indexOf(correctAnswer);
+});
 
 let playerName='',idx=0,score=0,streak=0,bestStreak=0,timerInterval,secs,locked;
 const SK='feast-jalal-quiz-scores';
