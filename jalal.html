@@ -171,6 +171,19 @@ const questions=[
    a:["How to build Bahá'í centers","How to discern receptivity and recognize when it has matured into faith","How to organize children's classes","How to plan Holy Day celebrations"],c:1}
 ];
 
+// Shuffle answers for each question and update correct index
+questions.forEach(question => {
+  const correctAnswer = question.a[question.c];
+
+  question.a = question.a
+    .map(answer => ({ answer, sort: Math.random() }))
+    .sort((x, y) => x.sort - y.sort)
+    .map(item => item.answer);
+
+  question.c = question.a.indexOf(correctAnswer);
+});
+</script>
+
 let playerName='',idx=0,score=0,streak=0,bestStreak=0,timerInterval,secs,locked;
 const SK='feast-jalal-quiz-scores';
 
