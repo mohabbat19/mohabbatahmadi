@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⭐ Wesaal — Estrella de la Semana</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Quicksand:wght@400;500;600;700&family=Sacramento&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #E8722A;
+    --orange-light: #F5A623;
+    --orange-glow: #FFD19A;
+    --gold: #D4A843;
+    --warm-cream: #FFF8EF;
+    --warm-bg: #FEF3E2;
+    --brown: #5C3D2E;
+    --brown-light: #8B6F5E;
+    --teal: #2A8B8B;
+    --teal-light: #3DBDBD;
+    --white: #FFFFFF;
+    --text: #3D2B1F;
+    --text-light: #7A6555;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+  }
+
+  body {
+    font-family: 'Quicksand', sans-serif;
+    background: var(--warm-cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ===== SLIDE SYSTEM ===== */
+  .slide {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ===== FLOATING STARS BACKGROUND ===== */
+  .stars-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .star-float {
+    position: absolute;
+    opacity: 0.12;
+    animation: floatStar linear infinite;
+    font-size: 24px;
+  }
+
+  @keyframes floatStar {
+    0% { transform: translateY(110vh) rotate(0deg); }
+    100% { transform: translateY(-10vh) rotate(360deg); }
+  }
+
+  /* ===== SLIDE 1: TITLE ===== */
+  .slide-title {
+    background: linear-gradient(160deg, #1a0a2e 0%, #2d1b4e 30%, #1a2744 60%, #0d1b2a 100%);
+    color: var(--white);
+    text-align: center;
+    position: relative;
+  }
+
+  .slide-title::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+      radial-gradient(1.5px 1.5px at 10% 20%, rgba(255,255,255,0.7) 50%, transparent 50%),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.5) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 50% 10%, rgba(255,255,255,0.6) 50%, transparent 50%),
+      radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.4) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 90% 40%, rgba(255,255,255,0.7) 50%, transparent 50%),
+      radial-gradient(1px 1px at 15% 85%, rgba(255,255,255,0.5) 50%, transparent 50%),
+      radial-gradient(1px 1px at 85% 15%, rgba(255,255,255,0.4) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 45% 45%, rgba(255,255,255,0.6) 50%, transparent 50%),
+      radial-gradient(1px 1px at 65% 30%, rgba(255,255,255,0.3) 50%, transparent 50%),
+      radial-gradient(1px 1px at 25% 70%, rgba(255,255,255,0.5) 50%, transparent 50%);
+    animation: twinkle 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+
+  .title-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .estrella-label {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    font-size: clamp(14px, 2.5vw, 20px);
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--orange-glow);
+    margin-bottom: 10px;
+    animation: fadeSlideDown 1s ease-out 0.2s both;
+  }
+
+  .big-star {
+    font-size: clamp(80px, 15vw, 160px);
+    display: block;
+    margin: 10px 0;
+    animation: pulseStar 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 40px rgba(232,114,42,0.6));
+  }
+
+  @keyframes pulseStar {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 40px rgba(232,114,42,0.6)); }
+    50% { transform: scale(1.08); filter: drop-shadow(0 0 60px rgba(232,114,42,0.8)); }
+  }
+
+  .title-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(60px, 12vw, 130px);
+    font-weight: 900;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--orange-glow) 0%, var(--orange) 40%, var(--orange-light) 70%, var(--orange-glow) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeSlideUp 1s ease-out 0.5s both;
+    margin-bottom: 16px;
+  }
+
+  .title-sub {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(28px, 5vw, 52px);
+    color: var(--orange-glow);
+    opacity: 0.9;
+    animation: fadeSlideUp 1s ease-out 0.8s both;
+  }
+
+  .title-school {
+    font-size: clamp(13px, 1.8vw, 17px);
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-top: 30px;
+    animation: fadeSlideUp 1s ease-out 1.1s both;
+  }
+
+  /* ===== PHOTO PLACEHOLDER SYSTEM ===== */
+  .photo-placeholder {
+    background: linear-gradient(135deg, var(--warm-bg), #f0dcc5);
+    border: 3px dashed var(--orange-light);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--brown-light);
+    font-size: 14px;
+    font-weight: 600;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease;
+  }
+
+  .photo-placeholder:hover {
+    transform: scale(1.02);
+  }
+
+  .photo-placeholder .icon {
+    font-size: 40px;
+    margin-bottom: 8px;
+    opacity: 0.5;
+  }
+
+  .photo-placeholder .label {
+    opacity: 0.7;
+    text-align: center;
+    padding: 0 10px;
+  }
+
+  .photo-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0; left: 0;
+  }
+
+  /* ===== SLIDE 2: MEET WESAAL ===== */
+  .slide-meet {
+    background: var(--warm-cream);
+    padding: 60px 40px;
+  }
+
+  .meet-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    max-width: 1100px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .meet-photo {
+    width: 100%;
+    aspect-ratio: 3/4;
+    border-radius: 24px;
+    box-shadow: 20px 20px 0px var(--orange), 0 15px 50px rgba(0,0,0,0.1);
+  }
+
+  .meet-info h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 900;
+    color: var(--brown);
+    margin-bottom: 6px;
+  }
+
+  .meet-info .spanish-sub {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(22px, 3vw, 34px);
+    color: var(--orange);
+    margin-bottom: 24px;
+  }
+
+  .fact-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .fact-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-left: 4px solid var(--orange);
+    transition: transform 0.2s;
+  }
+
+  .fact-card:hover { transform: translateY(-3px); }
+
+  .fact-card .fact-icon { font-size: 22px; margin-bottom: 4px; }
+  .fact-card .fact-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-light);
+    font-weight: 700;
+  }
+  .fact-card .fact-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--brown);
+    margin-top: 2px;
+  }
+
+  /* ===== SLIDE 3: HOBBIES ===== */
+  .slide-hobbies {
+    background: linear-gradient(160deg, #FFF5EB, #FDE8D0);
+  }
+
+  .hobbies-header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .hobbies-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(34px, 5vw, 52px);
+    font-weight: 900;
+    color: var(--brown);
+  }
+
+  .hobbies-header .subtitle {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(20px, 3vw, 30px);
+    color: var(--orange);
+  }
+
+  .hobbies-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+    max-width: 1000px;
+    width: 100%;
+  }
+
+  .hobby-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .hobby-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+  }
+
+  .hobby-photo {
+    width: 100%;
+    aspect-ratio: 1;
+  }
+
+  .hobby-card .hobby-text {
+    padding: 16px 18px;
+    text-align: center;
+  }
+
+  .hobby-card .hobby-emoji { font-size: 28px; }
+  .hobby-card .hobby-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--brown);
+    margin-top: 4px;
+  }
+
+  /* ===== SLIDE 4: LION STORY ===== */
+  .slide-story {
+    background: linear-gradient(160deg, #1a2744 0%, #0d1b2a 50%, #1a0a2e 100%);
+    color: var(--white);
+    text-align: center;
+  }
+
+  .story-container {
+    max-width: 800px;
+    width: 100%;
+  }
+
+  .story-container .story-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: pulseStar 3s ease-in-out infinite;
+  }
+
+  .story-container h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 5vw, 48px);
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+
+  .story-container .story-spanish {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(22px, 3vw, 32px);
+    color: var(--orange-glow);
+    margin-bottom: 30px;
+  }
+
+  .story-container .story-text {
+    font-size: clamp(17px, 2vw, 21px);
+    line-height: 1.9;
+    color: rgba(255,255,255,0.85);
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  .story-container .story-text .highlight {
+    color: var(--orange-glow);
+    font-weight: 700;
+  }
+
+  .story-moral {
+    margin-top: 36px;
+    padding: 24px 32px;
+    background: rgba(232,114,42,0.15);
+    border-radius: 16px;
+    border: 1px solid rgba(232,114,42,0.3);
+  }
+
+  .story-moral p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(18px, 2.5vw, 24px);
+    color: var(--orange-glow);
+    line-height: 1.6;
+  }
+
+  /* ===== SLIDE 5: FAMILY ===== */
+  .slide-family {
+    background: var(--warm-cream);
+  }
+
+  .family-header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .family-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(34px, 5vw, 52px);
+    font-weight: 900;
+    color: var(--brown);
+  }
+
+  .family-header .subtitle {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(20px, 3vw, 30px);
+    color: var(--orange);
+  }
+
+  .family-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+    max-width: 1000px;
+    width: 100%;
+  }
+
+  .family-member {
+    text-align: center;
+  }
+
+  .family-photo {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    margin-bottom: 14px;
+    border: 4px solid var(--white);
+  }
+
+  .family-member .member-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--brown);
+  }
+
+  .family-member .member-role {
+    font-size: 13px;
+    color: var(--text-light);
+    font-weight: 600;
+  }
+
+  .family-photo-big {
+    max-width: 700px;
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 24px;
+    margin-top: 40px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.12);
+  }
+
+  /* ===== SLIDE 6: TRADITIONS ===== */
+  .slide-traditions {
+    background: linear-gradient(160deg, #FFF5EB, #FDE8D0);
+  }
+
+  .traditions-header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .traditions-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(34px, 5vw, 52px);
+    font-weight: 900;
+    color: var(--brown);
+  }
+
+  .traditions-header .subtitle {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(20px, 3vw, 30px);
+    color: var(--orange);
+  }
+
+  .traditions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px;
+    max-width: 1000px;
+    width: 100%;
+  }
+
+  .tradition-card {
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+  }
+
+  .tradition-card:hover { transform: translateY(-6px); }
+
+  .tradition-photo {
+    width: 100%;
+    aspect-ratio: 4/3;
+  }
+
+  .tradition-card .tradition-text {
+    padding: 22px;
+    text-align: center;
+  }
+
+  .tradition-card .tradition-emoji { font-size: 32px; }
+  .tradition-card .tradition-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 19px;
+    color: var(--brown);
+    margin: 6px 0 4px;
+  }
+  .tradition-card .tradition-desc {
+    font-size: 14px;
+    color: var(--text-light);
+    line-height: 1.5;
+  }
+
+  /* ===== SLIDE 7: 5K GOAL ===== */
+  .slide-5k {
+    background: linear-gradient(160deg, var(--teal), #1a6b6b);
+    color: var(--white);
+    text-align: center;
+  }
+
+  .goal-container {
+    max-width: 800px;
+    width: 100%;
+  }
+
+  .goal-container .goal-icon { font-size: 80px; margin-bottom: 16px; }
+
+  .goal-container h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(34px, 5vw, 52px);
+    font-weight: 900;
+  }
+
+  .goal-container .goal-spanish {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(22px, 3vw, 32px);
+    color: var(--orange-glow);
+    margin-bottom: 24px;
+  }
+
+  .goal-container .goal-text {
+    font-size: clamp(17px, 2vw, 21px);
+    line-height: 1.8;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .goal-photo {
+    max-width: 500px;
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 20px;
+    margin-top: 40px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+  }
+
+  /* ===== SLIDE 8: CLOSING ===== */
+  .slide-closing {
+    background: linear-gradient(160deg, #1a0a2e 0%, #2d1b4e 30%, #1a2744 60%, #0d1b2a 100%);
+    color: var(--white);
+    text-align: center;
+    position: relative;
+  }
+
+  .slide-closing::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+      radial-gradient(1.5px 1.5px at 10% 20%, rgba(255,255,255,0.7) 50%, transparent 50%),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.5) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 50% 10%, rgba(255,255,255,0.6) 50%, transparent 50%),
+      radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.4) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 90% 40%, rgba(255,255,255,0.7) 50%, transparent 50%);
+    animation: twinkle 4s ease-in-out infinite alternate;
+  }
+
+  .closing-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .closing-content .closing-star {
+    font-size: clamp(80px, 12vw, 120px);
+    animation: pulseStar 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 40px rgba(232,114,42,0.6));
+  }
+
+  .closing-content h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 7vw, 70px);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--orange-glow), var(--orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 10px 0;
+  }
+
+  .closing-content .closing-message {
+    font-size: clamp(17px, 2vw, 22px);
+    line-height: 1.8;
+    opacity: 0.85;
+    max-width: 600px;
+    margin: 0 auto 30px;
+  }
+
+  .closing-content .closing-family {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(26px, 4vw, 42px);
+    color: var(--orange-glow);
+  }
+
+  /* ===== NAVIGATION DOTS ===== */
+  .nav-dots {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.15);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .nav-dot.active {
+    background: var(--orange);
+    border-color: var(--orange-light);
+    transform: scale(1.3);
+  }
+
+  /* ===== SLIDE ANIMATIONS ===== */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .meet-grid { grid-template-columns: 1fr; gap: 30px; }
+    .hobbies-grid { grid-template-columns: 1fr 1fr; }
+    .family-grid { grid-template-columns: repeat(3, 1fr); }
+    .traditions-grid { grid-template-columns: 1fr; }
+    .slide { padding: 40px 24px; }
+    .nav-dots { right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation Dots -->
+<div class="nav-dots" id="navDots"></div>
+
+<!-- =============================== -->
+<!-- SLIDE 1: TITLE                  -->
+<!-- =============================== -->
+<section class="slide slide-title" id="slide-1">
+  <div class="title-content">
+    <div class="estrella-label">⭐ Cesar Chavez Elementary ⭐</div>
+    <span class="big-star">⭐</span>
+    <h1 class="title-name">Wesaal</h1>
+    <p class="title-sub">Estrella de la Semana</p>
+    <p class="title-school">Star of the Week</p>
+  </div>
+</section>
+
+<!-- =============================== -->
+<!-- SLIDE 2: MEET WESAAL            -->
+<!-- =============================== -->
+<section class="slide slide-meet" id="slide-2">
+  <div class="meet-grid">
+    <div class="photo-placeholder meet-photo" id="photo-wesaal-portrait">
+      <span class="icon">📸</span>
+      <span class="label">WESAAL PORTRAIT</span>
+      <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Wesaal"> -->
+    </div>
+    <div class="meet-info animate-on-scroll">
+      <h2>Meet Wesaal!</h2>
+      <p class="spanish-sub">Conoce a Wesaal</p>
+      <div class="fact-cards">
+        <div class="fact-card">
+          <div class="fact-icon">🧡</div>
+          <div class="fact-label">Favorite Color</div>
+          <div class="fact-value">Orange / Naranja</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-icon">🍫</div>
+          <div class="fact-label">Ice Cream Flavor</div>
+          <div class="fact-value">Chocolate</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-icon">🍚</div>
+          <div class="fact-label">Favorite Food</div>
+          <div class="fact-value">Kabuli Palao</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-icon">🏃‍♀️</div>
+          <div class="fact-label">Superpower</div>
+          <div class="fact-value">Speed! Training for a 5K</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-icon">📚</div>
+          <div class="fact-label">Loves to</div>
+          <div class="fact-value">Read, Write & Paint</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-icon">📷</div>
+          <div class="fact-label">Hidden Talent</div>
+          <div class="fact-value">Photography</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================== -->
+<!-- SLIDE 3: HOBBIES                -->
+<!-- =============================== -->
+<section class="slide slide-hobbies" id="slide-3">
+  <div class="hobbies-header animate-on-scroll">
+    <h2>What Wesaal Loves</h2>
+    <p class="subtitle">Lo que le encanta a Wesaal</p>
+  </div>
+  <div class="hobbies-grid">
+    <div class="hobby-card animate-on-scroll">
+      <div class="photo-placeholder hobby-photo" id="photo-painting">
+        <span class="icon">🎨</span>
+        <span class="label">WESAAL PAINTING</span>
+        <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Painting"> -->
+      </div>
+      <div class="hobby-text">
+        <div class="hobby-emoji">🎨</div>
+        <div class="hobby-name">Painting</div>
+      </div>
+    </div>
+    <div class="hobby-card animate-on-scroll">
+      <div class="photo-placeholder hobby-photo" id="photo-reading">
+        <span class="icon">📖</span>
+        <span class="label">WESAAL READING</span>
+        <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Reading"> -->
+      </div>
+      <div class="hobby-text">
+        <div class="hobby-emoji">📖</div>
+        <div class="hobby-name">Reading</div>
+      </div>
+    </div>
+    <div class="hobby-card animate-on-scroll">
+      <div class="photo-placeholder hobby-photo" id="photo-photography">
+        <span class="icon">📷</span>
+        <span class="label">WESAAL WITH CAMERA</span>
+        <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Photography"> -->
+      </div>
+      <div class="hobby-text">
+        <div class="hobby-emoji">📷</div>
+        <div class="hobby-name">Photography</div>
+      </div>
+    </div>
+    <div class="hobby-card animate-on-scroll">
+      <div class="photo-placeholder hobby-photo" id="photo-writing">
+        <span class="icon">✍️</span>
+        <span class="label">WESAAL WRITING</span>
+        <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Writing"> -->
+      </div>
+      <div class="hobby-text">
+        <div class="hobby-emoji">✍️</div>
+        <div class="hobby-name">Writing</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================== -->
+<!-- SLIDE 4: THE LION STORY         -->
+<!-- =============================== -->
+<section class="slide slide-story" id="slide-4">
+  <div class="story-container animate-on-scroll">
+    <div class="story-icon">🦁</div>
+    <h2>Her Favorite Story</h2>
+    <p class="story-spanish">Su historia favorita</p>
+    <p class="story-text">
+      Every night at bedtime, Wesaal's favorite story begins...
+      <br><br>
+      A <span class="highlight">baby lion</span>, born into the wild, finds himself alone.
+      But he is brave. Day by day, he grows <span class="highlight">stronger and wiser</span>.
+      He faces storms and climbs mountains. He never gives up.
+      <br><br>
+      One day, he becomes the <span class="highlight">king of the jungle</span>,
+      and his greatest reward? He <span class="highlight">reunites with his family</span>.
+    </p>
+    <div class="story-moral">
+      <p>"No matter how far you go, family is always home."</p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================== -->
+<!-- SLIDE 5: OUR FAMILY             -->
+<!-- =============================== -->
+<section class="slide slide-family" id="slide-5">
+  <div class="family-header animate-on-scroll">
+    <h2>Meet Our Family</h2>
+    <p class="subtitle">Nuestra Familia</p>
+  </div>
+  <div class="family-grid animate-on-scroll">
+    <div class="family-member">
+      <div class="photo-placeholder family-photo" id="photo-wesaal-circle">
+        <span class="icon">⭐</span>
+        <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Wesaal"> -->
+      </div>
+      <div class="member-name">Wesaal</div>
+      <div class="member-role">Our Star ⭐</div>
+    </div>
+    <div class="family-member">
+      <div class="photo-placeholder family-photo" id="photo-mohabbat">
+        <span class="icon">📸</span>
+        <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Mohabbat"> -->
+      </div>
+      <div class="member-name">Mohabbat</div>
+      <div class="member-role">Baba (Dad)</div>
+    </div>
+    <div class="family-member">
+      <div class="photo-placeholder family-photo" id="photo-aria">
+        <span class="icon">📸</span>
+        <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Aria"> -->
+      </div>
+      <div class="member-name">Aria</div>
+      <div class="member-role">Moor (Mom)</div>
+    </div>
+    <div class="family-member">
+      <div class="photo-placeholder family-photo" id="photo-jalaal">
+        <span class="icon">📸</span>
+        <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Jalaal"> -->
+      </div>
+      <div class="member-name">Jalaal</div>
+      <div class="member-role">Brother</div>
+    </div>
+    <div class="family-member">
+      <div class="photo-placeholder family-photo" id="photo-zolaal">
+        <span class="icon">📸</span>
+        <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Zolaal"> -->
+      </div>
+      <div class="member-name">Zolaal</div>
+      <div class="member-role">Brother</div>
+    </div>
+  </div>
+  <div class="photo-placeholder family-photo-big animate-on-scroll" id="photo-family-group">
+    <span class="icon">👨‍👩‍👧‍👦</span>
+    <span class="label">FAMILY GROUP PHOTO</span>
+    <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Family Group Photo"> -->
+  </div>
+</section>
+
+<!-- =============================== -->
+<!-- SLIDE 6: FAMILY TRADITIONS      -->
+<!-- =============================== -->
+<section class="slide slide-traditions" id="slide-6">
+  <div class="traditions-header animate-on-scroll">
+    <h2>Our Favorite Moments</h2>
+    <p class="subtitle">Nuestros momentos favoritos</p>
+  </div>
+  <div class="traditions-grid">
+    <div class="tradition-card animate-on-scroll">
+      <div class="photo-placeholder tradition-photo" id="photo-ice-cream">
+        <span class="icon">🍦</span>
+        <span class="label">FRIDAY ICE CREAM</span>
+        <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Ice cream night"> -->
+      </div>
+      <div class="tradition-text">
+        <div class="tradition-emoji">🍦</div>
+        <div class="tradition-name">Friday Ice Cream</div>
+        <div class="tradition-desc">Every Friday night, we celebrate the week with ice cream together. Wesaal always picks chocolate!</div>
+      </div>
+    </div>
+    <div class="tradition-card animate-on-scroll">
+      <div class="photo-placeholder tradition-photo" id="photo-movie-night">
+        <span class="icon">🎬</span>
+        <span class="label">MOVIE NIGHT</span>
+        <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Movie night"> -->
+      </div>
+      <div class="tradition-text">
+        <div class="tradition-emoji">🎬</div>
+        <div class="tradition-name">Saturday Movie Night</div>
+        <div class="tradition-desc">Saturdays are for cozy movie nights. Blankets, snacks, and the whole family piled together.</div>
+      </div>
+    </div>
+    <div class="tradition-card animate-on-scroll">
+      <div class="photo-placeholder tradition-photo" id="photo-bedtime-stories">
+        <span class="icon">🌙</span>
+        <span class="label">BEDTIME STORIES</span>
+        <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Bedtime stories"> -->
+      </div>
+      <div class="tradition-text">
+        <div class="tradition-emoji">🌙</div>
+        <div class="tradition-name">Bedtime Stories</div>
+        <div class="tradition-desc">Every night, Baba tells stories. Wesaal's favorite: the baby lion who becomes king and finds his family again.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================== -->
+<!-- SLIDE 7: 5K GOAL                -->
+<!-- =============================== -->
+<section class="slide slide-5k" id="slide-7">
+  <div class="goal-container animate-on-scroll">
+    <div class="goal-icon">🏃‍♀️</div>
+    <h2>Big Dreams Ahead</h2>
+    <p class="goal-spanish">Grandes sueños por delante</p>
+    <p class="goal-text">
+      Wesaal is training for her very first <strong>5K race</strong> this year!
+      <br><br>
+      She is fast, she is determined, and just like the lion in her favorite story, she never gives up. We are so proud of her!
+    </p>
+    <div class="photo-placeholder goal-photo" id="photo-running">
+      <span class="icon">🏃‍♀️</span>
+      <span class="label">WESAAL RUNNING</span>
+      <!-- <img src="YOUR_IMAGE_HERE.jpg" alt="Wesaal running"> -->
+    </div>
+  </div>
+</section>
+
+<!-- =============================== -->
+<!-- SLIDE 8: CLOSING                -->
+<!-- =============================== -->
+<section class="slide slide-closing" id="slide-8">
+  <div class="closing-content">
+    <div class="closing-star">⭐</div>
+    <h2>We Love You, Wesaal!</h2>
+    <p class="closing-message">
+      You light up every room you walk into. You are kind, brave, creative, and caring. You teach your brothers prayers, you paint beautiful worlds, and you dream the biggest dreams.
+      <br><br>
+      We are so proud that you are <em>our</em> star. Today, tomorrow, and always.
+    </p>
+    <p class="closing-family">With all our love,<br>Baba, Moor, Jalaal & Zolaal</p>
+  </div>
+</section>
+
+<script>
+  // Create navigation dots
+  const slides = document.querySelectorAll('.slide');
+  const navDots = document.getElementById('navDots');
+
+  slides.forEach((slide, i) => {
+    const dot = document.createElement('div');
+    dot.classList.add('nav-dot');
+    if (i === 0) dot.classList.add('active');
+    dot.addEventListener('click', () => {
+      slide.scrollIntoView({ behavior: 'smooth' });
+    });
+    navDots.appendChild(dot);
+  });
+
+  // Intersection observer for nav dots + scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Update nav dots
+        const index = Array.from(slides).indexOf(entry.target);
+        document.querySelectorAll('.nav-dot').forEach((d, i) => {
+          d.classList.toggle('active', i === index);
+        });
+        // Animate children
+        entry.target.querySelectorAll('.animate-on-scroll').forEach((el, i) => {
+          setTimeout(() => el.classList.add('visible'), i * 150);
+        });
+      }
+    });
+  }, { threshold: 0.4 });
+
+  slides.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
